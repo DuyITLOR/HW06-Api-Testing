@@ -1,0 +1,1493 @@
+{
+  "info": {
+    "name": "23127178 · API-01 — Pool A · GET /api/products",
+    "_postman_id": "hw06-api-01-products-search",
+    "description": "HW06 §6 — API-01 — Pool A · GET /api/products. Sinh tự động bởi tools/gen-artifacts.mjs từ generator/specs/api-01-products-search.mjs. Đừng sửa file này bằng tay.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "// ============================================================================",
+          "// Script này dán vào tab **Pre-request Script** ở CẤP COLLECTION của cả 3 collection.",
+          "//",
+          "// §6.4 đòi: \"Every request must carry the header X-Student-Id: {StudentID} (for example, via a",
+          "// pre-request script)\". §11 (Anti-AI-Cheat) đòi thêm **ảnh console** chứng minh header này có",
+          "// thật — nên script chủ động console.log để chụp được trong Postman Console.",
+          "//",
+          "// Đặt ở cấp collection (không phải từng request) vì 35+ request × 3 API = hơn 100 chỗ phải sửa",
+          "// nếu gắn tay, và sót một request là mất bằng chứng §11 cho request đó.",
+          "// ============================================================================",
+          "",
+          "// 1. Header bắt buộc — thêm cho MỌI request trong collection.",
+          "const studentId = pm.environment.get(\"student_id\") || \"23127178\";",
+          "pm.request.headers.upsert({ key: \"X-Student-Id\", value: studentId });",
+          "",
+          "// 2. Bằng chứng cho §11: in ra Postman Console (View -> Show Postman Console) để chụp ảnh.",
+          "console.log(",
+          "  \"[HW06] X-Student-Id =\", studentId,",
+          "  \"|\", pm.request.method, pm.request.url.getPath(),",
+          "  \"|\", new Date().toISOString()",
+          ");",
+          "",
+          "// 3. Thiếu base_url thì mọi request fail với lý do khó đọc — chặn sớm, báo đúng nguyên nhân.",
+          "if (!pm.environment.get(\"base_url\")) {",
+          "  throw new Error(\"Thieu bien moi truong base_url - chon environment HW06-local-23127178\");",
+          "}",
+          ""
+        ]
+      }
+    }
+  ],
+  "item": [
+    {
+      "name": "00-setup",
+      "item": [
+        {
+          "name": "SETUP-00a · login admin (cần token để dọn fixture)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// SETUP-00a · Setup · login admin (cần token để dọn fixture)",
+                  "pm.test(\"status = 200\", () => pm.response.to.have.status(200));",
+                  "pm.environment.set(\"admin_token\", pm.response.json().token);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/api/login",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{admin_email}}\",\n  \"password\": \"{{admin_password}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "SETUP-00b · **dọn fixture HW06-* còn lại từ lượt trước** (giữ lượt chạy độc lập)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// SETUP-00b · Setup · **dọn fixture HW06-* còn lại từ lượt trước** (giữ lượt chạy độc lập)",
+                  "pm.test(\"status = 200\", () => pm.response.to.have.status(200));",
+                  "const left = pm.response.json().filter(p => String(p.name || \"\").startsWith(\"HW06-\"));\nconsole.log(\"[HW06] dọn \" + left.length + \" fixture còn lại\");\nleft.forEach(p => pm.sendRequest({\n  url: pm.environment.get(\"base_url\") + \"/api/products/\" + p.id,\n  method: \"DELETE\",\n  header: {\n    \"X-Student-Id\": pm.environment.get(\"student_id\"),\n    \"Authorization\": \"Bearer \" + pm.environment.get(\"admin_token\"),\n  },\n}, () => {}));\npm.test(\"đã gửi lệnh dọn \" + left.length + \" fixture cũ\", () => pm.expect(left.length).to.be.at.least(0));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base_url}}/api/products"
+          }
+        },
+        {
+          "name": "SETUP-00c · kiểm lại: không còn fixture HW06-*",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// SETUP-00c · Setup · kiểm lại: không còn fixture HW06-*",
+                  "pm.test(\"status = 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"không còn fixture HW06-* nào\", () => {",
+                  "  const left = pm.response.json().filter(p => String(p.name || \"\").startsWith(\"HW06-\"));",
+                  "  pm.expect(left.length, \"còn \" + left.length + \" fixture — khởi động lại SUT rồi chạy lại\").to.eql(0);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base_url}}/api/products"
+          }
+        },
+        {
+          "name": "SETUP-01 · login admin",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// SETUP-01 · Setup · login admin",
+                  "pm.test(\"status = 200\", () => pm.response.to.have.status(200));",
+                  "pm.environment.set(\"admin_token\", pm.response.json().token);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/api/login",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{admin_email}}\",\n  \"password\": \"{{admin_password}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "SETUP-02 · login user thường",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// SETUP-02 · Setup · login user thường",
+                  "pm.test(\"status = 200\", () => pm.response.to.have.status(200));",
+                  "pm.environment.set(\"user_token\", pm.response.json().token);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/api/login",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{user_email}}\",\n  \"password\": \"{{user_password}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "SETUP-03 · fixture: tên có chữ hoa + thường",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// SETUP-03 · Setup · fixture: tên có chữ hoa + thường",
+                  "pm.test(\"status = 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"có field id\", () => pm.expect(pm.response.json()).to.have.property(\"id\"));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/api/products",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"HW06-Laptop Dell XPS\",\n  \"price\": 25000000,\n  \"description\": \"HW06 fixture\",\n  \"imageUrl\": \"\",\n  \"category_id\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "SETUP-04 · fixture: tên IN HOA",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// SETUP-04 · Setup · fixture: tên IN HOA",
+                  "pm.test(\"status = 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"có field id\", () => pm.expect(pm.response.json()).to.have.property(\"id\"));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/api/products",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"HW06-LAPTOP ASUS TUF\",\n  \"price\": 18000000,\n  \"description\": \"HW06 fixture\",\n  \"imageUrl\": \"\",\n  \"category_id\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "SETUP-05 · fixture: tiếng Việt có dấu",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// SETUP-05 · Setup · fixture: tiếng Việt có dấu",
+                  "pm.test(\"status = 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"có field id\", () => pm.expect(pm.response.json()).to.have.property(\"id\"));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/api/products",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"HW06-Áo thun cổ tròn size XL\",\n  \"price\": 150000,\n  \"description\": \"HW06 fixture\",\n  \"imageUrl\": \"\",\n  \"category_id\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "SETUP-06 · fixture: chứa ký tự % (wildcard của LIKE)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// SETUP-06 · Setup · fixture: chứa ký tự % (wildcard của LIKE)",
+                  "pm.test(\"status = 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"có field id\", () => pm.expect(pm.response.json()).to.have.property(\"id\"));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/api/products",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"HW06-Bàn phím 100% cơ\",\n  \"price\": 1200000,\n  \"description\": \"HW06 fixture\",\n  \"imageUrl\": \"\",\n  \"category_id\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "SETUP-07 · fixture: chứa ký tự _ (wildcard 1 ký tự)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// SETUP-07 · Setup · fixture: chứa ký tự _ (wildcard 1 ký tự)",
+                  "pm.test(\"status = 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"có field id\", () => pm.expect(pm.response.json()).to.have.property(\"id\"));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/api/products",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"HW06-Chuot_khong_day\",\n  \"price\": 350000,\n  \"description\": \"HW06 fixture\",\n  \"imageUrl\": \"\",\n  \"category_id\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "SETUP-08 · fixture: chứa dấu nháy đơn trong DỮ LIỆU HỢP LỆ",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// SETUP-08 · Setup · fixture: chứa dấu nháy đơn trong DỮ LIỆU HỢP LỆ",
+                  "pm.test(\"status = 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"có field id\", () => pm.expect(pm.response.json()).to.have.property(\"id\"));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/api/products",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"HW06-O'Brien Special\",\n  \"price\": 500000,\n  \"description\": \"HW06 fixture\",\n  \"imageUrl\": \"\",\n  \"category_id\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "SETUP-09 · lưu tổng số sản phẩm làm mốc so sánh",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// SETUP-09 · Setup · lưu tổng số sản phẩm làm mốc so sánh",
+                  "pm.test(\"status = 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"body là mảng JSON\", () => pm.expect(pm.response.json()).to.be.an(\"array\"));",
+                  "pm.environment.set(\"total_products\", pm.response.json().length);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base_url}}/api/products"
+          }
+        }
+      ]
+    },
+    {
+      "name": "10-domain-search",
+      "item": [
+        {
+          "name": "TC-PRODLIST-001 · **không truyền** search — trả toàn bộ",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// TC-PRODLIST-001 · Domain · **không truyền** search — trả toàn bộ",
+                  "pm.test(\"status = 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Content-Type là application/json\", () => pm.expect(pm.response.headers.get(\"Content-Type\") || \"\").to.include(\"application/json\"));",
+                  "pm.test(\"body là mảng JSON\", () => pm.expect(pm.response.json()).to.be.an(\"array\"));",
+                  "pm.test(\"trả về ≥ 7 dòng\", () => pm.expect(pm.response.json().length).to.be.at.least(7));",
+                  "pm.test(\"mảng đúng schema product (spec §3.1)\", () => pm.response.to.have.jsonSchema({\n  type: \"array\",\n  items: { type: \"object\", required: [\"id\",\"name\",\"price\"], properties: {\n    id: { type: \"integer\" }, name: { type: \"string\" }, price: { type: \"number\" },\n    description: { type: [\"string\",\"null\"] }, imageUrl: { type: [\"string\",\"null\"] },\n    category_id: { type: [\"integer\",\"null\"] } } }\n}));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base_url}}/api/products"
+          }
+        },
+        {
+          "name": "TC-PRODLIST-002 · search **rỗng** — coi như không lọc",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// TC-PRODLIST-002 · Domain · search **rỗng** — coi như không lọc",
+                  "pm.test(\"status = 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"body là mảng JSON\", () => pm.expect(pm.response.json()).to.be.an(\"array\"));",
+                  "pm.test(\"số dòng bằng {{total_products}}\", () => pm.expect(pm.response.json().length).to.eql(Number(pm.environment.get(\"total_products\"))));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base_url}}/api/products?search="
+          }
+        },
+        {
+          "name": "TC-PRODLIST-003 · khớp **nhiều dòng** — Laptop",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// TC-PRODLIST-003 · Domain · khớp **nhiều dòng** — Laptop",
+                  "pm.test(\"status = 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"body là mảng JSON\", () => pm.expect(pm.response.json()).to.be.an(\"array\"));",
+                  "pm.test(\"trả về ≥ 2 dòng\", () => pm.expect(pm.response.json().length).to.be.at.least(2));",
+                  "pm.test(\"mọi dòng đều chứa 'laptop' trong name\", () => {",
+                  "  pm.response.json().forEach(p => pm.expect(String(p.name).toLowerCase()).to.include(\"laptop\"));",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base_url}}/api/products?search=Laptop"
+          }
+        },
+        {
+          "name": "TC-PRODLIST-004 · chữ **thường** — laptop (không phân biệt hoa/thường)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// TC-PRODLIST-004 · Domain · chữ **thường** — laptop (không phân biệt hoa/thường)",
+                  "pm.test(\"status = 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"body là mảng JSON\", () => pm.expect(pm.response.json()).to.be.an(\"array\"));",
+                  "pm.test(\"trả về ≥ 2 dòng\", () => pm.expect(pm.response.json().length).to.be.at.least(2));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base_url}}/api/products?search=laptop"
+          }
+        },
+        {
+          "name": "TC-PRODLIST-005 · **IN HOA** — LAPTOP",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// TC-PRODLIST-005 · Domain · **IN HOA** — LAPTOP",
+                  "pm.test(\"status = 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"body là mảng JSON\", () => pm.expect(pm.response.json()).to.be.an(\"array\"));",
+                  "pm.test(\"trả về ≥ 2 dòng\", () => pm.expect(pm.response.json().length).to.be.at.least(2));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base_url}}/api/products?search=LAPTOP"
+          }
+        },
+        {
+          "name": "TC-PRODLIST-006 · tiếng Việt **có dấu**, đúng hoa/thường — Áo",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// TC-PRODLIST-006 · Domain · tiếng Việt **có dấu**, đúng hoa/thường — Áo",
+                  "pm.test(\"status = 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"body là mảng JSON\", () => pm.expect(pm.response.json()).to.be.an(\"array\"));",
+                  "pm.test(\"trả về đúng 1 dòng\", () => pm.expect(pm.response.json().length).to.eql(1));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base_url}}/api/products?search=%C3%81o"
+          }
+        },
+        {
+          "name": "TC-PRODLIST-007 · khớp **giữa từ** — thun",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// TC-PRODLIST-007 · Domain · khớp **giữa từ** — thun",
+                  "pm.test(\"status = 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"body là mảng JSON\", () => pm.expect(pm.response.json()).to.be.an(\"array\"));",
+                  "pm.test(\"trả về đúng 1 dòng\", () => pm.expect(pm.response.json().length).to.eql(1));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base_url}}/api/products?search=thun"
+          }
+        },
+        {
+          "name": "TC-PRODLIST-008 · **nhiều từ** — Dell XPS",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// TC-PRODLIST-008 · Domain · **nhiều từ** — Dell XPS",
+                  "pm.test(\"status = 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"body là mảng JSON\", () => pm.expect(pm.response.json()).to.be.an(\"array\"));",
+                  "pm.test(\"trả về đúng 1 dòng\", () => pm.expect(pm.response.json().length).to.eql(1));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base_url}}/api/products?search=Dell%20XPS"
+          }
+        },
+        {
+          "name": "TC-PRODLIST-009 · **không khớp gì** — chuỗi vô nghĩa",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// TC-PRODLIST-009 · Domain · **không khớp gì** — chuỗi vô nghĩa",
+                  "pm.test(\"status = 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"body là mảng JSON\", () => pm.expect(pm.response.json()).to.be.an(\"array\"));",
+                  "pm.test(\"trả về đúng 0 dòng\", () => pm.expect(pm.response.json().length).to.eql(0));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base_url}}/api/products?search=khong-ton-tai-xyz-123"
+          }
+        },
+        {
+          "name": "TC-PRODLIST-010 · **một ký tự** — a (biên dưới độ dài)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// TC-PRODLIST-010 · Domain · **một ký tự** — a (biên dưới độ dài)",
+                  "pm.test(\"status = 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"body là mảng JSON\", () => pm.expect(pm.response.json()).to.be.an(\"array\"));",
+                  "pm.test(\"trả về ≥ 1 dòng\", () => pm.expect(pm.response.json().length).to.be.at.least(1));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base_url}}/api/products?search=a"
+          }
+        },
+        {
+          "name": "TC-PRODLIST-011 · **chỉ khoảng trắng** —  ",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// TC-PRODLIST-011 · Domain · **chỉ khoảng trắng** —  ",
+                  "pm.test(\"status = 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"body là mảng JSON\", () => pm.expect(pm.response.json()).to.be.an(\"array\"));",
+                  "pm.test(\"mảng đúng schema product (spec §3.1)\", () => pm.response.to.have.jsonSchema({\n  type: \"array\",\n  items: { type: \"object\", required: [\"id\",\"name\",\"price\"], properties: {\n    id: { type: \"integer\" }, name: { type: \"string\" }, price: { type: \"number\" },\n    description: { type: [\"string\",\"null\"] }, imageUrl: { type: [\"string\",\"null\"] },\n    category_id: { type: [\"integer\",\"null\"] } } }\n}));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base_url}}/api/products?search=%20"
+          }
+        },
+        {
+          "name": "TC-PRODLIST-012 · **rất dài** — 300 ký tự",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// TC-PRODLIST-012 · Domain · **rất dài** — 300 ký tự",
+                  "pm.test(\"status = 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Content-Type là application/json\", () => pm.expect(pm.response.headers.get(\"Content-Type\") || \"\").to.include(\"application/json\"));",
+                  "pm.test(\"body là mảng JSON\", () => pm.expect(pm.response.json()).to.be.an(\"array\"));",
+                  "pm.test(\"trả về đúng 0 dòng\", () => pm.expect(pm.response.json().length).to.eql(0));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base_url}}/api/products?search=LLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL"
+          }
+        },
+        {
+          "name": "TC-PRODLIST-013 · chứa _ trong **dữ liệu hợp lệ** — Chuot_khong",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// TC-PRODLIST-013 · Domain · chứa _ trong **dữ liệu hợp lệ** — Chuot_khong",
+                  "pm.test(\"status = 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"body là mảng JSON\", () => pm.expect(pm.response.json()).to.be.an(\"array\"));",
+                  "pm.test(\"trả về đúng 1 dòng\", () => pm.expect(pm.response.json().length).to.eql(1));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base_url}}/api/products?search=Chuot_khong"
+          }
+        },
+        {
+          "name": "TC-PRODLIST-014 · **emoji / ký tự ngoài BMP** — 🚀",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// TC-PRODLIST-014 · Domain · **emoji / ký tự ngoài BMP** — 🚀",
+                  "pm.test(\"status = 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Content-Type là application/json\", () => pm.expect(pm.response.headers.get(\"Content-Type\") || \"\").to.include(\"application/json\"));",
+                  "pm.test(\"body là mảng JSON\", () => pm.expect(pm.response.json()).to.be.an(\"array\"));",
+                  "pm.test(\"trả về đúng 0 dòng\", () => pm.expect(pm.response.json().length).to.eql(0));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base_url}}/api/products?search=%F0%9F%9A%80"
+          }
+        },
+        {
+          "name": "TC-PRODLIST-015 · **khoảng trắng đầu/cuối** —  Laptop ",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// TC-PRODLIST-015 · Domain · **khoảng trắng đầu/cuối** —  Laptop ",
+                  "pm.test(\"status = 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"body là mảng JSON\", () => pm.expect(pm.response.json()).to.be.an(\"array\"));",
+                  "pm.test(\"mảng đúng schema product (spec §3.1)\", () => pm.response.to.have.jsonSchema({\n  type: \"array\",\n  items: { type: \"object\", required: [\"id\",\"name\",\"price\"], properties: {\n    id: { type: \"integer\" }, name: { type: \"string\" }, price: { type: \"number\" },\n    description: { type: [\"string\",\"null\"] }, imageUrl: { type: [\"string\",\"null\"] },\n    category_id: { type: [\"integer\",\"null\"] } } }\n}));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base_url}}/api/products?search=%20Laptop%20"
+          }
+        },
+        {
+          "name": "TC-PRODLIST-016 · **tham số lạ** — ?foo=bar (phải bỏ qua)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// TC-PRODLIST-016 · Domain · **tham số lạ** — ?foo=bar (phải bỏ qua)",
+                  "pm.test(\"status = 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"body là mảng JSON\", () => pm.expect(pm.response.json()).to.be.an(\"array\"));",
+                  "pm.test(\"số dòng bằng {{total_products}}\", () => pm.expect(pm.response.json().length).to.eql(Number(pm.environment.get(\"total_products\"))));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base_url}}/api/products?foo=bar"
+          }
+        },
+        {
+          "name": "TC-PRODLIST-017 · endpoint **public** — có token vẫn phải chạy",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// TC-PRODLIST-017 · Domain · endpoint **public** — có token vẫn phải chạy",
+                  "pm.test(\"status = 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"body là mảng JSON\", () => pm.expect(pm.response.json()).to.be.an(\"array\"));",
+                  "pm.test(\"trả về ≥ 2 dòng\", () => pm.expect(pm.response.json().length).to.be.at.least(2));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{user_token}}"
+              }
+            ],
+            "url": "{{base_url}}/api/products?search=Laptop"
+          }
+        },
+        {
+          "name": "TC-PRODLIST-018 · **method không được hỗ trợ** — PATCH /api/products",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// TC-PRODLIST-018 · Domain · **method không được hỗ trợ** — PATCH /api/products",
+                  "pm.test(\"status thuộc [404,405]\", () => pm.expect([404,405]).to.include(pm.response.code));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "url": "{{base_url}}/api/products"
+          }
+        }
+      ]
+    },
+    {
+      "name": "20-state-index",
+      "item": [
+        {
+          "name": "TC-PRODLIST-019 · tạo sản phẩm mới → phải xuất hiện trong tìm kiếm (bước 1: tạo)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// TC-PRODLIST-019 · State · tạo sản phẩm mới → phải xuất hiện trong tìm kiếm (bước 1: tạo)",
+                  "pm.test(\"status = 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"có field id\", () => pm.expect(pm.response.json()).to.have.property(\"id\"));",
+                  "pm.environment.set(\"state_product_id\", pm.response.json().id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/api/products",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"HW06-State-Marker\",\n  \"price\": 12345,\n  \"description\": \"state\",\n  \"imageUrl\": \"\",\n  \"category_id\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "TC-PRODLIST-020 · bước 2: tìm được sản phẩm vừa tạo",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// TC-PRODLIST-020 · State · bước 2: tìm được sản phẩm vừa tạo",
+                  "pm.test(\"status = 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"body là mảng JSON\", () => pm.expect(pm.response.json()).to.be.an(\"array\"));",
+                  "pm.test(\"trả về đúng 1 dòng\", () => pm.expect(pm.response.json().length).to.eql(1));",
+                  "pm.test(\"name đúng sản phẩm vừa tạo\", () => pm.expect(pm.response.json()[0].name).to.eql(\"HW06-State-Marker\"));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base_url}}/api/products?search=HW06-State-Marker"
+          }
+        },
+        {
+          "name": "TC-PRODLIST-021 · bước 3: xoá sản phẩm",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// TC-PRODLIST-021 · State · bước 3: xoá sản phẩm",
+                  "pm.test(\"status = 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"body đúng schema {message: string}\", () => pm.response.to.have.jsonSchema({\n  type: \"object\", required: [\"message\"], properties: { message: { type: \"string\" } }\n}));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
+            "url": "{{base_url}}/api/products/{{state_product_id}}"
+          }
+        },
+        {
+          "name": "TC-PRODLIST-022 · bước 4: sau khi xoá thì **không** còn trong tìm kiếm",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// TC-PRODLIST-022 · State · bước 4: sau khi xoá thì **không** còn trong tìm kiếm",
+                  "pm.test(\"status = 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"body là mảng JSON\", () => pm.expect(pm.response.json()).to.be.an(\"array\"));",
+                  "pm.test(\"trả về đúng 0 dòng\", () => pm.expect(pm.response.json().length).to.eql(0));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base_url}}/api/products?search=HW06-State-Marker"
+          }
+        },
+        {
+          "name": "TC-PRODLIST-023 · bước 5: xem chi tiết sản phẩm **đã xoá**",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// TC-PRODLIST-023 · State · bước 5: xem chi tiết sản phẩm **đã xoá**",
+                  "pm.test(\"status = 404\", () => pm.response.to.have.status(404));",
+                  "pm.test(\"body lỗi đúng schema {error: string}\", () => pm.response.to.have.jsonSchema({\n  type: \"object\", required: [\"error\"], properties: { error: { type: \"string\" } }\n}));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base_url}}/api/products/{{state_product_id}}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "30-security-sqli",
+      "item": [
+        {
+          "name": "TC-PRODLIST-024 · SQLi **tautology** — %' OR '1'='1",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// TC-PRODLIST-024 · Security SEC-05 · SQLi **tautology** — %' OR '1'='1",
+                  "pm.test(\"status = 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"body là mảng JSON\", () => pm.expect(pm.response.json()).to.be.an(\"array\"));",
+                  "pm.test(\"trả về đúng 0 dòng\", () => pm.expect(pm.response.json().length).to.eql(0));",
+                  "pm.test(\"số dòng NHỎ HƠN {{total_products}} (payload không được trả về toàn bộ bảng)\", () => pm.expect(pm.response.json().length).to.be.below(Number(pm.environment.get(\"total_products\"))));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base_url}}/api/products?search=%25'%20OR%20'1'%3D'1"
+          }
+        },
+        {
+          "name": "TC-PRODLIST-025 · SQLi **comment** — ' OR 1=1--",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// TC-PRODLIST-025 · Security SEC-05 · SQLi **comment** — ' OR 1=1--",
+                  "pm.test(\"status = 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"body là mảng JSON\", () => pm.expect(pm.response.json()).to.be.an(\"array\"));",
+                  "pm.test(\"trả về đúng 0 dòng\", () => pm.expect(pm.response.json().length).to.eql(0));",
+                  "pm.test(\"số dòng NHỎ HƠN {{total_products}} (payload không được trả về toàn bộ bảng)\", () => pm.expect(pm.response.json().length).to.be.below(Number(pm.environment.get(\"total_products\"))));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base_url}}/api/products?search='%20OR%201%3D1--"
+          }
+        },
+        {
+          "name": "TC-PRODLIST-026 · SQLi **UNION** — dò số cột",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// TC-PRODLIST-026 · Security SEC-05 · SQLi **UNION** — dò số cột",
+                  "pm.test(\"status = 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Content-Type là application/json\", () => pm.expect(pm.response.headers.get(\"Content-Type\") || \"\").to.include(\"application/json\"));",
+                  "pm.test(\"body là mảng JSON\", () => pm.expect(pm.response.json()).to.be.an(\"array\"));",
+                  "pm.test(\"trả về đúng 0 dòng\", () => pm.expect(pm.response.json().length).to.eql(0));",
+                  "pm.test('body không được chứa \"SQLITE\"', () => pm.expect(pm.response.text()).to.not.include(\"SQLITE\"));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base_url}}/api/products?search='%20UNION%20SELECT%201%2C2%2C3%2C4%2C5--"
+          }
+        },
+        {
+          "name": "TC-PRODLIST-027 · SQLi **stacked query** — '; DROP TABLE products--",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// TC-PRODLIST-027 · Security SEC-05 · SQLi **stacked query** — '; DROP TABLE products--",
+                  "pm.test(\"status = 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"body là mảng JSON\", () => pm.expect(pm.response.json()).to.be.an(\"array\"));",
+                  "pm.test(\"trả về đúng 0 dòng\", () => pm.expect(pm.response.json().length).to.eql(0));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base_url}}/api/products?search='%3B%20DROP%20TABLE%20products--"
+          }
+        },
+        {
+          "name": "TC-PRODLIST-028 · payload **XSS** trong search",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// TC-PRODLIST-028 · Security SEC-04 · payload **XSS** trong search",
+                  "pm.test(\"status = 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Content-Type là application/json\", () => pm.expect(pm.response.headers.get(\"Content-Type\") || \"\").to.include(\"application/json\"));",
+                  "pm.test(\"body là mảng JSON\", () => pm.expect(pm.response.json()).to.be.an(\"array\"));",
+                  "pm.test(\"trả về đúng 0 dòng\", () => pm.expect(pm.response.json().length).to.eql(0));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base_url}}/api/products?search=%3Cscript%3Ealert(1)%3C%2Fscript%3E"
+          }
+        },
+        {
+          "name": "TC-PRODLIST-029 · SQLi **boolean-based** — x' AND '1'='2",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// TC-PRODLIST-029 · Security SEC-05 · SQLi **boolean-based** — x' AND '1'='2",
+                  "pm.test(\"status = 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Content-Type là application/json\", () => pm.expect(pm.response.headers.get(\"Content-Type\") || \"\").to.include(\"application/json\"));",
+                  "pm.test(\"body là mảng JSON\", () => pm.expect(pm.response.json()).to.be.an(\"array\"));",
+                  "pm.test(\"trả về đúng 0 dòng\", () => pm.expect(pm.response.json().length).to.eql(0));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base_url}}/api/products?search=x'%20AND%20'1'%3D'2"
+          }
+        }
+      ]
+    },
+    {
+      "name": "40-schema",
+      "item": [
+        {
+          "name": "TC-PRODLIST-030 · danh sách: **kiểu** của mọi field",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// TC-PRODLIST-030 · Schema · danh sách: **kiểu** của mọi field",
+                  "pm.test(\"status = 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"mảng đúng schema product (spec §3.1)\", () => pm.response.to.have.jsonSchema({\n  type: \"array\",\n  items: { type: \"object\", required: [\"id\",\"name\",\"price\"], properties: {\n    id: { type: \"integer\" }, name: { type: \"string\" }, price: { type: \"number\" },\n    description: { type: [\"string\",\"null\"] }, imageUrl: { type: [\"string\",\"null\"] },\n    category_id: { type: [\"integer\",\"null\"] } } }\n}));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base_url}}/api/products"
+          }
+        },
+        {
+          "name": "TC-PRODLIST-031 · danh sách: **không** được lộ field nội bộ",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// TC-PRODLIST-031 · Schema · danh sách: **không** được lộ field nội bộ",
+                  "pm.test(\"status = 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"không có field ngoài spec\", () => {",
+                  "  const allowed = [\"id\",\"name\",\"price\",\"description\",\"imageUrl\",\"category_id\",\"stock\",\"created_at\"];",
+                  "  pm.response.json().slice(0, 20).forEach(p =>",
+                  "    Object.keys(p).forEach(k => pm.expect(allowed, \"field lạ: \" + k).to.include(k)));",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base_url}}/api/products"
+          }
+        },
+        {
+          "name": "TC-PRODLIST-032 · chi tiết **id lẻ** (id=1): price là number",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// TC-PRODLIST-032 · Schema · chi tiết **id lẻ** (id=1): price là number",
+                  "pm.test(\"status = 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Content-Type là application/json\", () => pm.expect(pm.response.headers.get(\"Content-Type\") || \"\").to.include(\"application/json\"));",
+                  "pm.test(\"body là object JSON\", () => pm.expect(pm.response.json()).to.be.an(\"object\"));",
+                  "pm.test(\"price phải là number\", () => pm.expect(pm.response.json().price).to.be.a(\"number\"));",
+                  "pm.test(\"object đúng schema product (spec §3.1)\", () => pm.response.to.have.jsonSchema({\n  type: \"object\", required: [\"id\",\"name\",\"price\"], properties: {\n    id: { type: \"integer\" }, name: { type: \"string\" }, price: { type: \"number\" },\n    description: { type: [\"string\",\"null\"] }, imageUrl: { type: [\"string\",\"null\"] },\n    category_id: { type: [\"integer\",\"null\"] } }\n}));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base_url}}/api/products/1"
+          }
+        },
+        {
+          "name": "TC-PRODLIST-033 · chi tiết: id **không tồn tại** (999999)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// TC-PRODLIST-033 · Schema · chi tiết: id **không tồn tại** (999999)",
+                  "pm.test(\"status = 404\", () => pm.response.to.have.status(404));",
+                  "pm.test(\"body lỗi đúng schema {error: string}\", () => pm.response.to.have.jsonSchema({\n  type: \"object\", required: [\"error\"], properties: { error: { type: \"string\" } }\n}));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base_url}}/api/products/999999"
+          }
+        },
+        {
+          "name": "TC-PRODLIST-034 · chi tiết: id **sai kiểu** (abc)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// TC-PRODLIST-034 · Schema · chi tiết: id **sai kiểu** (abc)",
+                  "pm.test(\"status thuộc [400,404]\", () => pm.expect([400,404]).to.include(pm.response.code));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base_url}}/api/products/abc"
+          }
+        },
+        {
+          "name": "TC-PRODLIST-035 · chi tiết: id **âm** (-1)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// TC-PRODLIST-035 · Schema · chi tiết: id **âm** (-1)",
+                  "pm.test(\"status thuộc [400,404]\", () => pm.expect([400,404]).to.include(pm.response.code));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base_url}}/api/products/-1"
+          }
+        },
+        {
+          "name": "TC-PRODLIST-036 · chi tiết: id = 0 (biên dưới - 1)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// TC-PRODLIST-036 · Schema · chi tiết: id = 0 (biên dưới - 1)",
+                  "pm.test(\"status = 404\", () => pm.response.to.have.status(404));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base_url}}/api/products/0"
+          }
+        }
+      ]
+    },
+    {
+      "name": "90-sv-extended",
+      "item": [
+        {
+          "name": "TC-PRODLIST-101 · tiếng Việt **chữ thường có dấu** — áo (cách người Việt gõ thật)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// TC-PRODLIST-101 · Domain · tiếng Việt **chữ thường có dấu** — áo (cách người Việt gõ thật)",
+                  "pm.test(\"status = 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"body là mảng JSON\", () => pm.expect(pm.response.json()).to.be.an(\"array\"));",
+                  "pm.test(\"trả về đúng 1 dòng\", () => pm.expect(pm.response.json().length).to.eql(1));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base_url}}/api/products?search=%C3%A1o"
+          }
+        },
+        {
+          "name": "TC-PRODLIST-102 · % nằm trong **dữ liệu hợp lệ** — 100%",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// TC-PRODLIST-102 · Domain · % nằm trong **dữ liệu hợp lệ** — 100%",
+                  "pm.test(\"status = 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"body là mảng JSON\", () => pm.expect(pm.response.json()).to.be.an(\"array\"));",
+                  "pm.test(\"trả về đúng 1 dòng\", () => pm.expect(pm.response.json().length).to.eql(1));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base_url}}/api/products?search=100%25"
+          }
+        },
+        {
+          "name": "TC-PRODLIST-103 · chỉ **một ký tự %** — không phải payload tấn công",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// TC-PRODLIST-103 · Domain · chỉ **một ký tự %** — không phải payload tấn công",
+                  "pm.test(\"status = 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"body là mảng JSON\", () => pm.expect(pm.response.json()).to.be.an(\"array\"));",
+                  "pm.test(\"trả về đúng 0 dòng\", () => pm.expect(pm.response.json().length).to.eql(0));",
+                  "pm.test(\"số dòng NHỎ HƠN {{total_products}} (payload không được trả về toàn bộ bảng)\", () => pm.expect(pm.response.json().length).to.be.below(Number(pm.environment.get(\"total_products\"))));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base_url}}/api/products?search=%25"
+          }
+        },
+        {
+          "name": "TC-PRODLIST-104 · **dấu nháy đơn trong dữ liệu hợp lệ** — O'Brien",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// TC-PRODLIST-104 · Domain · **dấu nháy đơn trong dữ liệu hợp lệ** — O'Brien",
+                  "pm.test(\"status = 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Content-Type là application/json\", () => pm.expect(pm.response.headers.get(\"Content-Type\") || \"\").to.include(\"application/json\"));",
+                  "pm.test(\"body là mảng JSON\", () => pm.expect(pm.response.json()).to.be.an(\"array\"));",
+                  "pm.test(\"trả về đúng 1 dòng\", () => pm.expect(pm.response.json().length).to.eql(1));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base_url}}/api/products?search=O'Brien"
+          }
+        },
+        {
+          "name": "TC-PRODLIST-105 · **response lỗi** phải là JSON và không lộ chi tiết engine",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// TC-PRODLIST-105 · Schema · **response lỗi** phải là JSON và không lộ chi tiết engine",
+                  "pm.test(\"Content-Type là application/json\", () => pm.expect(pm.response.headers.get(\"Content-Type\") || \"\").to.include(\"application/json\"));",
+                  "pm.test('body không được chứa \"SQLITE_ERROR\"', () => pm.expect(pm.response.text()).to.not.include(\"SQLITE_ERROR\"));",
+                  "pm.test('body không được chứa \"<h1>\"', () => pm.expect(pm.response.text()).to.not.include(\"<h1>\"));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base_url}}/api/products?search='"
+          }
+        },
+        {
+          "name": "TC-PRODLIST-106 · **hệ quả** của stacked query: bảng products phải còn nguyên",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// TC-PRODLIST-106 · Security SEC-05 · **hệ quả** của stacked query: bảng products phải còn nguyên",
+                  "pm.test(\"status = 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"body là mảng JSON\", () => pm.expect(pm.response.json()).to.be.an(\"array\"));",
+                  "pm.test(\"số dòng bằng {{total_products}}\", () => pm.expect(pm.response.json().length).to.eql(Number(pm.environment.get(\"total_products\"))));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base_url}}/api/products"
+          }
+        },
+        {
+          "name": "TC-PRODLIST-107 · chi tiết **id chẵn** (id=2): price vẫn phải là number",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// TC-PRODLIST-107 · Schema · chi tiết **id chẵn** (id=2): price vẫn phải là number",
+                  "pm.test(\"status = 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"body là object JSON\", () => pm.expect(pm.response.json()).to.be.an(\"object\"));",
+                  "pm.test(\"price phải là number\", () => pm.expect(pm.response.json().price).to.be.a(\"number\"));",
+                  "pm.test(\"object đúng schema product (spec §3.1)\", () => pm.response.to.have.jsonSchema({\n  type: \"object\", required: [\"id\",\"name\",\"price\"], properties: {\n    id: { type: \"integer\" }, name: { type: \"string\" }, price: { type: \"number\" },\n    description: { type: [\"string\",\"null\"] }, imageUrl: { type: [\"string\",\"null\"] },\n    category_id: { type: [\"integer\",\"null\"] } }\n}));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base_url}}/api/products/2"
+          }
+        }
+      ]
+    },
+    {
+      "name": "99-teardown",
+      "item": [
+        {
+          "name": "TEARDOWN-01 · xoá toàn bộ fixture HW06-* do lượt này tạo",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// TEARDOWN-01 · Teardown · xoá toàn bộ fixture HW06-* do lượt này tạo",
+                  "pm.test(\"status = 200\", () => pm.response.to.have.status(200));",
+                  "const left = pm.response.json().filter(p => String(p.name || \"\").startsWith(\"HW06-\"));\nconsole.log(\"[HW06] dọn \" + left.length + \" fixture còn lại\");\nleft.forEach(p => pm.sendRequest({\n  url: pm.environment.get(\"base_url\") + \"/api/products/\" + p.id,\n  method: \"DELETE\",\n  header: {\n    \"X-Student-Id\": pm.environment.get(\"student_id\"),\n    \"Authorization\": \"Bearer \" + pm.environment.get(\"admin_token\"),\n  },\n}, () => {}));\npm.test(\"đã gửi lệnh dọn \" + left.length + \" fixture cũ\", () => pm.expect(left.length).to.be.at.least(0));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base_url}}/api/products"
+          }
+        }
+      ]
+    }
+  ]
+}

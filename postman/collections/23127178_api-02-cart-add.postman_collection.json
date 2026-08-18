@@ -1,0 +1,1938 @@
+{
+  "info": {
+    "name": "23127178 · API-02 — Pool B · POST /api/cart",
+    "_postman_id": "hw06-api-02-cart-add",
+    "description": "HW06 §6 — API-02 — Pool B · POST /api/cart. Sinh tự động bởi tools/gen-artifacts.mjs từ generator/specs/api-02-cart-add.mjs. Đừng sửa file này bằng tay.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "// ============================================================================",
+          "// Script này dán vào tab **Pre-request Script** ở CẤP COLLECTION của cả 3 collection.",
+          "//",
+          "// §6.4 đòi: \"Every request must carry the header X-Student-Id: {StudentID} (for example, via a",
+          "// pre-request script)\". §11 (Anti-AI-Cheat) đòi thêm **ảnh console** chứng minh header này có",
+          "// thật — nên script chủ động console.log để chụp được trong Postman Console.",
+          "//",
+          "// Đặt ở cấp collection (không phải từng request) vì 35+ request × 3 API = hơn 100 chỗ phải sửa",
+          "// nếu gắn tay, và sót một request là mất bằng chứng §11 cho request đó.",
+          "// ============================================================================",
+          "",
+          "// 1. Header bắt buộc — thêm cho MỌI request trong collection.",
+          "const studentId = pm.environment.get(\"student_id\") || \"23127178\";",
+          "pm.request.headers.upsert({ key: \"X-Student-Id\", value: studentId });",
+          "",
+          "// 2. Bằng chứng cho §11: in ra Postman Console (View -> Show Postman Console) để chụp ảnh.",
+          "console.log(",
+          "  \"[HW06] X-Student-Id =\", studentId,",
+          "  \"|\", pm.request.method, pm.request.url.getPath(),",
+          "  \"|\", new Date().toISOString()",
+          ");",
+          "",
+          "// 3. Thiếu base_url thì mọi request fail với lý do khó đọc — chặn sớm, báo đúng nguyên nhân.",
+          "if (!pm.environment.get(\"base_url\")) {",
+          "  throw new Error(\"Thieu bien moi truong base_url - chon environment HW06-local-23127178\");",
+          "}",
+          ""
+        ]
+      }
+    }
+  ],
+  "item": [
+    {
+      "name": "00-setup",
+      "item": [
+        {
+          "name": "SETUP-01 · login admin",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// SETUP-01 · Setup · login admin",
+                  "pm.test(\"status = 200\", () => pm.response.to.have.status(200));",
+                  "pm.environment.set(\"admin_token\", pm.response.json().token);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/api/login",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{admin_email}}\",\n  \"password\": \"{{admin_password}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "SETUP-02 · login user thường",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// SETUP-02 · Setup · login user thường",
+                  "pm.test(\"status = 200\", () => pm.response.to.have.status(200));",
+                  "pm.environment.set(\"user_token\", pm.response.json().token);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/api/login",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{user_email}}\",\n  \"password\": \"{{user_password}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "SETUP-03 · login user thứ hai (kiểm cách ly giỏ)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// SETUP-03 · Setup · login user thứ hai (kiểm cách ly giỏ)",
+                  "pm.test(\"status = 200\", () => pm.response.to.have.status(200));",
+                  "pm.environment.set(\"user2_token\", pm.response.json().token);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/api/login",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{user2_email}}\",\n  \"password\": \"{{user2_password}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "SETUP-04 · fixture sản phẩm giá 111000",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// SETUP-04 · Setup · fixture sản phẩm giá 111000",
+                  "pm.test(\"status = 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"có field id\", () => pm.expect(pm.response.json()).to.have.property(\"id\"));",
+                  "pm.environment.set(\"product_id\", pm.response.json().id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/api/products",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"HW06-Cart-Fixture\",\n  \"price\": 111000,\n  \"description\": \"HW06 fixture\",\n  \"imageUrl\": \"\",\n  \"category_id\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "SETUP-05 · lưu mốc số dòng trong giỏ trước khi test",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// SETUP-05 · Setup · lưu mốc số dòng trong giỏ trước khi test",
+                  "pm.test(\"status = 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"body là mảng JSON\", () => pm.expect(pm.response.json()).to.be.an(\"array\"));",
+                  "pm.environment.set(\"cart_before\", pm.response.json().length);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{user_token}}"
+              }
+            ],
+            "url": "{{base_url}}/api/cart"
+          }
+        }
+      ]
+    },
+    {
+      "name": "10-domain-quantity",
+      "item": [
+        {
+          "name": "TC-CART-001 · quantity = 1 — **biên dưới hợp lệ**",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// TC-CART-001 · Domain · quantity = 1 — **biên dưới hợp lệ**",
+                  "pm.test(\"status = 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Content-Type là application/json\", () => pm.expect(pm.response.headers.get(\"Content-Type\") || \"\").to.include(\"application/json\"));",
+                  "pm.test(\"body đúng schema {message: string}\", () => pm.response.to.have.jsonSchema({\n  type: \"object\", required: [\"message\"], properties: { message: { type: \"string\" } }\n}));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{user_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/api/cart",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": \"{{product_id}}\",\n  \"name\": \"HW06-Cart-Fixture\",\n  \"price\": 111000,\n  \"quantity\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "TC-CART-002 · quantity = 2 — giá trị điển hình",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// TC-CART-002 · Domain · quantity = 2 — giá trị điển hình",
+                  "pm.test(\"status = 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"body đúng schema {message: string}\", () => pm.response.to.have.jsonSchema({\n  type: \"object\", required: [\"message\"], properties: { message: { type: \"string\" } }\n}));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{user_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/api/cart",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": \"{{product_id}}\",\n  \"name\": \"HW06-Cart-Fixture\",\n  \"price\": 111000,\n  \"quantity\": 2\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "TC-CART-003 · quantity = 0 — **biên dưới − 1**",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// TC-CART-003 · Domain · quantity = 0 — **biên dưới − 1**",
+                  "pm.test(\"status thuộc [400,422]\", () => pm.expect([400,422]).to.include(pm.response.code));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{user_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/api/cart",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": \"{{product_id}}\",\n  \"name\": \"HW06-Cart-Fixture\",\n  \"price\": 111000,\n  \"quantity\": 0\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "TC-CART-004 · quantity = -5 — **số âm**",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// TC-CART-004 · Domain · quantity = -5 — **số âm**",
+                  "pm.test(\"status thuộc [400,422]\", () => pm.expect([400,422]).to.include(pm.response.code));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{user_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/api/cart",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": \"{{product_id}}\",\n  \"name\": \"HW06-Cart-Fixture\",\n  \"price\": 111000,\n  \"quantity\": -5\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "TC-CART-005 · quantity = 1.5 — **số thập phân**",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// TC-CART-005 · Domain · quantity = 1.5 — **số thập phân**",
+                  "pm.test(\"status thuộc [400,422]\", () => pm.expect([400,422]).to.include(pm.response.code));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{user_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/api/cart",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": \"{{product_id}}\",\n  \"name\": \"HW06-Cart-Fixture\",\n  \"price\": 111000,\n  \"quantity\": 1.5\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "TC-CART-006 · quantity = \"abc\" — **sai kiểu**",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// TC-CART-006 · Domain · quantity = \"abc\" — **sai kiểu**",
+                  "pm.test(\"status thuộc [400,422]\", () => pm.expect([400,422]).to.include(pm.response.code));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{user_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/api/cart",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": \"{{product_id}}\",\n  \"name\": \"HW06-Cart-Fixture\",\n  \"price\": 111000,\n  \"quantity\": \"abc\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "TC-CART-007 · **thiếu** quantity",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// TC-CART-007 · Domain · **thiếu** quantity",
+                  "pm.test(\"status thuộc [400,422]\", () => pm.expect([400,422]).to.include(pm.response.code));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{user_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/api/cart",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": \"{{product_id}}\",\n  \"name\": \"HW06-Cart-Fixture\",\n  \"price\": 111000\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "TC-CART-008 · quantity = 999999 — **vượt tồn kho**",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// TC-CART-008 · Domain · quantity = 999999 — **vượt tồn kho**",
+                  "pm.test(\"status thuộc [400,422]\", () => pm.expect([400,422]).to.include(pm.response.code));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{user_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/api/cart",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": \"{{product_id}}\",\n  \"name\": \"HW06-Cart-Fixture\",\n  \"price\": 111000,\n  \"quantity\": 999999\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "TC-CART-009 · quantity = null",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// TC-CART-009 · Domain · quantity = null",
+                  "pm.test(\"status thuộc [400,422]\", () => pm.expect([400,422]).to.include(pm.response.code));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{user_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/api/cart",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": \"{{product_id}}\",\n  \"name\": \"HW06-Cart-Fixture\",\n  \"price\": 111000,\n  \"quantity\": null\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "11-domain-id",
+      "item": [
+        {
+          "name": "TC-CART-010 · id **không tồn tại** (999999)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// TC-CART-010 · Domain · id **không tồn tại** (999999)",
+                  "pm.test(\"status thuộc [400,404]\", () => pm.expect([400,404]).to.include(pm.response.code));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{user_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/api/cart",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": 999999,\n  \"name\": \"ghost\",\n  \"price\": 1000,\n  \"quantity\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "TC-CART-011 · id = 0 — biên dưới − 1",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// TC-CART-011 · Domain · id = 0 — biên dưới − 1",
+                  "pm.test(\"status thuộc [400,404]\", () => pm.expect([400,404]).to.include(pm.response.code));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{user_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/api/cart",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": 0,\n  \"name\": \"x\",\n  \"price\": 1000,\n  \"quantity\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "TC-CART-012 · id = -1 — số âm",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// TC-CART-012 · Domain · id = -1 — số âm",
+                  "pm.test(\"status thuộc [400,404]\", () => pm.expect([400,404]).to.include(pm.response.code));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{user_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/api/cart",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": -1,\n  \"name\": \"x\",\n  \"price\": 1000,\n  \"quantity\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "TC-CART-013 · id = \"abc\" — sai kiểu",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// TC-CART-013 · Domain · id = \"abc\" — sai kiểu",
+                  "pm.test(\"status thuộc [400,422]\", () => pm.expect([400,422]).to.include(pm.response.code));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{user_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/api/cart",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": \"abc\",\n  \"name\": \"x\",\n  \"price\": 1000,\n  \"quantity\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "TC-CART-014 · **thiếu** id",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// TC-CART-014 · Domain · **thiếu** id",
+                  "pm.test(\"status thuộc [400,422]\", () => pm.expect([400,422]).to.include(pm.response.code));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{user_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/api/cart",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"x\",\n  \"price\": 1000,\n  \"quantity\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "TC-CART-015 · **body rỗng** {}",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// TC-CART-015 · Domain · **body rỗng** {}",
+                  "pm.test(\"status thuộc [400,422]\", () => pm.expect([400,422]).to.include(pm.response.code));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{user_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/api/cart",
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "12-domain-price",
+      "item": [
+        {
+          "name": "TC-CART-016 · price **khớp catalog** (111000)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// TC-CART-016 · Domain · price **khớp catalog** (111000)",
+                  "pm.test(\"status = 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"body đúng schema {message: string}\", () => pm.response.to.have.jsonSchema({\n  type: \"object\", required: [\"message\"], properties: { message: { type: \"string\" } }\n}));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{user_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/api/cart",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": \"{{product_id}}\",\n  \"name\": \"HW06-Cart-Fixture\",\n  \"price\": 111000,\n  \"quantity\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "TC-CART-017 · price = 0",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// TC-CART-017 · Domain · price = 0",
+                  "pm.test(\"status thuộc [400,422]\", () => pm.expect([400,422]).to.include(pm.response.code));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{user_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/api/cart",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": \"{{product_id}}\",\n  \"name\": \"HW06-Cart-Fixture\",\n  \"price\": 0,\n  \"quantity\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "TC-CART-018 · price = -1000 — âm",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// TC-CART-018 · Domain · price = -1000 — âm",
+                  "pm.test(\"status thuộc [400,422]\", () => pm.expect([400,422]).to.include(pm.response.code));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{user_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/api/cart",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": \"{{product_id}}\",\n  \"name\": \"HW06-Cart-Fixture\",\n  \"price\": -1000,\n  \"quantity\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "TC-CART-019 · price = \"abc\" — sai kiểu",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// TC-CART-019 · Domain · price = \"abc\" — sai kiểu",
+                  "pm.test(\"status thuộc [400,422]\", () => pm.expect([400,422]).to.include(pm.response.code));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{user_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/api/cart",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": \"{{product_id}}\",\n  \"name\": \"HW06-Cart-Fixture\",\n  \"price\": \"abc\",\n  \"quantity\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "TC-CART-020 · **thiếu** price",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// TC-CART-020 · Domain · **thiếu** price",
+                  "pm.test(\"status thuộc [400,422]\", () => pm.expect([400,422]).to.include(pm.response.code));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{user_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/api/cart",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": \"{{product_id}}\",\n  \"name\": \"HW06-Cart-Fixture\",\n  \"quantity\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "13-domain-name",
+      "item": [
+        {
+          "name": "TC-CART-021 · name **rỗng**",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// TC-CART-021 · Domain · name **rỗng**",
+                  "pm.test(\"status thuộc [400,422]\", () => pm.expect([400,422]).to.include(pm.response.code));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{user_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/api/cart",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": \"{{product_id}}\",\n  \"name\": \"\",\n  \"price\": 111000,\n  \"quantity\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "TC-CART-022 · name **không khớp** sản phẩm thật",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// TC-CART-022 · Domain · name **không khớp** sản phẩm thật",
+                  "pm.test(\"status thuộc [400,422]\", () => pm.expect([400,422]).to.include(pm.response.code));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{user_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/api/cart",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": \"{{product_id}}\",\n  \"name\": \"Tên bịa không khớp id\",\n  \"price\": 111000,\n  \"quantity\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "TC-CART-023 · name **rất dài** (300 ký tự)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// TC-CART-023 · Domain · name **rất dài** (300 ký tự)",
+                  "pm.test(\"status thuộc [400,422]\", () => pm.expect([400,422]).to.include(pm.response.code));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{user_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/api/cart",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": \"{{product_id}}\",\n  \"name\": \"NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN\",\n  \"price\": 111000,\n  \"quantity\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "20-state-cart",
+      "item": [
+        {
+          "name": "TC-CART-024 · bước 1: thêm 1 sản phẩm rồi **đọc lại giỏ**",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// TC-CART-024 · State · bước 1: thêm 1 sản phẩm rồi **đọc lại giỏ**",
+                  "pm.test(\"status = 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"body là mảng JSON\", () => pm.expect(pm.response.json()).to.be.an(\"array\"));",
+                  "pm.test(\"giỏ tăng so với mốc cart_before\", () => {",
+                  "  pm.expect(pm.response.json().length).to.be.above(Number(pm.environment.get(\"cart_before\")));",
+                  "});",
+                  "pm.environment.set(\"cart_after_adds\", pm.response.json().length);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{user_token}}"
+              }
+            ],
+            "url": "{{base_url}}/api/cart"
+          }
+        },
+        {
+          "name": "TC-CART-025 · bước 2: **giá trong giỏ phải bằng giá catalog**",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// TC-CART-025 · State · bước 2: **giá trong giỏ phải bằng giá catalog**",
+                  "pm.test(\"status = 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"mọi dòng của product_id đều có giá đúng catalog\", () => {",
+                  "  const pid = Number(pm.environment.get(\"product_id\"));",
+                  "  const rows = pm.response.json().filter(r => Number(r.id) === pid);",
+                  "  pm.expect(rows.length, \"phải có ít nhất 1 dòng\").to.be.above(0);",
+                  "  rows.forEach(r => pm.expect(Number(r.price), \"giá bị client sửa\").to.eql(111000));",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{user_token}}"
+              }
+            ],
+            "url": "{{base_url}}/api/cart"
+          }
+        },
+        {
+          "name": "TC-CART-026 · bước 3: thêm **cùng sản phẩm** lần nữa (quantity 3)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// TC-CART-026 · State · bước 3: thêm **cùng sản phẩm** lần nữa (quantity 3)",
+                  "pm.test(\"status = 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"body đúng schema {message: string}\", () => pm.response.to.have.jsonSchema({\n  type: \"object\", required: [\"message\"], properties: { message: { type: \"string\" } }\n}));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{user_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/api/cart",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": \"{{product_id}}\",\n  \"name\": \"HW06-Cart-Fixture\",\n  \"price\": 111000,\n  \"quantity\": 3\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "TC-CART-027 · bước 4: **một sản phẩm chỉ một dòng** trong giỏ",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// TC-CART-027 · State · bước 4: **một sản phẩm chỉ một dòng** trong giỏ",
+                  "pm.test(\"status = 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"product_id chỉ có 1 dòng trong giỏ\", () => {",
+                  "  const pid = Number(pm.environment.get(\"product_id\"));",
+                  "  const rows = pm.response.json().filter(r => Number(r.id) === pid);",
+                  "  pm.expect(rows.length, \"giỏ có \" + rows.length + \" dòng trùng sản phẩm\").to.eql(1);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{user_token}}"
+              }
+            ],
+            "url": "{{base_url}}/api/cart"
+          }
+        },
+        {
+          "name": "TC-CART-028 · bước 5: **checkout** đơn hàng",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// TC-CART-028 · State · bước 5: **checkout** đơn hàng",
+                  "pm.test(\"status = 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"có field orderId\", () => pm.expect(pm.response.json()).to.have.property(\"orderId\"));",
+                  "pm.environment.set(\"order_id\", pm.response.json().orderId);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{user_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/api/checkout",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"total_amount\": 111000,\n  \"shipping_address\": \"123 Le Loi, Q1, TP.HCM\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "TC-CART-029 · bước 6: sau checkout **giỏ phải rỗng**",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// TC-CART-029 · State · bước 6: sau checkout **giỏ phải rỗng**",
+                  "pm.test(\"status = 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"body là mảng JSON\", () => pm.expect(pm.response.json()).to.be.an(\"array\"));",
+                  "pm.test(\"trả về đúng 0 dòng\", () => pm.expect(pm.response.json().length).to.eql(0));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{user_token}}"
+              }
+            ],
+            "url": "{{base_url}}/api/cart"
+          }
+        },
+        {
+          "name": "TC-CART-030 · bước 7: **cách ly giỏ** — giỏ của user2 không bị ảnh hưởng",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// TC-CART-030 · State · bước 7: **cách ly giỏ** — giỏ của user2 không bị ảnh hưởng",
+                  "pm.test(\"status = 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"body là mảng JSON\", () => pm.expect(pm.response.json()).to.be.an(\"array\"));",
+                  "pm.test(\"giỏ user2 không chứa sản phẩm user1 đã thêm\", () => {",
+                  "  const pid = Number(pm.environment.get(\"product_id\"));",
+                  "  pm.expect(pm.response.json().filter(r => Number(r.id) === pid).length).to.eql(0);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{user2_token}}"
+              }
+            ],
+            "url": "{{base_url}}/api/cart"
+          }
+        }
+      ]
+    },
+    {
+      "name": "30-security-auth",
+      "item": [
+        {
+          "name": "TC-CART-031 · **không có** header Authorization",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// TC-CART-031 · Security SEC-02 · **không có** header Authorization",
+                  "pm.test(\"status = 401\", () => pm.response.to.have.status(401));",
+                  "pm.test(\"body lỗi đúng schema {error: string}\", () => pm.response.to.have.jsonSchema({\n  type: \"object\", required: [\"error\"], properties: { error: { type: \"string\" } }\n}));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/api/cart",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": 1,\n  \"name\": \"x\",\n  \"price\": 1000,\n  \"quantity\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "TC-CART-032 · token **rác** (abc.def.ghi)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// TC-CART-032 · Security SEC-02 · token **rác** (abc.def.ghi)",
+                  "pm.test(\"status thuộc [401,403]\", () => pm.expect([401,403]).to.include(pm.response.code));",
+                  "pm.test(\"body lỗi đúng schema {error: string}\", () => pm.response.to.have.jsonSchema({\n  type: \"object\", required: [\"error\"], properties: { error: { type: \"string\" } }\n}));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer abc.def.ghi"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/api/cart",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": 1,\n  \"name\": \"x\",\n  \"price\": 1000,\n  \"quantity\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "TC-CART-033 · **thiếu tiền tố Bearer**",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// TC-CART-033 · Security SEC-02 · **thiếu tiền tố Bearer**",
+                  "pm.test(\"status thuộc [401,403]\", () => pm.expect([401,403]).to.include(pm.response.code));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "{{user_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/api/cart",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": 1,\n  \"name\": \"x\",\n  \"price\": 1000,\n  \"quantity\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "TC-CART-034 · header Authorization **rỗng**",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// TC-CART-034 · Security SEC-02 · header Authorization **rỗng**",
+                  "pm.test(\"status thuộc [401,403]\", () => pm.expect([401,403]).to.include(pm.response.code));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": ""
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/api/cart",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": 1,\n  \"name\": \"x\",\n  \"price\": 1000,\n  \"quantity\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "TC-CART-035 · payload **SQLi** trong name",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// TC-CART-035 · Security SEC-05 · payload **SQLi** trong name",
+                  "pm.test(\"status thuộc [200,400,422]\", () => pm.expect([200,400,422]).to.include(pm.response.code));",
+                  "pm.test('body không được chứa \"SQLITE\"', () => pm.expect(pm.response.text()).to.not.include(\"SQLITE\"));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{user_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/api/cart",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": \"{{product_id}}\",\n  \"name\": \"x'; DROP TABLE products--\",\n  \"price\": 111000,\n  \"quantity\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "TC-CART-036 · **mass assignment** — gửi kèm field lạ role",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// TC-CART-036 · Security · **mass assignment** — gửi kèm field lạ role",
+                  "pm.test(\"status thuộc [200,400,422]\", () => pm.expect([200,400,422]).to.include(pm.response.code));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{user_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/api/cart",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": \"{{product_id}}\",\n  \"name\": \"HW06-Cart-Fixture\",\n  \"price\": 111000,\n  \"quantity\": 1,\n  \"role\": \"admin\",\n  \"isAdmin\": true\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "40-schema",
+      "item": [
+        {
+          "name": "TC-CART-037 · response của thêm giỏ đúng {message: string}",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// TC-CART-037 · Schema · response của thêm giỏ đúng {message: string}",
+                  "pm.test(\"status = 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Content-Type là application/json\", () => pm.expect(pm.response.headers.get(\"Content-Type\") || \"\").to.include(\"application/json\"));",
+                  "pm.test(\"body đúng schema {message: string}\", () => pm.response.to.have.jsonSchema({\n  type: \"object\", required: [\"message\"], properties: { message: { type: \"string\" } }\n}));",
+                  "pm.test('message = \"Added to cart\"', () => pm.expect(pm.response.json().message).to.eql(\"Added to cart\"));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{user_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/api/cart",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": \"{{product_id}}\",\n  \"name\": \"HW06-Cart-Fixture\",\n  \"price\": 111000,\n  \"quantity\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "TC-CART-038 · GET /api/cart đúng schema giỏ hàng",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// TC-CART-038 · Schema · GET /api/cart đúng schema giỏ hàng",
+                  "pm.test(\"status = 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Content-Type là application/json\", () => pm.expect(pm.response.headers.get(\"Content-Type\") || \"\").to.include(\"application/json\"));",
+                  "pm.test(\"giỏ hàng đúng schema (spec §4.2)\", () => pm.response.to.have.jsonSchema({\n  type: \"array\", items: { type: \"object\", required: [\"id\",\"name\",\"price\",\"quantity\"], properties: {\n    id: { type: \"integer\" }, name: { type: \"string\" },\n    price: { type: \"number\" }, quantity: { type: \"integer\", minimum: 1 } } }\n}));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{user_token}}"
+              }
+            ],
+            "url": "{{base_url}}/api/cart"
+          }
+        },
+        {
+          "name": "TC-CART-039 · GET /api/cart **không token** → 401",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// TC-CART-039 · Schema · GET /api/cart **không token** → 401",
+                  "pm.test(\"status = 401\", () => pm.response.to.have.status(401));",
+                  "pm.test(\"body lỗi đúng schema {error: string}\", () => pm.response.to.have.jsonSchema({\n  type: \"object\", required: [\"error\"], properties: { error: { type: \"string\" } }\n}));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base_url}}/api/cart"
+          }
+        }
+      ]
+    },
+    {
+      "name": "90-sv-extended",
+      "item": [
+        {
+          "name": "TC-CART-101 · **price tampering**: gửi giá 1 đồng cho sản phẩm 111.000",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// TC-CART-101 · Security · **price tampering**: gửi giá 1 đồng cho sản phẩm 111.000",
+                  "pm.test(\"status thuộc [400,422]\", () => pm.expect([400,422]).to.include(pm.response.code));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{user_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/api/cart",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": \"{{product_id}}\",\n  \"name\": \"HW06-Cart-Fixture\",\n  \"price\": 1,\n  \"quantity\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "TC-CART-102 · **hệ quả** của price tampering: giỏ không được chứa giá 1 đồng",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// TC-CART-102 · Security · **hệ quả** của price tampering: giỏ không được chứa giá 1 đồng",
+                  "pm.test(\"status = 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"không có dòng nào bị sửa giá\", () => {",
+                  "  const pid = Number(pm.environment.get(\"product_id\"));",
+                  "  const bad = pm.response.json().filter(r => Number(r.id) === pid && Number(r.price) !== 111000);",
+                  "  pm.expect(bad.length, \"có \" + bad.length + \" dòng giá sai: \" + JSON.stringify(bad)).to.eql(0);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{user_token}}"
+              }
+            ],
+            "url": "{{base_url}}/api/cart"
+          }
+        },
+        {
+          "name": "TC-CART-103 · **checkout lần hai** ngay sau lần một — không được tạo đơn trùng",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// TC-CART-103 · State · **checkout lần hai** ngay sau lần một — không được tạo đơn trùng",
+                  "pm.test(\"status thuộc [400,409,422]\", () => pm.expect([400,409,422]).to.include(pm.response.code));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{user_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/api/checkout",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"total_amount\": 111000,\n  \"shipping_address\": \"123 Le Loi, Q1, TP.HCM\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "TC-CART-104 · **hệ quả** của mass assignment: giỏ không được chứa field lạ",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// TC-CART-104 · Security · **hệ quả** của mass assignment: giỏ không được chứa field lạ",
+                  "pm.test(\"status = 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"không dòng nào có field lạ role/isAdmin\", () => {",
+                  "  const bad = pm.response.json().filter(r => \"role\" in r || \"isAdmin\" in r);",
+                  "  pm.expect(bad.length, \"có \" + bad.length + \" dòng mang field lạ\").to.eql(0);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{user_token}}"
+              }
+            ],
+            "url": "{{base_url}}/api/cart"
+          }
+        },
+        {
+          "name": "TC-CART-105 · thêm sản phẩm **đã bị xoá khỏi catalog** (bước 1: xoá)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// TC-CART-105 · Domain · thêm sản phẩm **đã bị xoá khỏi catalog** (bước 1: xoá)",
+                  "pm.test(\"status = 200\", () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
+            "url": "{{base_url}}/api/products/{{product_id}}"
+          }
+        },
+        {
+          "name": "TC-CART-106 · bước 2: thêm sản phẩm **vừa bị xoá** vào giỏ",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// TC-CART-106 · Domain · bước 2: thêm sản phẩm **vừa bị xoá** vào giỏ",
+                  "pm.test(\"status thuộc [400,404]\", () => pm.expect([400,404]).to.include(pm.response.code));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{user_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/api/cart",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": \"{{product_id}}\",\n  \"name\": \"HW06-Cart-Fixture\",\n  \"price\": 111000,\n  \"quantity\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "TC-CART-107 · **giỏ không được chứa dòng có quantity ≤ 0** sau tất cả case trên",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// TC-CART-107 · Schema · **giỏ không được chứa dòng có quantity ≤ 0** sau tất cả case trên",
+                  "pm.test(\"status = 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"không dòng nào có quantity <= 0\", () => {",
+                  "  const bad = pm.response.json().filter(r => !(Number(r.quantity) > 0));",
+                  "  pm.expect(bad.length, \"có \" + bad.length + \" dòng quantity không hợp lệ: \" + JSON.stringify(bad.slice(0,3))).to.eql(0);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{user_token}}"
+              }
+            ],
+            "url": "{{base_url}}/api/cart"
+          }
+        }
+      ]
+    },
+    {
+      "name": "99-teardown",
+      "item": [
+        {
+          "name": "TEARDOWN-01 · xoá fixture HW06-*",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// TEARDOWN-01 · Teardown · xoá fixture HW06-*",
+                  "pm.test(\"status = 200\", () => pm.response.to.have.status(200));",
+                  "const left = pm.response.json().filter(p => String(p.name || \"\").startsWith(\"HW06-\"));\nconsole.log(\"[HW06] dọn \" + left.length + \" fixture còn lại\");\nleft.forEach(p => pm.sendRequest({\n  url: pm.environment.get(\"base_url\") + \"/api/products/\" + p.id,\n  method: \"DELETE\",\n  header: {\n    \"X-Student-Id\": pm.environment.get(\"student_id\"),\n    \"Authorization\": \"Bearer \" + pm.environment.get(\"admin_token\"),\n  },\n}, () => {}));\npm.test(\"đã gửi lệnh dọn \" + left.length + \" fixture cũ\", () => pm.expect(left.length).to.be.at.least(0));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base_url}}/api/products"
+          }
+        }
+      ]
+    }
+  ]
+}
