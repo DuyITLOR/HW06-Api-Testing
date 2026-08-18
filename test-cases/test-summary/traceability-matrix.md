@@ -4,22 +4,22 @@ Cột cuối trống là một **lỗ hổng phủ**, không phải ô chưa k�
 `generator/specs/*.mjs` (nguồn sinh ra cả bảng lẫn collection); số liệu kết quả lấy từ
 [`summary.md`](summary.md).
 
-| Yêu cầu | Nguồn | API | Test case phủ | Bug tìm được |
+| Yêu cầu | Nguồn | API | Test case phủ | Bug tìm được (kèm Issue) |
 |---|---|---|---|---|
-| **FR-05** Product listing & search | README SUT · spec §3.1 | API-01 | 43 case (`TC-PRODLIST-001…107`) | BUG-01, 02, 05, 06 |
-| **FR-06** Product detail view | spec §3.2 | API-01 (endpoint verify) | TC-PRODLIST-023, 032…036, 107 | BUG-03, BUG-04 |
-| **FR-07** Shopping cart | README SUT · spec §4.2 | API-02 | 46 case (`TC-CART-001…107`) | BUG-07, 08, 10, 11, 12 |
-| **FR-08** Checkout | spec §4.3 | API-02 (endpoint verify) | TC-CART-028, 029, 103 | BUG-09 |
-| **FR-15** Product management (CRUD) | README SUT · spec §3.3 | API-03 | 47 case (`TC-PRODUPD-001…108`) | BUG-13, 14, 15, 16, 17, 18 |
-| **SEC-01** Mật khẩu không lưu plaintext | README SUT | *(ngoài phạm vi 3 API — quan sát qua `GET /api/users/me` khi dựng setup)* | `verify-bugs.sh 19` | **BUG-19** |
-| **SEC-02** API bảo mật đòi JWT hợp lệ | README SUT | API-02, API-03 | TC-CART-031…034, 039 · TC-PRODUPD-031, 033, 034, 101, 107, 108 | **BUG-13** (API-03). API-02 **đạt** |
-| **SEC-03** API admin phải kiểm `role='admin'` | README SUT | API-03 | TC-PRODUPD-032, 102, 103 | **BUG-13** |
+| **FR-05** Product listing & search | README SUT · spec §3.1 | API-01 | 43 case (`TC-PRODLIST-001…107`) | [BUG-01](https://github.com/DuyITLOR/group05_eshop/issues/323), 02, 05, 06 |
+| **FR-06** Product detail view | spec §3.2 | API-01 (endpoint verify) | TC-PRODLIST-023, 032…036, 107 | [BUG-03](https://github.com/DuyITLOR/group05_eshop/issues/325), [BUG-04](https://github.com/DuyITLOR/group05_eshop/issues/326) |
+| **FR-07** Shopping cart | README SUT · spec §4.2 | API-02 | 46 case (`TC-CART-001…107`) | [BUG-07](https://github.com/DuyITLOR/group05_eshop/issues/329), 08, 10, 11, 12 |
+| **FR-08** Checkout | spec §4.3 | API-02 (endpoint verify) | TC-CART-028, 029, 103 | [BUG-09](https://github.com/DuyITLOR/group05_eshop/issues/331) |
+| **FR-15** Product management (CRUD) | README SUT · spec §3.3 | API-03 | 47 case (`TC-PRODUPD-001…108`) | [BUG-13](https://github.com/DuyITLOR/group05_eshop/issues/335), 14, 15, 16, 17, 18 |
+| **SEC-01** Mật khẩu không lưu plaintext | README SUT | *(ngoài phạm vi 3 API — quan sát qua `GET /api/users/me` khi dựng setup)* | `verify-bugs.sh 19` | **[BUG-19](https://github.com/DuyITLOR/group05_eshop/issues/341)** |
+| **SEC-02** API bảo mật đòi JWT hợp lệ | README SUT | API-02, API-03 | TC-CART-031…034, 039 · TC-PRODUPD-031, 033, 034, 101, 107, 108 | **[BUG-13](https://github.com/DuyITLOR/group05_eshop/issues/335)** (API-03). API-02 **đạt** |
+| **SEC-03** API admin phải kiểm `role='admin'` | README SUT | API-03 | TC-PRODUPD-032, 102, 103 | **[BUG-13](https://github.com/DuyITLOR/group05_eshop/issues/335)** |
 | **SEC-04** Escape dữ liệu người dùng | README SUT | API-01, API-03 | TC-PRODLIST-028 · TC-PRODUPD-006, 007 | Không phát hiện lỗi ở **tầng API** (response là JSON, payload là dữ liệu). Rủi ro thật nằm ở tầng UI — ngoài phạm vi bài API |
-| **SEC-05** Parameterized query | README SUT | API-01, API-02, API-03 | TC-PRODLIST-024…027, 104, 105, 106 · TC-CART-035 · TC-PRODUPD-024, 025 | **BUG-01**, **BUG-02**, BUG-06. `:id` của API-03 **đạt** (đã kiểm, không phải giả định) |
-| **SEC-06** Không cho client đặt field ngoài đặc tả | README SUT | API-02, API-03 (dạng mass assignment) | TC-CART-036, 104 · TC-PRODUPD-035, 036 | **BUG-10** (API-02). API-03 **đạt** (`:id` URL là nguồn duy nhất) |
+| **SEC-05** Parameterized query | README SUT | API-01, API-02, API-03 | TC-PRODLIST-024…027, 104, 105, 106 · TC-CART-035 · TC-PRODUPD-024, 025 | **[BUG-01](https://github.com/DuyITLOR/group05_eshop/issues/323)**, **[BUG-02](https://github.com/DuyITLOR/group05_eshop/issues/324)**, [BUG-06](https://github.com/DuyITLOR/group05_eshop/issues/328). `:id` của API-03 **đạt** (đã kiểm, không phải giả định) |
+| **SEC-06** Không cho client đặt field ngoài đặc tả | README SUT | API-02, API-03 (dạng mass assignment) | TC-CART-036, 104 · TC-PRODUPD-035, 036 | **[BUG-10](https://github.com/DuyITLOR/group05_eshop/issues/332)** (API-02). API-03 **đạt** (`:id` URL là nguồn duy nhất) |
 | **SEC-07** OTP đủ entropy, có hạn, dùng một lần | README SUT | – **ngoài phạm vi** (thuộc `POST /api/forgot-password`, thành viên khác đăng ký) | – | – |
-| **Schema** response khớp spec | Đề §6.1 | cả 3 API | 23 case trong các folder `40-schema` | BUG-02, 03, 04, 12, 18 |
-| **State transition** | Đề §6.1 | cả 3 API | 18 case (`20-state-*`) | BUG-09, 11, 17 và **BUG-14** (chuỗi 3 lỗi) |
+| **Schema** response khớp spec | Đề §6.1 | cả 3 API | 23 case trong các folder `40-schema` | [BUG-02](https://github.com/DuyITLOR/group05_eshop/issues/324), 03, 04, 12, 18 |
+| **State transition** | Đề §6.1 | cả 3 API | 18 case (`20-state-*`) | [BUG-09](https://github.com/DuyITLOR/group05_eshop/issues/331), 11, 17 và **[BUG-14](https://github.com/DuyITLOR/group05_eshop/issues/336)** (chuỗi 3 lỗi) |
 | `X-Student-Id` trên **mọi** request (§6.4) | Đề §6.4, §11 | cả 3 API | pre-request cấp collection — 171/171 request | – (kiểm bằng `verify-all.sh` mục 1) |
 
 ## Ô cần đọc kỹ

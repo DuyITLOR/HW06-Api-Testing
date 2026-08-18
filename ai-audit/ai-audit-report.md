@@ -61,7 +61,8 @@ Nhãn human review dùng đúng hai giá trị, **không** viết gộp thành "
   `docs/api-selection.md` (bằng chứng §5), tooling (`preflight` · `seed-api-data` · `run-newman` ·
   `summarize-newman` · `ci-gate` · `tc2xlsx` · `build-pdfs` · `verify-all` · `package` ·
   `commit-plan`), environment + pre-request script Postman, workflow GitHub Actions, 4 Agent Skill,
-  và các file template rỗng có đánh dấu **CHƯA LÀM**.
+  và các file template rỗng, mỗi file đánh dấu rõ trạng thái *chưa hoàn thành* để một bản dở dang
+  không thể trông như đã xong (`verify-all.sh` và `package.sh` fail khi dấu đó còn).
 - **AI sai / bỏ sót:** ghi 2 file vào thư mục HW05 do lỗi thư mục làm việc, đã phát hiện và chuyển về
   HW06 + hoàn nguyên HW05.
 - **Vì sao bỏ sót:** đặc điểm công cụ (shell giữ cwd giữa các lệnh) — không phải giới hạn của model.

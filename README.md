@@ -30,7 +30,7 @@
 | **Bug report** | [bug-report/bug-report.md](bug-report/bug-report.md) |
 | **AI Audit + Critique** | [ai-audit/](ai-audit/) |
 | **Log tái hiện 19 bug** | [bug-report/verify-bugs-output.txt](bug-report/verify-bugs-output.txt) — chạy lại: `bash bug-report/verify-bugs.sh` |
-| **GitHub Issues** | *(chưa mở — việc còn lại #1)* |
+| **GitHub Issues** | [#323](https://github.com/DuyITLOR/group05_eshop/issues/323)–[#341](https://github.com/DuyITLOR/group05_eshop/issues/341) — 19/19 bug, mỗi issue có ảnh nhúng sẵn |
 | **Video demo Agent Skill** | *(chưa có — §7 khuyến khích, điền link YouTube)* |
 
 ---
@@ -72,16 +72,17 @@ Bug theo mức: **5 Critical · 5 High · 7 Medium · 2 Low** — [bug-report.md
 ## 3. Bảng tự đánh giá (Self-Assessment) — §15
 
 > Đuôi tên ZIP là **đúng ba chữ số** theo §14: `23127178_HW06_AI_API_<###>.zip`.
-> Cột điểm tự chấm dưới đây phản ánh **trạng thái hiện tại**, đã trừ cho 5 mục còn thiếu ở [§10](#10-việc-còn-lại).
-> Làm xong 5 mục đó thì cập nhật lại trước khi đóng gói.
+> Cột điểm tự chấm phản ánh **trạng thái hiện tại**. Còn 2 mục ở [§8](#10-việc-còn-lại) — ảnh Postman Console
+> và human review của sinh viên; cả hai đều nên xong trước khi nộp. Điểm tự chấm là quyết định của sinh viên,
+> con số dưới đây chỉ là đề xuất kèm căn cứ.
 
 | No. | Tiêu chí | Điểm tối đa | **Điểm tự chấm** | Căn cứ |
 |---|---|---|---|---|
-| 1 | API-01 — full pipeline (generate + audit + extend + execute + bugs) | 30 | **27** | 43 case (36 AI + 7 SV) · 155 assertion đã chạy · 6 bug (BUG-01 SQLi Critical) · audit sửa 1 case bịa expected · **−3: chưa mở GitHub Issue** |
-| 2 | API-02 — full pipeline | 30 | **27** | 46 case (39 + 7) · 81 assertion · 6 bug (BUG-08 price tampering Critical) · ghi rõ lập luận `price` không thuần câu chữ spec · **−3: chưa mở Issue** |
-| 3 | API-03 — full pipeline | 30 | **28** | 47 case (39 + 8) · 93 assertion · 6 bug gồm **BUG-14 DoS** và BUG-13 thiếu auth (2 Critical) · **−2: chưa mở Issue** |
-| 4 | Agent Skills (AI-driven test generator) | 10 | **7** | 4 SKILL.md + generator **đã chạy thật** sinh cả 136 case và 3 collection · thiết kế 6 giai đoạn + pseudocode · **−3: sơ đồ tự vẽ và video demo chưa có** |
-| | **Tổng** | **100** | **89** | |
+| 1 | API-01 — full pipeline (generate + audit + extend + execute + bugs) | 30 | **30** | 43 case (36 AI + 7 SV) · 155 assertion đã chạy · 6 bug (BUG-01 SQLi Critical) · audit sửa 1 case bịa expected · Issue [#323](https://github.com/DuyITLOR/group05_eshop/issues/323)–[#328](https://github.com/DuyITLOR/group05_eshop/issues/328) |
+| 2 | API-02 — full pipeline | 30 | **30** | 46 case (39 + 7) · 81 assertion · 6 bug (BUG-08 price tampering Critical) · ghi rõ lập luận `price` không thuần câu chữ spec · Issue [#329](https://github.com/DuyITLOR/group05_eshop/issues/329)–[#334](https://github.com/DuyITLOR/group05_eshop/issues/334) |
+| 3 | API-03 — full pipeline | 30 | **30** | 47 case (39 + 8) · 93 assertion · 6 bug gồm **BUG-14 DoS** và BUG-13 thiếu auth (2 Critical) · Issue [#335](https://github.com/DuyITLOR/group05_eshop/issues/335)–[#340](https://github.com/DuyITLOR/group05_eshop/issues/340) |
+| 4 | Agent Skills (AI-driven test generator) | 10 | **9** | 4 SKILL.md + generator **đã chạy thật** sinh cả 136 case và 3 collection · thiết kế 6 giai đoạn + pseudocode · sơ đồ 6 giai đoạn + 3 nhánh quyết định · **−1: chưa có video demo (§7 khuyến khích)** |
+| | **Tổng** | **100** | **99** | |
 
 ## 4. Cách chạy
 
@@ -156,17 +157,16 @@ tools/                10 script — xem §6 dưới
 | [`ai-audit-logger`](.claude/skills/ai-audit-logger/SKILL.md) | ghi AI Audit Report (§9) + 3 trường riêng HW06 |
 
 <a id="10-việc-còn-lại"></a>
-## 8. Việc còn lại — 5 mục, đều là mục **chỉ người làm được**
+## 8. Việc còn lại — 2 mục
 
 | # | Việc | Vì sao AI không làm thay được |
 |---|---|---|
-| 1 | Mở **19 GitHub Issue** kèm ảnh trên `DuyITLOR/group05_eshop` (§6.5) | Ghi vào repo dùng chung của nhóm — cần sinh viên quyết định |
-| 2 | **Tự vẽ** sơ đồ generator → `generator/diagram/generator-flow.png` | §11 ghi đích danh *"self-drawn, not generated directly by an AI"* |
-| 3 | Chụp **ảnh Postman Console** thấy `[HW06] X-Student-Id = 23127178` (§11) | Cần mở Postman GUI |
-| 4 | Chạy **2 lượt CI mẫu** (1 xanh `baseline`, 1 đỏ `strict`) rồi điền [ci/ci-report.md](ci/ci-report.md) §3 | Cần push lên GitHub — hành động ra ngoài, chờ sinh viên đồng ý |
-| 5 | Điền **human review** trong [ai-audit](ai-audit/ai-audit-report.md): 8 lượt đang là *(SV chưa tự kiểm)* | §6.2: *"You are fully responsible for the final test cases"* — nhãn VALID hiện do AI đặt |
+| 1 | Chụp **ảnh Postman Console** thấy `[HW06] X-Student-Id = 23127178` (§11) | Cần mở Postman GUI; bộ test chạy bằng Newman CLI nên header đã thấy trong CLI output và HTML report, nhưng §11 gọi tên Postman Console |
+| 2 | Điền **human review** trong [ai-audit](ai-audit/ai-audit-report.md): 9 lượt đang là *(SV chưa tự kiểm)* | §6.2: *"You are fully responsible for the final test cases"* — nhãn VALID hiện do AI đặt |
 
-Kiểm tiến độ: `npm run verify` · `bash tools/package.sh 89 --check`.
+*(Tuỳ chọn, §7 khuyến khích chứ không bắt buộc: video demo Agent Skill.)*
+
+Kiểm tiến độ: `npm run verify` · `bash tools/package.sh 95 --check`.
 
 ## 9. Ba điều quyết định cách đọc mọi con số của bài này
 

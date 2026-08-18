@@ -5,6 +5,7 @@
 - **Môi trường:** `localhost:3000` · Node `v22.23.1` · Newman `6.2.2` · macOS `26.1 arm64`
 - **Tái hiện lại toàn bộ:** `bash bug-report/verify-bugs.sh` → log lượt chạy thật: [`verify-bugs-output.txt`](verify-bugs-output.txt)
 - **Trạng thái:** **19/19 bug tái hiện được bằng request thật** (không có bug nào chỉ suy từ đọc code).
+- **GitHub Issues:** [#323](https://github.com/DuyITLOR/group05_eshop/issues/323)–[#341](https://github.com/DuyITLOR/group05_eshop/issues/341) trên `DuyITLOR/group05_eshop` — mỗi issue có đủ 8 trường của template, ảnh báo cáo Newman nhúng sẵn, và lệnh tái hiện. Script tạo: [`create-github-issues.sh`](create-github-issues.sh) · nội dung: [`issues/`](issues/)
 
 > **Luật của file này:** một dòng chỉ được gọi là bug khi (1) tái hiện được bằng request thật,
 > (2) có test case trong collection bắt được nó, (3) expected có **căn cứ từ spec/FR/SEC**, không phải
@@ -14,25 +15,25 @@
 
 | # | Module | Bug | Yêu cầu vi phạm | Severity / Priority | Test case bắt được | Issue |
 |---|---|---|---|---|---|---|
-| **BUG-01** | products/search | SQL injection qua `search` — payload vô hiệu hoá điều kiện `WHERE`, trả **toàn bộ** bảng | **SEC-05** | **Critical / P1** | TC-PRODLIST-024, 025, 026, 027 | *chưa mở* |
-| **BUG-02** | products/search | Lỗi CSDL trả **HTML** kèm `SQLITE_ERROR` (rò rỉ thông tin nội bộ, sai schema) | SEC-05 · spec §3.1 | High / P1 | TC-PRODLIST-026, 104, 105 | *chưa mở* |
-| **BUG-03** | products/detail | `GET /api/products/:id` không tồn tại / sai kiểu → **200 `{}`** thay vì 404 | spec §3.2 | Medium / P2 | TC-PRODLIST-023, 033, 034, 035, 036 | *chưa mở* |
-| **BUG-04** | products/detail | `price` trả về **string** khi `id` chẵn, **number** khi `id` lẻ | spec §3.2/§3.3 | Medium / P2 | TC-PRODLIST-107 | *chưa mở* |
-| **BUG-05** | products/search | Tìm kiếm **tiếng Việt có dấu phân biệt hoa/thường** (`áo` → 0 dòng, `Áo` → 1 dòng) | FR-05 | Medium / P2 | TC-PRODLIST-101 | *chưa mở* |
-| **BUG-06** | products/search | Ký tự `%` và `_` của `LIKE` không được escape → input dùng như **pattern** | FR-05 · SEC-05 | Medium / P2 | TC-PRODLIST-103, 102 | *chưa mở* |
-| **BUG-07** | cart | `POST /api/cart` **không validate** field nào: `quantity` 0/âm/thập phân/sai kiểu, body rỗng | FR-07 | High / P1 | TC-CART-003…015, 107 | *chưa mở* |
-| **BUG-08** | cart | **Price tampering** — client gửi `price=1` cho sản phẩm 200.000đ và giá đó vào giỏ | FR-07 · FR-08 | **Critical / P1** | TC-CART-025, 101, 102 | *chưa mở* |
-| **BUG-09** | cart / checkout | Giỏ hàng **không được xoá** sau checkout → bấm lại tạo đơn trùng | FR-07 · FR-08 | High / P1 | TC-CART-029, 103 | *chưa mở* |
-| **BUG-10** | cart | **Mass assignment**: field lạ (`role`, `isAdmin`) được lưu nguyên vào giỏ | SEC-06 | Medium / P2 | TC-CART-104 | *chưa mở* |
-| **BUG-11** | cart | Thêm được sản phẩm **không tồn tại / đã bị xoá** vào giỏ | FR-07 | Medium / P2 | TC-CART-010, 011, 012, 106 | *chưa mở* |
-| **BUG-12** | cart | Cùng một sản phẩm tạo **nhiều dòng**, không cộng dồn số lượng | FR-07 | Low / P3 | TC-CART-027 | *chưa mở* |
-| **BUG-13** | products/admin | `PUT` / `POST` / `DELETE /api/products` **không có tầng xác thực nào** — khách và user thường sửa/tạo/xoá được sản phẩm | **SEC-02, SEC-03** | **Critical / P1** | TC-PRODUPD-031…034, 102, 103, 107, 108 | *chưa mở* |
-| **BUG-14** | products/admin + detail | **DoS**: khách không đăng nhập làm **sập cả backend** bằng 2 request | SEC-02 · độ tin cậy | **Critical / P1** | *(tái hiện riêng — xem §BUG-14)* | *chưa mở* |
-| **BUG-15** | products/admin | Partial update ghi **NULL đè** dữ liệu cũ nhưng vẫn trả 200 `Product updated` | FR-15 | High / P1 | TC-PRODUPD-105 | *chưa mở* |
-| **BUG-16** | products/admin | Không validate `price` (âm, 0, chuỗi), `name` rỗng, `category_id` không tồn tại | FR-15 · đề §6.1 (`price > 0`) | High / P2 | TC-PRODUPD-003, 004, 009…012, 016…018 | *chưa mở* |
-| **BUG-17** | products/admin | `PUT` vào `:id` không tồn tại vẫn trả **200 `Product updated`** | spec §3.3 | Medium / P2 | TC-PRODUPD-020…024, 029 | *chưa mở* |
-| **BUG-18** | products/admin | Mất chính xác số tiền > 2^53 (`9007199254740993` → `…992`) | FR-15 | Low / P3 | TC-PRODUPD-014 | *chưa mở* |
-| **BUG-19** | users (ngoài phạm vi) | `GET /api/users/me` trả **mật khẩu plaintext** | **SEC-01** | **Critical / P1** | *(phát hiện khi dựng setup — xem §BUG-19)* | *chưa mở* |
+| **BUG-01** | products/search | SQL injection qua `search` — payload vô hiệu hoá điều kiện `WHERE`, trả **toàn bộ** bảng | **SEC-05** | **Critical / P1** | TC-PRODLIST-024, 025, 026, 027 | [#323](https://github.com/DuyITLOR/group05_eshop/issues/323) |
+| **BUG-02** | products/search | Lỗi CSDL trả **HTML** kèm `SQLITE_ERROR` (rò rỉ thông tin nội bộ, sai schema) | SEC-05 · spec §3.1 | High / P1 | TC-PRODLIST-026, 104, 105 | [#324](https://github.com/DuyITLOR/group05_eshop/issues/324) |
+| **BUG-03** | products/detail | `GET /api/products/:id` không tồn tại / sai kiểu → **200 `{}`** thay vì 404 | spec §3.2 | Medium / P2 | TC-PRODLIST-023, 033, 034, 035, 036 | [#325](https://github.com/DuyITLOR/group05_eshop/issues/325) |
+| **BUG-04** | products/detail | `price` trả về **string** khi `id` chẵn, **number** khi `id` lẻ | spec §3.2/§3.3 | Medium / P2 | TC-PRODLIST-107 | [#326](https://github.com/DuyITLOR/group05_eshop/issues/326) |
+| **BUG-05** | products/search | Tìm kiếm **tiếng Việt có dấu phân biệt hoa/thường** (`áo` → 0 dòng, `Áo` → 1 dòng) | FR-05 | Medium / P2 | TC-PRODLIST-101 | [#327](https://github.com/DuyITLOR/group05_eshop/issues/327) |
+| **BUG-06** | products/search | Ký tự `%` và `_` của `LIKE` không được escape → input dùng như **pattern** | FR-05 · SEC-05 | Medium / P2 | TC-PRODLIST-103, 102 | [#328](https://github.com/DuyITLOR/group05_eshop/issues/328) |
+| **BUG-07** | cart | `POST /api/cart` **không validate** field nào: `quantity` 0/âm/thập phân/sai kiểu, body rỗng | FR-07 | High / P1 | TC-CART-003…015, 107 | [#329](https://github.com/DuyITLOR/group05_eshop/issues/329) |
+| **BUG-08** | cart | **Price tampering** — client gửi `price=1` cho sản phẩm 200.000đ và giá đó vào giỏ | FR-07 · FR-08 | **Critical / P1** | TC-CART-025, 101, 102 | [#330](https://github.com/DuyITLOR/group05_eshop/issues/330) |
+| **BUG-09** | cart / checkout | Giỏ hàng **không được xoá** sau checkout → bấm lại tạo đơn trùng | FR-07 · FR-08 | High / P1 | TC-CART-029, 103 | [#331](https://github.com/DuyITLOR/group05_eshop/issues/331) |
+| **BUG-10** | cart | **Mass assignment**: field lạ (`role`, `isAdmin`) được lưu nguyên vào giỏ | SEC-06 | Medium / P2 | TC-CART-104 | [#332](https://github.com/DuyITLOR/group05_eshop/issues/332) |
+| **BUG-11** | cart | Thêm được sản phẩm **không tồn tại / đã bị xoá** vào giỏ | FR-07 | Medium / P2 | TC-CART-010, 011, 012, 106 | [#333](https://github.com/DuyITLOR/group05_eshop/issues/333) |
+| **BUG-12** | cart | Cùng một sản phẩm tạo **nhiều dòng**, không cộng dồn số lượng | FR-07 | Low / P3 | TC-CART-027 | [#334](https://github.com/DuyITLOR/group05_eshop/issues/334) |
+| **BUG-13** | products/admin | `PUT` / `POST` / `DELETE /api/products` **không có tầng xác thực nào** — khách và user thường sửa/tạo/xoá được sản phẩm | **SEC-02, SEC-03** | **Critical / P1** | TC-PRODUPD-031…034, 102, 103, 107, 108 | [#335](https://github.com/DuyITLOR/group05_eshop/issues/335) |
+| **BUG-14** | products/admin + detail | **DoS**: khách không đăng nhập làm **sập cả backend** bằng 2 request | SEC-02 · độ tin cậy | **Critical / P1** | *(tái hiện riêng — xem §BUG-14)* | [#336](https://github.com/DuyITLOR/group05_eshop/issues/336) |
+| **BUG-15** | products/admin | Partial update ghi **NULL đè** dữ liệu cũ nhưng vẫn trả 200 `Product updated` | FR-15 | High / P1 | TC-PRODUPD-105 | [#337](https://github.com/DuyITLOR/group05_eshop/issues/337) |
+| **BUG-16** | products/admin | Không validate `price` (âm, 0, chuỗi), `name` rỗng, `category_id` không tồn tại | FR-15 · đề §6.1 (`price > 0`) | High / P2 | TC-PRODUPD-003, 004, 009…012, 016…018 | [#338](https://github.com/DuyITLOR/group05_eshop/issues/338) |
+| **BUG-17** | products/admin | `PUT` vào `:id` không tồn tại vẫn trả **200 `Product updated`** | spec §3.3 | Medium / P2 | TC-PRODUPD-020…024, 029 | [#339](https://github.com/DuyITLOR/group05_eshop/issues/339) |
+| **BUG-18** | products/admin | Mất chính xác số tiền > 2^53 (`9007199254740993` → `…992`) | FR-15 | Low / P3 | TC-PRODUPD-014 | [#340](https://github.com/DuyITLOR/group05_eshop/issues/340) |
+| **BUG-19** | users (ngoài phạm vi) | `GET /api/users/me` trả **mật khẩu plaintext** | **SEC-01** | **Critical / P1** | *(phát hiện khi dựng setup — xem §BUG-19)* | [#341](https://github.com/DuyITLOR/group05_eshop/issues/341) |
 
 **Phân bố:** 5 Critical · 5 High · 7 Medium · 2 Low. 12/19 bug thuộc đúng 3 API được giao; 7 bug còn
 lại nằm ở **endpoint hỗ trợ** trong cùng chuỗi test (`GET /api/products/:id`, `POST /api/checkout`,
@@ -244,7 +245,7 @@ lưu trữ và phơi bày.
 
 ## Các bug còn lại — bằng chứng
 
-BUG-02, 03, 04, 06, 07, 09, 10, 11, 12, 16, 17, 18 đều có khối *request → response → kết luận* riêng
+BUG-02, 03, 04, 06, 07, 09, 10, 11, 12, 16, 17, 18 đều có **issue riêng** (#324, #325, #326, #328, #329, #331, #332, #333, #334, #338, #339, #340) và có khối *request → response → kết luận* riêng
 trong [`verify-bugs-output.txt`](verify-bugs-output.txt) (chạy lại: `bash bug-report/verify-bugs.sh <số>`),
 và mỗi bug map tới test case đã nêu ở bảng tổng hợp. Không có bug nào trong báo cáo này chỉ dựa trên
 việc đọc source.

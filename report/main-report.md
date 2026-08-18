@@ -16,7 +16,7 @@
 | Test case | **136** (109 do AI sinh + **22 sinh viên tự thêm** + 24 request setup/teardown) |
 | Đã thực thi | **171 request · 329 assertion** trên SUT thật ở `localhost:3000` |
 | Kết quả | **240 assertion xanh · 89 đỏ** — mọi assertion đỏ đều map tới một bug đã tái hiện được |
-| Bug | **19 bug, 19/19 tái hiện được bằng request thật** — 5 Critical, 5 High, 7 Medium, 2 Low |
+| Bug | **19 bug, 19/19 tái hiện được** — 5 Critical, 5 High, 7 Medium, 2 Low · Issues [#323–#341](https://github.com/DuyITLOR/group05_eshop/issues/323) |
 | Bug đáng chú ý nhất | **BUG-14**: khách **không đăng nhập** làm **sập cả backend** bằng 2 request — chuỗi 3 lỗi |
 | Lỗi của AI đã bắt và sửa | **11** (7 lỗi thiết kế test case + 2 lỗi kỹ thuật trong lượt chạy đầu + 2 lỗi quy trình) |
 | Giả thuyết đã **loại** sau khi kiểm | **4** (ghi lại ở [bug-report §Bug đã loại](../bug-report/bug-report.md)) |
@@ -307,8 +307,9 @@ trong `reports/newman/` để bộ nộp không phình; hai lượt trước đ�
 <a id="7-bug"></a>
 ## 7. Bug (§6.5)
 
-**19 bug, 19/19 tái hiện được bằng request thật.** Bản đầy đủ (steps, expected, actual, evidence, dòng
-code): [`bug-report/bug-report.md`](../bug-report/bug-report.md). Log tái hiện:
+**19 bug, 19/19 tái hiện được bằng request thật, 19/19 đã mở GitHub Issue** — [#323](https://github.com/DuyITLOR/group05_eshop/issues/323)–[#341](https://github.com/DuyITLOR/group05_eshop/issues/341)
+trên `DuyITLOR/group05_eshop`, mỗi issue đủ 8 trường của template và có ảnh báo cáo Newman nhúng sẵn.
+Bản đầy đủ: [`bug-report/bug-report.md`](../bug-report/bug-report.md) · log tái hiện:
 [`bug-report/verify-bugs-output.txt`](../bug-report/verify-bugs-output.txt).
 
 | Severity | Bug |
@@ -442,4 +443,8 @@ Ghi rõ vì một báo cáo không nêu giới hạn thì không kiểm chứng 
    qua các lượt vì DB được seed lại mỗi lần, nhưng bài **không** khẳng định gì về môi trường khác.
 6. **BUG-14 không nằm trong collection Postman** — có chủ ý (§5.5). Nghĩa là lượt Newman **không** chứng
    minh được BUG-14; bằng chứng của nó nằm ở `verify-bugs.sh` + stack trace trong `.run-logs/sut.log`.
-7. **Chưa mở GitHub Issues** cho 19 bug tại thời điểm viết báo cáo; §6.5 đòi mục này và nó là việc còn lại.
+7. **Ảnh trong 19 GitHub Issue là ảnh báo cáo Newman**, không phải ảnh từng bước tái hiện. Mỗi issue có
+   lệnh `curl` chạy lại được và trỏ tới log `verify-bugs-output.txt`, nhưng nếu giảng viên đòi ảnh chụp
+   đúng thời điểm tái hiện từng bug thì phần đó còn thiếu.
+8. **Ảnh Postman Console** (§11) chưa có — bộ test chạy bằng Newman CLI, header `X-Student-Id` thấy trong
+   output CLI và trong HTML report; ảnh từ Postman GUI là việc còn lại.
