@@ -1,0 +1,8 @@
+quantity,partition,expect_status,expect_accepted
+1,biên dưới hợp lệ,200,true
+2,giá trị bình thường,200,true
+0,biên dưới - 1 (không hợp lệ),400,false
+-1,số âm,400,false
+1.5,số thập phân,400,false
+abc,sai kiểu,400,false
+999999,rất lớn (vượt tồn kho),400,false

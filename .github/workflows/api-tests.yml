@@ -1,0 +1,152 @@
+# ============================================================================
+# api-tests — hiện thực yêu cầu CI/CD của §6: "Add your API test cases to a CI/CD pipeline for
+# the SUT (for example, run Newman in GitHub Actions)", kèm **hai lượt mẫu**: một lượt tất cả
+# test case pass, một lượt có một test case fail.
+#
+# Ba quyết định thiết kế đáng ghi lại:
+#
+# 1. SUT được checkout từ repo gốc `ttbhanh/eshop-sut` ngay trong job, không dùng service ngoài.
+#    Runner của GitHub không có SUT, và một pipeline chỉ chạy được trên máy của sinh viên thì
+#    không phải pipeline.
+#
+# 2. Cổng đỏ/xanh KHÔNG dùng exit code của Newman mà dùng `tools/ci-gate.mjs` so với baseline
+#    `ci/expected-failures.json`. Bộ test này cố ý bắt bug thật, nên "0 assertion đỏ" là điều
+#    không bao giờ đạt được — lấy nó làm cổng thì pipeline đỏ vĩnh viễn và mất hết tín hiệu.
+#    Baseline biến câu hỏi thành "số đỏ có ĐÚNG như đã ký nhận không", tức phát hiện được hồi quy.
+#
+# 3. `gate_mode` cho phép chạy tay ở chế độ `strict` (đỏ nếu có bất kỳ assertion đỏ) — đây là cách
+#    tạo **lượt ĐỎ mẫu** mà §6 đòi, không cần cố tình viết một test sai vào repo.
+#
+# Chạy tay:  gh workflow run api-tests.yml -f gate_mode=strict
+# ============================================================================
+name: api-tests
+
+on:
+  workflow_dispatch:
+    inputs:
+      gate_mode:
+        description: 'baseline = so với ci/expected-failures.json · strict = đỏ nếu có bất kỳ assertion đỏ'
+        required: true
+        default: baseline
+        type: choice
+        options: [baseline, strict]
+  push:
+    branches: [main]
+    paths:
+      - 'postman/**'
+      - 'tools/run-newman.sh'
+      - 'tools/ci-gate.mjs'
+      - 'ci/expected-failures.json'
+      - '.github/workflows/api-tests.yml'
+
+# Hai lượt song song sẽ tranh cùng cổng 3000 và cùng file database.sqlite → kết quả lẫn nhau.
+concurrency:
+  group: api-tests
+  cancel-in-progress: false
+
+jobs:
+  newman:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout bài làm HW06
+        uses: actions/checkout@v4
+
+      - name: Checkout SUT (eshop-sut)
+        uses: actions/checkout@v4
+        with:
+          repository: ttbhanh/eshop-sut
+          path: eshop-sut
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Cài Newman + reporter
+        run: npm i -g newman newman-reporter-htmlextra
+
+      - name: Khởi động SUT
+        working-directory: eshop-sut/backend
+        run: |
+          set -euo pipefail
+          npm ci --omit=dev 2>/dev/null || npm install --omit=dev
+          node server.js > "$GITHUB_WORKSPACE/sut.log" 2>&1 &
+          for i in $(seq 1 40); do
+            if curl -fsS http://localhost:3000/api/products >/dev/null 2>&1; then
+              echo "SUT sẵn sàng sau ${i}s"; exit 0
+            fi
+            sleep 1
+          done
+          echo "SUT không lên sau 40s:"; cat "$GITHUB_WORKSPACE/sut.log"; exit 1
+
+      # DB của runner là database.sqlite sạch trong repo SUT — KHÁC DB local đã seed nhiều lần.
+      # Ghi lại điều kiện để khi số liệu lệch với lượt local thì biết vì sao.
+      - name: Ghi điều kiện lượt chạy
+        run: |
+          {
+            echo "### Điều kiện lượt chạy CI"
+            echo ""
+            echo '| | |'
+            echo '|---|---|'
+            echo "| Runner | \`$(uname -sm)\` · $(nproc) vCPU |"
+            echo "| Node | $(node -v) · Newman $(newman --version) |"
+            echo "| Sản phẩm trong DB trước khi seed | **$(curl -fsS http://localhost:3000/api/products | node -e 'let s="";process.stdin.on("data",d=>s+=d).on("end",()=>console.log(JSON.parse(s).length))')** |"
+            echo "| Chế độ cổng | **${{ inputs.gate_mode || 'baseline' }}** |"
+          } | tee -a "$GITHUB_STEP_SUMMARY"
+
+      - name: Preflight + seed dữ liệu test
+        run: |
+          set -euo pipefail
+          node tools/preflight.mjs
+          node tools/seed-api-data.mjs
+
+      # Không dùng tools/run-newman.sh ở đây: script đó tự gọi preflight và tự đặt tên theo giờ
+      # local. Trên CI cần tên file cố định để bước cổng và bước upload artifact trỏ tới được.
+      - name: Chạy 3 collection bằng Newman
+        run: |
+          set -uo pipefail
+          mkdir -p reports/newman
+          rc=0
+          for slug in api-01-products-search api-02-cart-add api-03-product-update; do
+            col="postman/collections/23127178_${slug}.postman_collection.json"
+            if [ ! -f "$col" ]; then
+              echo "::warning::chưa có $col — bỏ qua"
+              continue
+            fi
+            newman run "$col" \
+              -e postman/environments/HW06-local.postman_environment.json \
+              --reporters cli,json,htmlextra \
+              --reporter-json-export "reports/newman/ci-${slug}.json" \
+              --reporter-htmlextra-export "reports/newman/ci-${slug}.html" \
+              --timeout-request 10000 || rc=$?
+          done
+          # rc của Newman KHÔNG quyết định build — cổng ở bước sau mới quyết định.
+          echo "newman exit code (chỉ để tham khảo): $rc"
+
+      - name: Cổng đỏ/xanh
+        run: |
+          shopt -s nullglob
+          files=(reports/newman/ci-*.json)
+          if [ ${#files[@]} -eq 0 ]; then
+            echo "::error::Không có collection nào chạy được — chưa có file collection trong repo?"
+            exit 1
+          fi
+          if [ "${{ inputs.gate_mode || 'baseline' }}" = "strict" ]; then
+            node tools/ci-gate.mjs "${files[@]}" --strict
+          else
+            node tools/ci-gate.mjs "${files[@]}"
+          fi
+
+      # Chạy cả khi cổng đỏ — lúc đỏ mới là lúc cần bằng chứng nhất (§6 đòi ảnh + link cho cả
+      # lượt xanh và lượt đỏ).
+      - name: Lưu bằng chứng
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: newman-${{ inputs.gate_mode || 'baseline' }}-${{ github.run_number }}
+          path: |
+            reports/newman/ci-*.html
+            reports/newman/ci-*.json
+            sut.log
+          retention-days: 30

@@ -1,0 +1,7 @@
+field,value,partition,expect_status
+price,-1,giá âm,400
+price,0,giá bằng 0 (biên),400
+price,1,giá dương nhỏ nhất,200
+price,abc,giá sai kiểu,400
+name,,tên rỗng,400
+category_id,999999,category không tồn tại,400

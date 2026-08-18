@@ -1,0 +1,10 @@
+search_term,partition,expect_min_rows,expect_status
+Laptop,khớp nhiều dòng (thường),2,200
+LAPTOP,khớp hoa-thường,2,200
+Áo thun,tiếng Việt có dấu,1,200
+khong-ton-tai-xyz,không khớp gì,0,200
+a,một ký tự,0,200
+%,wildcard % (LIKE),0,200
+_,wildcard _ (LIKE),0,200
+  ,chỉ khoảng trắng,0,200
+O'Brien,dấu nháy đơn trong dữ liệu hợp lệ,0,200
