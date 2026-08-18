@@ -1,0 +1,44 @@
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
+
+# Node
+node_modules/
+*.tmp
+*.log
+
+# Submission zip (xuất khi nộp, không commit)
+*.zip
+
+# Folder đóng gói nộp bài (dựng lại được bất cứ lúc nào — không commit)
+23127178_HW06_AI_API*/
+
+# SUT — repo git riêng ở ../eshop-sut, không commit vào repo bài làm
+eshop-sut/
+group05_eshop/
+
+# ── Bằng chứng chạy API test: cái gì commit, cái gì không ────────────────────
+# CÓ commit — §11 (Anti-AI-Cheat) + §14 đòi đích danh, TA kiểm tay:
+#   postman/collections/*.json        collection Postman (3 API)
+#   postman/environments/*.json       environment (KHÔNG chứa secret thật)
+#   postman/data/*.csv                file data-driven cho Collection Runner
+#   reports/newman/*.html             Newman HTML report
+#   reports/newman/*.json             Newman JSON (nguồn sinh test summary)
+#   bug-report/screenshots/*.png      ảnh bug + ảnh console X-Student-Id
+#
+# KHÔNG commit: log rác của newman và bản export tạm khi thử nghiệm.
+reports/newman/tmp/
+postman/collections/*.draft.json
+
+# Claude Code nội bộ — vẫn giữ .claude/skills (Agent Skills nộp theo §7)
+.claude/projects/
+.claude/settings.local.json
+
+# Bãi thử khi quay video demo — không thuộc bài nộp
+demo/*
+!demo/README.md
+recordings/

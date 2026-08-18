@@ -1,0 +1,24 @@
+{
+  "name": "hw06-api-testing",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "HW06 — API Testing on EShop SUT (Postman + Newman, 3 API / 3 pool). SV 23127178.",
+  "scripts": {
+    "preflight": "node tools/preflight.mjs",
+    "seed:api": "node tools/seed-api-data.mjs",
+    "test:api1": "bash tools/run-newman.sh api-01-products-search",
+    "test:api2": "bash tools/run-newman.sh api-02-cart-add",
+    "test:api3": "bash tools/run-newman.sh api-03-product-update",
+    "test:all": "bash tools/run-newman.sh --all",
+    "summary": "node tools/summarize-newman.mjs",
+    "excel": "python3 tools/tc2xlsx.py",
+    "pdf": "bash tools/build-pdfs.sh",
+    "verify": "bash tools/verify-all.sh",
+    "package": "bash tools/package.sh"
+  },
+  "devDependencies": {
+    "newman": "^6.2.1",
+    "newman-reporter-htmlextra": "^1.23.1"
+  }
+}
