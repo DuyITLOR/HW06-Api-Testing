@@ -1,0 +1,124 @@
+SUT: http://localhost:3000 · X-Student-Id: 23127178 · 2026-08-19 00:30:12 +0700
+   SUT sẵn sàng sau 2s (DB seed sạch)
+   fixture: id lẻ=7 · id chẵn=6
+   tổng sản phẩm hiện tại: 7
+
+══ BUG-01 · SQL injection qua tham số search (SEC-05) · Critical ═══════════════════════════════════════════════
+   GET /api/products?search=Laptop        → 0 dòng
+   GET /api/products?search=%' OR '1'='1  → 7 dòng (tổng bảng = 7)
+   [32m[TÁI HIỆN ĐƯỢC][0m payload trả về TOÀN BỘ bảng → điều kiện WHERE bị vô hiệu hoá
+
+══ BUG-02 · Lỗi CSDL trả HTML kèm thông báo của SQLite · High ═══════════════════════════════════════════════
+   GET /api/products?search='  → HTTP 500 · Content-Type: text/html; charset=utf-8
+   body: <h1>Database Error</h1><p>SQLITE_ERROR: unrecognized token: "'"</p>
+   [32m[TÁI HIỆN ĐƯỢC][0m response lỗi là HTML và lộ thông báo nội bộ của engine
+
+══ BUG-03 · Chi tiết sản phẩm không tồn tại trả 200 {} thay vì 404 · Medium ═══════════════════════════════════════════════
+   GET /api/products/999999 → HTTP 200 · body {}
+   GET /api/products/abc → HTTP 200 · body {}
+   GET /api/products/-1 → HTTP 200 · body {}
+   GET /api/products/0 → HTTP 200 · body {}
+   [32m[TÁI HIỆN ĐƯỢC][0m id không tồn tại vẫn 200 → client không phân biệt được 'không có' với 'có nhưng rỗng'
+
+══ BUG-04 · Kiểu của price phụ thuộc tính chẵn/lẻ của id · Medium ═══════════════════════════════════════════════
+   GET /api/products/1 (lẻ)  → price = 30000000
+   GET /api/products/2 (chẵn)→ price = '28000000'
+   [32m[TÁI HIỆN ĐƯỢC][0m id chẵn trả price dạng CHUỖI → schema không ổn định
+
+══ BUG-05 · Tìm kiếm tiếng Việt có dấu phân biệt hoa/thường · Medium ═══════════════════════════════════════════════
+   search=Áo → 1 dòng · search=áo → 0 dòng
+   search=Laptop → 0 dòng · search=laptop → 0 dòng (ASCII: không phân biệt hoa/thường)
+   [32m[TÁI HIỆN ĐƯỢC][0m ASCII không phân biệt hoa/thường nhưng ký tự có dấu thì có → người Việt gõ 'áo' không tìm được gì
+
+══ BUG-06 · Ký tự % và _ của LIKE không được escape · Medium ═══════════════════════════════════════════════
+   search=%  → 8 dòng (tổng bảng = 8)
+   search=_  → 8 dòng
+   [32m[TÁI HIỆN ĐƯỢC][0m input được dùng như PATTERN chứ không phải giá trị → tìm '100%' cũng sai kết quả
+
+══ BUG-07 · POST /api/cart không validate bất kỳ field nào · High ═══════════════════════════════════════════════
+   POST /api/cart {"id":7,"name":"x","price":200000,"quantity":0} → HTTP 200
+   POST /api/cart {"id":7,"name":"x","price":200000,"quantity":-5} → HTTP 200
+   POST /api/cart {"id":7,"name":"x","price":200000,"quantity":1.5} → HTTP 200
+   POST /api/cart {"id":7,"name":"x","price":200000,"quantity":"abc"} → HTTP 200
+   POST /api/cart {} → HTTP 200
+   [32m[TÁI HIỆN ĐƯỢC][0m mọi input sai đều được nhận (200) → không có tầng validate nào
+
+══ BUG-08 · Price tampering: giá do client quyết định · Critical ═══════════════════════════════════════════════
+   đã POST /api/cart với price=1 cho sản phẩm giá 200000
+   GET /api/cart → [(7, 200000), (7, 200000), (7, 200000), (7, 200000), (None, None)]
+   [32m[TÁI HIỆN ĐƯỢC][0m giá 1 đồng nằm trong giỏ → tổng tiền đơn hàng do client đặt
+
+══ BUG-09 · Giỏ hàng không được xoá sau checkout · High ═══════════════════════════════════════════════
+   giỏ trước checkout: 6 dòng · checkout: {"message":"Checkout successful","orderId":1} · giỏ sau checkout: 6 dòng
+   [32m[TÁI HIỆN ĐƯỢC][0m giỏ còn nguyên sau khi đặt hàng → bấm lại tạo đơn trùng
+
+══ BUG-10 · Mass assignment: field lạ được lưu vào giỏ · Medium ═══════════════════════════════════════════════
+   GET /api/cart → [{'id': 7, 'name': 'x', 'price': 200000, 'quantity': 1, 'role': 'admin', 'isAdmin': True}]
+   [32m[TÁI HIỆN ĐƯỢC][0m field ngoài đặc tả đi thẳng vào state phía server
+
+══ BUG-11 · Thêm được sản phẩm không tồn tại / đã bị xoá vào giỏ · Medium ═══════════════════════════════════════════════
+   POST /api/cart id=999999 → HTTP 200
+   [32m[TÁI HIỆN ĐƯỢC][0m giỏ chứa được sản phẩm không có trong catalog
+
+══ BUG-12 · Thêm cùng sản phẩm nhiều lần tạo nhiều dòng · Low ═══════════════════════════════════════════════
+   số dòng của cùng product id=7 trong giỏ: 6
+   [32m[TÁI HIỆN ĐƯỢC][0m không cộng dồn số lượng → giỏ là log các lần bấm
+
+══ BUG-13 · PUT/POST/DELETE /api/products KHÔNG kiểm auth (SEC-02, SEC-03) · Critical ═══════════════════════════════════════════════
+   PUT không token            → HTTP 200
+   GET lại tên sản phẩm       → HACKED-anon
+   PUT bằng token user thường → HTTP 200
+   GET lại tên sản phẩm       → HACKED-user
+   POST không token           → HTTP 200
+   DELETE không token         → HTTP 200
+   [32m[TÁI HIỆN ĐƯỢC][0m khách không đăng nhập VÀ user thường đều sửa được sản phẩm — dữ liệu đổi thật, không chỉ mã trả về
+
+══ BUG-15 · Partial update ghi NULL đè dữ liệu (mất dữ liệu im lặng) · High ═══════════════════════════════════════════════
+   trước: {"id":7,"name":"HW06-Full","price":123456,"description":"desc","imageUrl":"u","category_id":1}
+   PUT chỉ có {name} → {"message":"Product updated"}
+   sau:   {"id":7,"name":"HW06-OnlyName","price":null,"description":null,"imageUrl":null,"category_id":null}
+   [32m[TÁI HIỆN ĐƯỢC][0m price/description/category_id thành NULL nhưng API trả 200 'Product updated'
+
+══ BUG-16 · Không validate price/name/category_id · High ═══════════════════════════════════════════════
+   PUT {"name":"n","price":-100,"description":"d","imageUrl":"u","category_id":1} → HTTP 200
+   PUT {"name":"n","price":0,"description":"d","imageUrl":"u","category_id":1} → HTTP 200
+   PUT {"name":"n","price":"abc","description":"d","imageUrl":"u","category_id":1} → HTTP 200
+   PUT {"name":"","price":1,"description":"d","imageUrl":"u","category_id":1} → HTTP 200
+   PUT {"name":"n","price":1,"description":"d","imageUrl":"u","category_id":999999} → HTTP 200
+   đọc lại: {"id":7,"name":"n","price":1,"description":"d","imageUrl":"u","category_id":999999}
+   [32m[TÁI HIỆN ĐƯỢC][0m giá âm, giá 0, giá dạng chuỗi, tên rỗng, category_id không tồn tại — tất cả được ghi vào CSDL
+
+══ BUG-17 · PUT vào id không tồn tại vẫn trả 200 'Product updated' · Medium ═══════════════════════════════════════════════
+   PUT /api/products/999999 → {"message":"Product updated"}
+   PUT /api/products/abc    → {"message":"Product updated"}
+   số sản phẩm sau đó: 9 (không tạo hàng mới, chỉ báo sai)
+   [32m[TÁI HIỆN ĐƯỢC][0m API báo thành công cho một thao tác không xảy ra
+
+══ BUG-18 · Mất chính xác số tiền lớn hơn 2^53 · Low ═══════════════════════════════════════════════
+   gửi 9007199254740993 → đọc lại 9007199254740992
+   [32m[TÁI HIỆN ĐƯỢC][0m giá bị làm tròn im lặng (double của JS)
+
+══ BUG-19 · SEC-01: GET /api/users/me trả MẬT KHẨU dạng plaintext · Critical ═══════════════════════════════════════════════
+   GET /api/users/me → {"id":2,"name":"Test User","email":"test@eshop.com","password":"Test1234!","role":"user","login_attempts":0,"locked_until":null,"reset_token":null,"shipping_address":null,"phone":null}
+   [32m[TÁI HIỆN ĐƯỢC][0m mật khẩu lưu plaintext và bị trả về cho client (ngoài phạm vi 3 API — phát hiện khi dựng setup)
+
+══ BUG-14 · DoS: khách không đăng nhập làm SẬP backend · Critical (chạy cuối) ═══════════════════════════════════════════════
+   Chuỗi 3 bước, không cần token:
+     1) PUT /api/products/6 (id CHẴN) với body chỉ có {name} → price = NULL
+     HTTP 200
+     2) GET /api/products/6 → server chạy row.price.toString() trên null
+        HTTP: 000 (000 = không có phản hồi)
+   [32m[TÁI HIỆN ĐƯỢC][0m TIẾN TRÌNH BACKEND ĐÃ CHẾT — toàn bộ hệ thống ngừng phục vụ
+     3) stack trace trong .run-logs/sut.log:
+       TypeError: Cannot read properties of null (reading 'toString')
+           at Statement.<anonymous> (/Users/macos/Documents/HK3_Nam3/kiem_thu/eshop-sut/backend/server.js:162:49)
+           at Statement.replacement (/Users/macos/Documents/HK3_Nam3/kiem_thu/eshop-sut/backend/node_modules/sqlite3/lib/trace.js:25:27)
+           at Statement.replacement (/Users/macos/Documents/HK3_Nam3/kiem_thu/eshop-sut/backend/node_modules/sqlite3/lib/trace.js:25:27)
+       
+       Node.js v22.23.1
+     4) khởi động lại SUT để các bước sau còn chạy được:
+        SUT đã sống lại
+
+══ Tổng kết ═══════════════════════════════════════════════
+   19 bug tái hiện được · 0 không tái hiện
+
