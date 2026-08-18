@@ -1,0 +1,19 @@
+{
+  "_doc": "Baseline cho tools/ci-gate.mjs. expected_failed = số assertion đỏ ĐÃ BIẾT của collection đó, mỗi mục kèm 'reason' trỏ tới bug trong bug-report/bug-report.md. Sửa số ở đây là hành động có chủ ý và phải đi kèm commit riêng.",
+  "_baseline_run": "Lượt local 2026-08-19 00:24 trên SUT vừa khởi động lại (DB seed sạch). Xem test-cases/test-summary/summary.md.",
+  "_note_ci": "Runner CI dùng database.sqlite sạch trong repo SUT — cùng trạng thái với local sau restart, nên baseline dùng chung được. Nếu lệch, nguyên nhân đầu tiên cần kiểm là dữ liệu seed, không phải code test.",
+  "collections": {
+    "api-01-products-search": {
+      "expected_failed": 29,
+      "reason": "BUG-01 SQL injection (TC-024/025/026/027/103) · BUG-02 lỗi DB trả HTML + lộ SQLITE_ERROR (TC-026/104/105) · BUG-03 chi tiết sản phẩm không tồn tại trả 200 {} (TC-023/033/034/035/036) · BUG-04 price đổi kiểu theo id chẵn/lẻ (TC-107) · BUG-05 tìm kiếm tiếng Việt phân biệt hoa/thường (TC-101)"
+    },
+    "api-02-cart-add": {
+      "expected_failed": 30,
+      "reason": "BUG-06 POST /api/cart không validate gì (TC-003…023, 101, 107) · BUG-07 price tampering (TC-025/101/102) · BUG-08 giỏ không xoá sau checkout (TC-029/103) · BUG-09 mass assignment field lạ vào giỏ (TC-104) · BUG-10 trùng dòng cùng sản phẩm (TC-027) · BUG-11 thêm được sản phẩm không tồn tại / đã xoá (TC-010/011/012/106) · schema giỏ sai (TC-038)"
+    },
+    "api-03-product-update": {
+      "expected_failed": 30,
+      "reason": "BUG-12 PUT/POST/DELETE /api/products KHÔNG kiểm auth (TC-031/032/033/034/102/103/107/108) · BUG-13 partial update ghi NULL đè dữ liệu (TC-105) · BUG-14 không validate price/name/category_id (TC-003/004/009/010/011/012/016/017/018) · BUG-15 id không tồn tại vẫn trả 200 (TC-020/021/022/023/024/029) · BUG-16 mất chính xác số tiền > 2^53 (TC-014)"
+    }
+  }
+}
