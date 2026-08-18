@@ -6,6 +6,9 @@ Thumbs.db
 .vscode/
 .idea/
 
+# Log chạy SUT do tooling khởi động (PID + stdout) — không thuộc bài làm
+.run-logs/
+
 # Node
 node_modules/
 *.tmp
