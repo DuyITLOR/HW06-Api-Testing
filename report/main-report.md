@@ -283,6 +283,18 @@ lại toàn bộ bảng** mỗi lần start. Đó vừa là ràng buộc vừa l
 không so được với nhau. Runner chỉ kill tiến trình **do chính nó khởi động** (PID trong `.run-logs/sut.pid`),
 không `pkill` theo tên — máy có thể đang chạy backend của bài khác.
 
+**Tính tái lập — đã kiểm bằng 3 lượt liên tiếp:**
+
+| Lượt | API-01 | API-02 | API-03 |
+|---|---|---|---|
+| 1 (bộ nộp) | 29/155 | 30/81 | 30/93 |
+| 2 | 29/155 | 30/81 | 30/93 |
+| 3 | 29/155 | 30/81 | 30/93 |
+
+Giống nhau tuyệt đối. Điều này **không** có sẵn: lượt kiểm tái lập đầu tiên cho API-02 ra **34** thay vì 30,
+và truy nguyên ra một lỗi môi trường sâu hơn lỗi #10 — xem §11 lỗi #12. Chỉ giữ file của lượt mới nhất
+trong `reports/newman/` để bộ nộp không phình; hai lượt trước đã xoá sau khi ghi lại số liệu ở bảng này.
+
 **Kết quả (sinh tự động):**
 
 | API | Request | Assertion | Passed | **Failed** |
@@ -381,12 +393,32 @@ Postman — 136 case, 329 assertion, từ **một** nguồn định nghĩa.
 | 8 | Chỉ kiểm endpoint được giao, không soát **route lân cận cùng nhóm quyền** | bỏ sót (prompt) | Đọc `server.js` quanh dòng 179 thấy `POST`/`DELETE` cũng thiếu middleware | Thêm TC-PRODUPD-107/108 → mở rộng **BUG-13** |
 | 9 | Sinh mã JS có **lỗi cú pháp**: giá trị chuỗi lồng trong tên `pm.test` không escape dấu `"` | kỹ thuật | Lượt Newman đầu: 2 case đỏ với `missing ) after argument list` — **không phải** bug SUT | Sửa hàm `fieldEq` trong generator (escape `"` → `'`) rồi sinh lại |
 | 10 | Chạy seed **trước khi SUT seed xong DB** → user2 bị xoá cùng bảng `users` | kỹ thuật | Lượt đầu: SETUP-03 của API-02 đỏ 401 — đỏ **vì môi trường**, không vì bug | Điều kiện "SUT sẵn sàng" đổi thành *login admin được*, không chỉ *cổng đã mở* |
-| 11 | Ghi 2 file vào repo HW05 do shell giữ cwd giữa các lệnh | quy trình | Đối chiếu `git status` của HW05 | Chuyển file về HW06, hoàn nguyên HW05, ghi vào AI audit |
+| 12 | **Bản sửa cho lỗi #10 vẫn chưa đủ**: lấy "login admin được" làm mốc SUT sẵn sàng — nhưng mốc đó cũng sai | kỹ thuật | Chạy lại toàn bộ để kiểm tái lập: API-02 ra **34** thay vì 30. Tái hiện thủ công **3/3 lần**: `POST /api/register` trả `200 {"id":3}` rồi user **biến mất** | Mốc sẵn sàng đổi thành **ghi rồi kiểm chứng bản ghi còn sống** (thử tối đa 12 lần); seed thất bại thì **chặn** lượt chạy thay vì cảnh báo |
+| 13 | Xuất Excel **đếm đúp** case AI (250 thay vì 136) | prompt quality | Số không khớp `summary.md` | Bỏ `generated.md` khỏi sheet gộp khi đã có `audit.md` |
+| 14 | `verify-all.sh` đếm **dòng** thay vì **TC ID duy nhất** → mỗi API phồng thêm bằng số dòng bảng "vì sao AI bỏ sót" (50 thay vì 43) | kỹ thuật | Số không khớp `summary.md` và `excel/` | Đếm `sort -u` trên TC ID |
+| 15 | Script giữ pipe của tiến trình con → lệnh gọi treo tới timeout | model limitations | `verify-bugs.sh` bị timeout 2 phút | Thêm `< /dev/null` khi khởi động SUT |
+| 16 | Ghi 2 file vào repo HW05 do shell giữ cwd giữa các lệnh | quy trình | Đối chiếu `git status` của HW05 | Chuyển file về HW06, hoàn nguyên HW05, ghi vào AI audit |
 
-**Lỗi #9 và #10 là hai lỗi đáng giá nhất về mặt phương pháp:** cả hai đều làm test case đỏ, và nếu không
-truy nguyên thì chúng sẽ được **báo thành bug của SUT**. Bốn assertion đỏ đã biến mất sau khi sửa (API-02:
-34 → 30). Bài học: mỗi assertion đỏ phải trả lời được câu *"đỏ vì SUT sai, vì test tôi viết sai, hay vì môi
-trường?"* trước khi vào bug report.
+**Lỗi #9, #10 và #12 là ba lỗi đáng giá nhất về mặt phương pháp:** cả ba đều làm test case đỏ, và nếu không
+truy nguyên thì sẽ được **báo thành bug của SUT**. Riêng chuỗi #10 → #12 đáng đọc kỹ, vì nó là một **bản sửa
+sai được sửa lại**:
+
+- Lần đầu: user2 mất → chẩn đoán "SUT chưa seed xong" → sửa mốc sẵn sàng thành *login admin được*. Lượt
+  chạy sau đó xanh 29/30/30, và **tôi đã tưởng là xong**.
+- Lượt kiểm tái lập: API-02 quay lại 34 đỏ. Tái hiện thủ công 3/3 lần cho thấy `POST /api/register` trả
+  `200 {"id":3}` rồi user biến mất — nghĩa là SUT **phục vụ request bằng dữ liệu cũ còn trong
+  `database.sqlite`** trong lúc `DROP TABLE users` chưa chạy. Dòng log `Database initialized and seeded`
+  in ra **trước** khi SQL chạy xong (thấy rõ trong `.run-logs/sut.log`: nó là dòng **đầu tiên**, trước cả
+  `Server is running`). Nên "login admin được" cũng là mốc sai — nó chỉ chứng minh *có một bảng users nào
+  đó có dữ liệu*, không chứng minh bảng đó là bảng mới.
+- Bản sửa đúng: mốc sẵn sàng = **ghi một bản ghi rồi đọc lại thấy nó vẫn còn**; và seed thất bại thì
+  **chặn** lượt chạy thay vì in cảnh báo rồi chạy tiếp.
+
+Bài học rút ra không phải "kiểm tra môi trường trước khi chạy" — mà là: **một bản sửa chỉ được coi là đúng
+khi lượt chạy tái lập được**. Nếu bài này dừng ở lần sửa đầu, bộ nộp sẽ có 4 assertion đỏ ngẫu nhiên và
+một câu kết luận sai về nguyên nhân.
+
+Mỗi assertion đỏ phải trả lời được: *đỏ vì SUT sai, vì test tôi viết sai, hay vì môi trường?*
 
 **Cách làm để trả lời được câu đó:** viết `bug-report/verify-bugs.sh` — tái hiện từng bug bằng `curl` độc
 lập với Postman. 19/19 bug tái hiện được; 4 giả thuyết **không** tái hiện được đã bị loại khỏi báo cáo.

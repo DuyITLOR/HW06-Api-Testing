@@ -11,8 +11,8 @@ có cách nào phân biệt "việc này đã làm" với "việc này được 
 bash tools/verify-all.sh      # hoặc: npm run verify
 ```
 
-Trạng thái hiện tại: **8 PASS · 27 FAIL** — đúng như mong đợi khi vừa dựng khung. Danh sách FAIL
-chính là danh sách việc còn phải làm.
+Trạng thái hiện tại: **31 PASS · 4 FAIL**. Bốn mục FAIL đều là mục **chỉ người làm được**: sơ đồ tự vẽ (§11),
+ảnh bằng chứng (§11), số GitHub Issue (§6.5), link video demo (§7).
 
 ---
 

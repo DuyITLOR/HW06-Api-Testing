@@ -86,8 +86,9 @@ fi
 
 restart_sut || exit 1
 
-# user thứ hai (kiểm cách ly giỏ hàng ở API-02) bị xoá mỗi lần SUT seed lại DB → tạo lại.
-node tools/seed-api-data.mjs >/dev/null 2>&1 || echo "  [LUU Y] seed-api-data.mjs lỗi — API-02 có thể thiếu user2"
+# user thứ hai (kiểm cách ly giỏ hàng ở API-02) bị xoá mỗi lần SUT seed lại DB → tạo lại,
+# và seed tự kiểm chứng bản ghi có sống sót (xem chú thích trong seed-api-data.mjs).
+node tools/seed-api-data.mjs > .run-logs/seed.log 2>&1 || { echo "  [LOI] seed thất bại — xem .run-logs/seed.log"; exit 1; }
 
 # Môi trường chưa sẵn sàng thì mọi con số đọc được đều vô nghĩa — chặn ngay.
 if ! node tools/preflight.mjs >/dev/null 2>&1; then
@@ -104,7 +105,10 @@ run_one() {
     return 0
   fi
   restart_sut || return 1
-  node tools/seed-api-data.mjs >/dev/null 2>&1 || true
+  # Seed phải THÀNH CÔNG, không chỉ "đã chạy": nếu user2 không sống sót thì API-02 đỏ vì môi trường.
+  if ! node tools/seed-api-data.mjs > .run-logs/seed.log 2>&1; then
+    echo "   [LOI] seed thất bại — xem .run-logs/seed.log"; return 1
+  fi
   local stamp; stamp="$(date +%Y%m%d-%H%M%S)"
   local base="${OUTDIR}/${MSSV}_${slug}_${stamp}"
   echo ""

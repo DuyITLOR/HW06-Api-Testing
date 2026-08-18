@@ -184,6 +184,28 @@ Nhãn human review dùng đúng hai giá trị, **không** viết gộp thành "
   giới hạn) vì đó là hai mục đề chấm nặng nhất, và tự viết lại phần nào không đồng ý.
 - **Commit:** *(điền hash)*
 
+### Interaction #9
+- **API / Bước:** cả 3 API — kiểm tính tái lập của lượt chạy
+- **Bước trong quy trình:** postman-newman (sau execution)
+- **AI tool:** Claude Code (Opus 5)
+- **Date & time:** 2026-08-19 00:48
+- **Prompt:** *(cùng lượt — bước tự kiểm sau khi có kết quả)*
+- **AI output (tóm tắt):** chạy lại toàn bộ 3 collection để đối chiếu với lượt đã ghi vào báo cáo.
+  API-02 ra **34** đỏ thay vì 30. Tái hiện thủ công **3/3 lần**: `POST /api/register` trả `200 {"id":3}`
+  rồi user biến mất khỏi `GET /api/admin/users`. Nguyên nhân: server phục vụ request bằng dữ liệu **cũ**
+  trong `database.sqlite` trong lúc `DROP TABLE users` của `database.js` chưa chạy; dòng log
+  *"Database initialized and seeded"* in ra **trước** khi SQL chạy xong. Sửa: mốc sẵn sàng = **ghi rồi
+  kiểm chứng bản ghi còn sống** (tối đa 12 lần thử), và seed thất bại thì **chặn** lượt chạy.
+  Sau khi sửa: **3 lượt liên tiếp đều 29/30/30**.
+- **AI sai / bỏ sót:** bản sửa ở lượt #6 (*"mốc sẵn sàng = login admin được"*) **chưa đủ** — nó chỉ chứng
+  minh có một bảng `users` nào đó có dữ liệu, không chứng minh đó là bảng mới sau khi DROP.
+- **Vì sao bỏ sót:** **characteristics of the API** — không lường được rằng file SQLite cũ vẫn phục vụ
+  được request trong cửa sổ giữa `listen()` và `DROP TABLE`.
+- **Human review:** ***(SV chưa tự kiểm)*** — chạy `npm run test:all` hai lượt liên tiếp và xác nhận cùng
+  ra 29/30/30. Đây là mục nên tự kiểm trước khi nộp, vì nếu số liệu không tái lập thì mọi con số trong
+  báo cáo mất giá trị.
+- **Commit:** *(điền hash)*
+
 <!-- NEW_INTERACTION_MARKER -->
 
 ---
@@ -207,7 +229,13 @@ Nhãn human review dùng đúng hai giá trị, **không** viết gộp thành "
 | 11 | #8 | xuất Excel **đếm đúp** case AI (250 thay vì 136) | prompt quality | số không khớp `summary.md` | bỏ `generated.md` khỏi sheet gộp khi đã có `audit.md` |
 | 12 | #2 | ghi 2 file vào repo HW05 thay vì HW06 | đặc điểm công cụ (shell giữ cwd) | đối chiếu `git status` của HW05 | chuyển file về HW06, hoàn nguyên HW05 |
 | 13 | #7 | script giữ pipe của tiến trình con → lệnh gọi treo tới timeout | model limitations | lệnh chạy `verify-bugs.sh` bị timeout 2 phút | thêm `< /dev/null` khi khởi động SUT |
+| 14 | #9 | **bản sửa cho lỗi #10 vẫn sai**: "login admin được" không phải mốc SUT đã seed xong | characteristics of the API | chạy lại để kiểm tái lập: API-02 ra 34 thay vì 30; tái hiện thủ công 3/3 lần | mốc sẵn sàng = **ghi rồi kiểm chứng bản ghi còn sống**; seed thất bại thì chặn lượt chạy |
+| 15 | #8 | `verify-all.sh` đếm dòng thay vì TC ID duy nhất (50 thay vì 43) | kỹ thuật | số không khớp `summary.md` | đếm `sort -u` trên TC ID |
 
-**Hai lỗi đáng giá nhất về phương pháp là #9 và #10** — cả hai làm test case đỏ, và nếu không truy nguyên
+**Ba lỗi đáng giá nhất về phương pháp là #9, #10 và #14** — đặc biệt #14, vì nó là **một bản sửa sai được
+sửa lại**: lượt chạy sau lần sửa đầu đã xanh và trông như đã xong. Chỉ có lượt **kiểm tái lập** mới lộ ra.
+Nguyên tắc: một bản sửa chỉ đúng khi kết quả **tái lập được**, không phải khi nó xanh một lần.
+
+Ngoài ra — cả hai làm test case đỏ, và nếu không truy nguyên
 thì sẽ bị **báo thành bug của SUT**. Sau khi sửa, API-02 từ 34 assertion đỏ còn 30. Đó là lý do mỗi
 assertion đỏ phải trả lời được: *đỏ vì SUT sai, vì test viết sai, hay vì môi trường?*

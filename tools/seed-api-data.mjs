@@ -128,11 +128,35 @@ for (const f of FIXTURES) {
 console.log(`  [OK]   fixture sản phẩm: ${created} tạo mới, ${skipped} đã có`);
 }
 
-// User thứ hai để kiểm cách ly giỏ hàng / IDOR của API-02.
+// ── User thứ hai (kiểm cách ly giỏ hàng của API-02) ─────────────────────────
+//
+// GHI RỒI PHẢI KIỂM CHỨNG GHI CÓ SỐNG SÓT. Vì sao không tin `register` trả 200:
+//   `backend/database.js` chạy DROP → CREATE → INSERT trong `db.serialize()`, nhưng server đã
+//   `listen` và dòng log "Database initialized and seeded" được in **trước khi** các câu SQL đó
+//   chạy xong. Trong cửa sổ đó, request vẫn được phục vụ bằng dữ liệu CŨ còn trong file
+//   `database.sqlite` — nên `register` trả `200 {"id":3}` một cách thuyết phục, rồi `DROP TABLE
+//   users` xoá sạch user vừa tạo. Tái hiện 3/3 lần.
+//   Hệ quả nếu không xử lý: SETUP-03 của API-02 đỏ 401 và TC-CART-030 đỏ theo — 4 assertion đỏ
+//   **vì môi trường**, rất dễ bị báo thành bug của SUT.
+//   Mốc "sẵn sàng" duy nhất đáng tin là: ghi một bản ghi rồi đọc lại thấy nó **vẫn còn**.
 const U2 = { name: "HW06 User Two", email: "hw06.user2@eshop.com", password: "User2pass!" };
-const reg = await req("POST", "/api/register", { body: U2 });
-if (reg.status === 200) console.log(`  [OK]   tạo user thứ hai ${U2.email} (kiểm cách ly giỏ hàng)`);
-else console.log(`  [LUU Y] user thứ hai đã tồn tại hoặc bị từ chối (${reg.status}) — dùng lại tài khoản cũ`);
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+let u2ok = false;
+for (let attempt = 1; attempt <= 12; attempt++) {
+  await req("POST", "/api/register", { body: U2 });
+  await sleep(400);
+  const login = await req("POST", "/api/login", { body: { email: U2.email, password: U2.password } });
+  if (login.status === 200 && login.json?.token) {
+    console.log(`  [OK]   user thứ hai ${U2.email} đã tồn tại và sống sót (lần thử ${attempt})`);
+    u2ok = true;
+    break;
+  }
+  if (attempt === 1) console.log(`  [LUU Y] user thứ hai bị mất sau khi tạo (SUT còn đang seed lại DB) — thử lại...`);
+}
+if (!u2ok) {
+  console.error("  [LOI] Không tạo được user thứ hai sau 12 lần thử — API-02 sẽ đỏ ở SETUP-03/TC-CART-030.");
+  process.exit(1);
+}
 
 console.log("");
 console.log("  Xong. Kiểm lại bằng: npm run preflight");

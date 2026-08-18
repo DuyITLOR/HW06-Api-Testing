@@ -3,14 +3,14 @@
 > **Đừng sửa tay.** Sinh lại bằng `npm run summary`. Nguồn: `reports/newman/*.json`.
 > Mỗi api-slug lấy **lượt mới nhất**. Assertion đỏ ở đây là **kết quả mong đợi** khi test case bắt được bug thật.
 
-- Sinh lúc: `2026-08-18T17:44:22.627Z`
+- Sinh lúc: `2026-08-18T17:52:45.662Z`
 
 | API | Lượt chạy (UTC) | Iteration | Request | Assertion | Passed | **Failed** | Thời lượng |
 |---|---|---|---|---|---|---|---|
-| API-01 · Pool A · GET /api/products | 2026-08-18T17:24:44.986Z | 1 | 62 | 155 | 126 | **29** | 0.8s |
-| API-02 · Pool B · POST /api/cart | 2026-08-18T17:24:46.910Z | 1 | 52 | 81 | 51 | **30** | 0.7s |
-| API-03 · Pool C · PUT /api/products/:id | 2026-08-18T17:24:49.916Z | 1 | 57 | 93 | 63 | **30** | 0.8s |
-| **Tổng** | | | **171** | **329** | **240** | **89** | **2.2s** |
+| API-01 · Pool A · GET /api/products | 2026-08-18T17:50:40.254Z | 1 | 62 | 155 | 126 | **29** | 0.8s |
+| API-02 · Pool B · POST /api/cart | 2026-08-18T17:50:43.163Z | 1 | 52 | 81 | 51 | **30** | 0.7s |
+| API-03 · Pool C · PUT /api/products/:id | 2026-08-18T17:50:48.250Z | 1 | 57 | 93 | 63 | **30** | 0.9s |
+| **Tổng** | | | **171** | **329** | **240** | **89** | **2.4s** |
 
 ## Assertion đỏ theo từng API
 
@@ -18,7 +18,7 @@
 > là test case của mình viết sai. Không để dòng nào không có kết luận.
 
 ### API-01 · Pool A · GET /api/products
-Raw: `reports/newman/23127178_api-01-products-search_20260819-002443.json`
+Raw: `reports/newman/23127178_api-01-products-search_20260819-005039.json`
 
 | Request | Test | Thông báo |
 |---|---|---|
@@ -53,7 +53,7 @@ Raw: `reports/newman/23127178_api-01-products-search_20260819-002443.json`
 | TC-PRODLIST-107 · chi tiết **id chẵn** (id=2): price vẫn phải là number | object đúng schema product (spec §3.1) | expected data to satisfy schema but found following errors:  data.price should be number |
 
 ### API-02 · Pool B · POST /api/cart
-Raw: `reports/newman/23127178_api-02-cart-add_20260819-002446.json`
+Raw: `reports/newman/23127178_api-02-cart-add_20260819-005042.json`
 
 | Request | Test | Thông báo |
 |---|---|---|
@@ -78,18 +78,18 @@ Raw: `reports/newman/23127178_api-02-cart-add_20260819-002446.json`
 | TC-CART-022 · name **không khớp** sản phẩm thật | status thuộc [400,422] | expected [ 400, 422 ] to include 200 |
 | TC-CART-023 · name **rất dài** (300 ký tự) | status thuộc [400,422] | expected [ 400, 422 ] to include 200 |
 | TC-CART-025 · bước 2: **giá trong giỏ phải bằng giá catalog** | mọi dòng của product_id đều có giá đúng catalog | giá bị client sửa: expected +0 to deeply equal 111000 |
-| TC-CART-027 · bước 4: **một sản phẩm chỉ một dòng** trong giỏ | product_id chỉ có 1 dòng trong giỏ | giỏ có 18 dòng trùng sản phẩm: expected 18 to deeply equal 1 |
-| TC-CART-029 · bước 6: sau checkout **giỏ phải rỗng** | trả về đúng 0 dòng | expected 85 to deeply equal +0 |
+| TC-CART-027 · bước 4: **một sản phẩm chỉ một dòng** trong giỏ | product_id chỉ có 1 dòng trong giỏ | giỏ có 87 dòng trùng sản phẩm: expected 87 to deeply equal 1 |
+| TC-CART-029 · bước 6: sau checkout **giỏ phải rỗng** | trả về đúng 0 dòng | expected 115 to deeply equal +0 |
 | TC-CART-038 · GET /api/cart đúng schema giỏ hàng | giỏ hàng đúng schema (spec §4.2) | expected data to satisfy schema but found following errors:  data[1].id should be integer, data[2].id should be integer, data[3].id should be integer, data[3].q |
 | TC-CART-101 · **price tampering**: gửi giá 1 đồng cho sản phẩm 111.000 | status thuộc [400,422] | expected [ 400, 422 ] to include 200 |
-| TC-CART-102 · **hệ quả** của price tampering: giỏ không được chứa giá 1 đồng | không có dòng nào bị sửa giá | có 5 dòng giá sai: [{"id":"14","name":"HW06-Cart-Fixture","price":0,"quantity":1},{"id":"14","name":"HW06-Cart-Fixture","price":-1000,"quantity":1},{"id":"14"," |
+| TC-CART-102 · **hệ quả** của price tampering: giỏ không được chứa giá 1 đồng | không có dòng nào bị sửa giá | có 20 dòng giá sai: [{"id":"6","name":"HW06-Cart-Fixture","price":0,"quantity":1},{"id":"6","name":"HW06-Cart-Fixture","price":-1000,"quantity":1},{"id":"6","na |
 | TC-CART-103 · **checkout lần hai** ngay sau lần một — không được tạo đơn trùng | status thuộc [400,409,422] | expected [ 400, 409, 422 ] to include 200 |
-| TC-CART-104 · **hệ quả** của mass assignment: giỏ không được chứa field lạ | không dòng nào có field lạ role/isAdmin | có 3 dòng mang field lạ: expected 3 to deeply equal +0 |
+| TC-CART-104 · **hệ quả** của mass assignment: giỏ không được chứa field lạ | không dòng nào có field lạ role/isAdmin | có 4 dòng mang field lạ: expected 4 to deeply equal +0 |
 | TC-CART-106 · bước 2: thêm sản phẩm **vừa bị xoá** vào giỏ | status thuộc [400,404] | expected [ 400, 404 ] to include 200 |
-| TC-CART-107 · **giỏ không được chứa dòng có quantity ≤ 0** sau tất cả case trên | không dòng nào có quantity <= 0 | có 18 dòng quantity không hợp lệ: [{"id":"6","name":"HW06-Cart-Fixture","price":111000,"quantity":0},{"id":"6","name":"HW06-Cart-Fixture","price":111000,"quanti |
+| TC-CART-107 · **giỏ không được chứa dòng có quantity ≤ 0** sau tất cả case trên | không dòng nào có quantity <= 0 | có 24 dòng quantity không hợp lệ: [{"id":"6","name":"HW06-Cart-Fixture","price":111000,"quantity":0},{"id":"6","name":"HW06-Cart-Fixture","price":111000,"quanti |
 
 ### API-03 · Pool C · PUT /api/products/:id
-Raw: `reports/newman/23127178_api-03-product-update_20260819-002449.json`
+Raw: `reports/newman/23127178_api-03-product-update_20260819-005047.json`
 
 | Request | Test | Thông báo |
 |---|---|---|
