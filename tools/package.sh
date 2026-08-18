@@ -1,0 +1,112 @@
+#!/usr/bin/env bash
+# ============================================================================
+# package.sh — đóng gói bản nộp theo ĐÚNG danh sách §14, rồi zip.
+#
+#   bash tools/package.sh 95           # → 23127178_HW06_AI_API_095.zip
+#   bash tools/package.sh 95 --check   # chỉ soát thiếu gì, không tạo gói
+#
+# §17: thiếu bất kỳ tài liệu bắt buộc nào = **0 điểm**. Kéo thả tay thì sai một lần là mất cả bài
+# và không kiểm lại được — nên danh sách §14 được viết thành code ở đây.
+#
+# docs/: §14 không gọi tên `docs/`, nhưng §5 (bằng chứng không trùng nhóm) được viết đầy đủ nhất ở
+# `docs/api-selection.md` và báo cáo trỏ link sang nó. Cách xử lý: nộp kèm ĐÚNG file đó dưới dạng
+# supporting material (§14 cho phép); PLAYBOOK và kịch bản video là tài liệu quy trình nội bộ —
+# KHÔNG nộp.
+# ============================================================================
+set -uo pipefail
+cd "$(dirname "${BASH_SOURCE[0]}")/.."
+
+GRADE="${1:-}"
+CHECK=0
+[ "${2:-}" = "--check" ] && CHECK=1
+if [ -z "$GRADE" ]; then echo "Dùng: bash tools/package.sh <điểm 0-100> [--check]"; exit 2; fi
+if ! [[ "$GRADE" =~ ^[0-9]{1,3}$ ]]; then echo "Điểm phải là số nguyên trong [000, 100]."; exit 2; fi
+GRADE_NUM=$((10#$GRADE))
+if [ "$GRADE_NUM" -lt 0 ] || [ "$GRADE_NUM" -gt 100 ]; then echo "Điểm phải nằm trong [000, 100]."; exit 2; fi
+printf -v GRADE3 '%03d' "$GRADE_NUM"   # §14: SelfAssessedGrade là số 3 chữ số
+MSSV="23127178"
+NAME="${MSSV}_HW06_AI_API_${GRADE3}"
+
+MISSING=0
+need() { if [ -e "$1" ]; then printf "  [OK]    %-52s %s\n" "$1" "$2"; else printf "  [THIEU] %-52s %s\n" "$1" "$2"; MISSING=$((MISSING+1)); fi; }
+needglob() { local n; n=$(ls -1 $1 2>/dev/null | wc -l | tr -d ' ');
+  if [ "$n" -ge "$2" ]; then printf "  [OK]    %-52s %s (%s file)\n" "$1" "$3" "$n";
+  else printf "  [THIEU] %-52s %s — có %s, cần ≥%s\n" "$1" "$3" "$n" "$2"; MISSING=$((MISSING+1)); fi; }
+
+echo ""
+echo "══ Soát danh sách §14 ═══════════════════════════════════════════════════"
+need "report/main-report.md"                    "Main report (Markdown)"
+need "report/main-report.pdf"                   "Main report (PDF)"
+need "ai-audit/ai-audit-report.md"              "AI Audit Report (MD)"
+need "ai-audit/ai-audit-report.pdf"             "AI Audit Report (PDF)"
+need "ai-audit/ai-critique.md"                  "AI Critique (MD) — phải 200–300 từ"
+need "ai-audit/ai-critique.pdf"                 "AI Critique (PDF)"
+need "bug-report/bug-report.md"                 "Bug report (+ ảnh GitHub Issues)"
+need "ci/ci-report.md"                          "CI/CD report + 2 lượt mẫu"
+need "README.md"                                "README: self-assessment + test summary"
+need "TASKS.md"                                 "Bản đồ yêu cầu → file (supporting)"
+need "git-log/commit-log.txt"                   "Git commit log (§12)"
+need "postman/README.md"                        "Danh sách Postman feature đã dùng (§6)"
+need "generator/design.md"                      "Thiết kế AI test generator (§7)"
+need "generator/pseudocode.py"                  "Pseudocode generator (§7)"
+need "excel/${MSSV}_HW06_TestCases.xlsx"        "Excel test case + test summary (npm run excel)"
+needglob "postman/collections/${MSSV}_*.json" 3 "Postman collection (3 API)"
+needglob "postman/environments/*.json" 1        "Postman environment"
+needglob "reports/newman/*.html" 3              "Newman HTML report"
+needglob "reports/newman/*.json" 3              "Newman raw JSON (nguồn của test summary)"
+needglob "generator/diagram/*.png" 1            "Sơ đồ generator TỰ VẼ (§11)"
+needglob "bug-report/screenshots/*.png" 1       "Ảnh bug + ảnh console X-Student-Id (§11)"
+need ".github/workflows/api-tests.yml"          "Pipeline CI/CD"
+needglob "test-cases/*/generated.md" 3          "Test case AI sinh (§6.1)"
+needglob "test-cases/*/audit.md" 3              "Audit VALID/INVALID/INCOMPLETE (§6.2)"
+needglob "test-cases/*/extended.md" 3           "Case sinh viên tự thêm (§6.3)"
+
+echo ""
+echo "── Kiểm nội dung ────────────────────────────────────────────────────────"
+W=$(sed -n '/^## Critique/,$p' ai-audit/ai-critique.md 2>/dev/null | sed '1d' | wc -w | tr -d ' ')
+if [ "${W:-0}" -ge 200 ] && [ "${W:-0}" -le 300 ]; then printf "  [OK]    AI Critique %s từ (200–300)\n" "$W";
+else printf "  [THIEU] AI Critique %s từ — §10 đòi 200–300\n" "$W"; MISSING=$((MISSING+1)); fi
+
+if grep -q "youtu" README.md 2>/dev/null; then printf "  [OK]    Link video demo Agent Skill có trong README\n";
+else printf "  [THIEU] README chưa có link video demo (§7 khuyến khích)\n"; MISSING=$((MISSING+1)); fi
+
+if grep -qE "issues/[0-9]+" bug-report/bug-report.md 2>/dev/null; then printf "  [OK]    Bug report có số GitHub Issue\n";
+else printf "  [THIEU] Bug report chưa có số GitHub Issue (§6.5)\n"; MISSING=$((MISSING+1)); fi
+
+if grep -qE "actions/runs/[0-9]+" ci/ci-report.md 2>/dev/null; then printf "  [OK]    CI report có link 2 lượt chạy thật\n";
+else printf "  [THIEU] CI report chưa có link lượt chạy (§6 đòi 2 commit mẫu)\n"; MISSING=$((MISSING+1)); fi
+
+if grep -rqE "CHƯA (LÀM|VIẾT|CHỐT|CÓ|CHẠY)" report/ ai-audit/ bug-report/bug-report.md ci/ci-report.md 2>/dev/null; then
+  printf "  [THIEU] Còn dấu 'CHƯA …' trong tài liệu — nội dung chưa xong\n"; MISSING=$((MISSING+1));
+else printf "  [OK]    Không còn dấu 'CHƯA …'\n"; fi
+
+echo ""
+if [ "$MISSING" -gt 0 ]; then
+  echo "  ⚠ Thiếu $MISSING mục. §17: thiếu tài liệu bắt buộc = 0 điểm."
+  [ "$CHECK" = "1" ] && exit 1
+  echo "  Vẫn đóng gói để xem trước, nhưng ĐỪNG nộp bản này."
+  echo ""
+else
+  echo "  Đủ danh sách file cục bộ §14; vẫn phải kiểm link repo/video từ cửa sổ ẩn danh."
+  echo ""
+fi
+[ "$CHECK" = "1" ] && exit 0
+
+echo "══ Dựng $NAME ═══════════════════════════════════════════════════════════"
+rm -rf "$NAME" "$NAME.zip"
+mkdir -p "$NAME"
+for item in report ai-audit bug-report ci git-log TASKS.md README.md package.json \
+            postman reports test-cases excel generator tools .github .claude; do
+  [ -e "$item" ] && cp -R "$item" "$NAME/"
+done
+mkdir -p "$NAME/docs"
+cp docs/api-selection.md "$NAME/docs/" 2>/dev/null   # bằng chứng §5, báo cáo trỏ link sang
+find "$NAME" -name '.DS_Store' -delete 2>/dev/null
+rm -rf "$NAME/reports/newman/tmp" 2>/dev/null
+
+zip -9qr "$NAME.zip" "$NAME"
+echo ""
+echo "  $NAME.zip  ($(du -h "$NAME.zip" | cut -f1))"
+du -sh "$NAME"/* 2>/dev/null | sed 's/^/    /'
+echo ""
+echo "  Kiểm trước khi nộp: unzip -l $NAME.zip | tail -5"
