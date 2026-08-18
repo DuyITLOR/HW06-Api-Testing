@@ -1,0 +1,27 @@
+# API-03 — Pool C · PUT /api/products/:id · bước 3 (§6.3): test case sinh viên tự thêm
+
+- **8 case** (đề đòi ≥5).
+
+| TC ID | Kỹ thuật | Tham số & phân vùng | Request | Auth | Query / Body | Expected status | Expected body / schema | Căn cứ | Nguồn | Audit | Kết quả |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| TC-PRODUPD-101 | Security SEC-02 | **hệ quả** của PUT không token: dữ liệu có bị đổi thật không | `GET /api/products/{{product_id}}` | không có header | – | 200 | `name ≠ HW06-NoAuth-Attempt` — request không token ở TC-031 **không được** ghi vào CSDL | SEC-02 — kiểm **tác động**, không chỉ status code | SV | VALID | **Pass** (2/2) |
+| TC-PRODUPD-102 | Security SEC-03 | **hệ quả** của PUT bằng token user thường | `PUT /api/products/{{product_id}}` | user thường | `{"name":"HW06-EscalationProof","price":777,"description":"d","imageUrl":"http://x/i.png","` | 403 | 403; nếu 200 thì TC-103 chứng minh dữ liệu đã bị đổi | SEC-03 | SV | VALID | **FAIL** (1/1 đỏ) |
+| TC-PRODUPD-103 | Security SEC-03 | **verify**: user thường có sửa được dữ liệu thật không | `GET /api/products/{{product_id}}` | không có header | – | 200 | `name ≠ HW06-EscalationProof` | SEC-03 — role escalation chỉ được coi là bug khi chứng minh được dữ liệu đổi | SV | VALID | **FAIL** (1/2 đỏ) |
+| TC-PRODUPD-104 | Domain | **partial update**: body chỉ có `name` | `PUT /api/products/{{product_id}}` | admin | `{"name":"HW06-Partial-Only-Name"}` | 200/400 | hoặc 400 (đòi đủ field), hoặc 200 nhưng **giữ nguyên** các field khác | FR-15 — cập nhật một field không được **xoá** dữ liệu các field khác | SV | VALID | **Pass** (1/1) |
+| TC-PRODUPD-105 | Domain | **verify** TC-104: các field khác không bị ghi NULL | `GET /api/products/{{product_id}}` | không có header | – | 200 | `price`, `description`, `category_id` **không null** | FR-15 — mất dữ liệu im lặng là lỗi nặng hơn cả từ chối request | SV | VALID | **FAIL** (3/4 đỏ) |
+| TC-PRODUPD-106 | State | PUT vào `:id` không tồn tại **không được tạo hàng mới** | `GET /api/products` | không có header | – | 200 | số sản phẩm ≤ mốc `total_products` (TC-020 không được tạo hàng mới) | spec §3.3 — PUT là *cập nhật*, không phải upsert | SV | VALID | **Pass** (3/3) |
+| TC-PRODUPD-107 | Security SEC-02 | **route lân cận**: `POST /api/products` cũng không đòi token? | `POST /api/products` | không có header | `{"name":"HW06-NoAuth-Create","price":200000,"description":"d","imageUrl":"http://x/i.png",` | 401 | 401 — *Thêm sản phẩm* cũng là API admin | SEC-02 · spec §3.3 *(Dành cho Admin)* | SV | VALID | **FAIL** (1/1 đỏ) |
+| TC-PRODUPD-108 | Security SEC-02 | **route lân cận**: `DELETE /api/products/:id` không đòi token? | `DELETE /api/products/999999` | không có header | – | 401/404 | 401 (hoặc 404 nếu đã kiểm quyền trước) — không được 200 | SEC-02 · spec §3.3 | SV | VALID | **FAIL** (1/1 đỏ) |
+
+## Vì sao AI bỏ sót (§6.3)
+
+| TC ID | AI bỏ sót gì | Nhóm lý do | Giải thích |
+|---|---|---|---|
+| TC-PRODUPD-101 | kiểm PUT không token bằng status code, **không** đọc lại dữ liệu | **model limitations** | AI coi 401 là điều kiện đủ. Nhưng SUT trả 200 cho request không token, và chỉ `GET` lại mới thấy tên sản phẩm **đã bị đổi thật** — khác biệt giữa 'API trả sai mã' và 'khách không đăng nhập sửa được dữ liệu sản phẩm' là khác biệt giữa severity Medium và Critical. |
+| TC-PRODUPD-102 | không tách riêng case role escalation **có bằng chứng tác động** | **prompt quality** | Prompt liệt kê *'security (SEC-01–SEC-07, e.g., SQL injection, IDOR, role escalation)'* dưới dạng danh sách từ khoá, nên AI sinh mỗi từ khoá một case và dừng ở status code. Không có yêu cầu 'chứng minh tác động' thì nó không tự thêm bước verify. |
+| TC-PRODUPD-103 | cùng chuỗi với 102 | **prompt quality** | Bước verify là phần mang giá trị chứng minh; nó không xuất hiện nếu prompt không đòi. |
+| TC-PRODUPD-104 | không sinh case **body thiếu field** cho một endpoint PUT | **characteristics of the API** | AI phân hoạch từng field một cách độc lập (rỗng, sai kiểu, biên) — nhưng *partial update* là câu hỏi về **ngữ nghĩa của PUT** trên chính SUT này: `UPDATE ... SET name=?, price=?, ...` với `undefined` → SQLite ghi NULL (`server.js:180-188`). Phải đọc câu SQL mới đặt ra câu hỏi. |
+| TC-PRODUPD-105 | không kiểm **mất dữ liệu im lặng** sau partial update | **model limitations** | Đây là lỗi *không có triệu chứng ở response*: PUT trả 200 `{message: 'Product updated'}` đúng như thành công. Chỉ có bước đọc lại mới thấy `price`, `description`, `category_id` đã thành `null`. Đồng thời chính nó là mắt đầu tiên của chuỗi làm sập SUT. |
+| TC-PRODUPD-106 | không kiểm PUT vào id không tồn tại có **tạo hàng mới** (upsert) không | **model limitations** | AI kiểm mã lỗi 404 rồi dừng. Câu hỏi đúng là *nếu không phải 404 thì SUT đã làm gì*: bỏ qua, hay tạo mới? Hai khả năng đó có hệ quả rất khác nhau về dữ liệu. |
+| TC-PRODUPD-107 | chỉ kiểm **đúng endpoint được giao**, không soát các route lân cận cùng nhóm quyền | **prompt quality** | Prompt khoanh vùng *'the API you selected'*. Nhưng thiếu middleware là lỗi ở **mức router**: `POST` và `DELETE /api/products` cùng nằm trong mục 'Dành cho Admin' của spec và cùng thiếu `authenticateToken` (`server.js:167`, `:191`). Một báo cáo chỉ nói về PUT sẽ khiến người sửa vá đúng một dòng và để nguyên hai lỗ còn lại. |
+| TC-PRODUPD-108 | cùng nhóm với 107 | **prompt quality** | `DELETE` không token trả 200 kể cả với `id` không tồn tại — vừa là lỗ hổng quyền, vừa là lỗi luôn báo thành công. |
