@@ -2,8 +2,8 @@
 
 - **Sinh viên:** Lê Nhựt Duy — **MSSV:** 23127178
 - **Pipeline:** [`.github/workflows/api-tests.yml`](../.github/workflows/api-tests.yml)
-- **Trạng thái:** pipeline đã viết xong và **cổng đã được kiểm chứng bằng lượt chạy local thật**
-  (§2.1 dưới đây). **Chưa chạy trên GitHub Actions** vì cần push lên repo — việc còn lại #4 trong README.
+- **Trạng thái:** **đã chạy 2 lượt thật trên GitHub Actions** — một XANH, một ĐỎ (§3). Repo bài làm ở
+  trạng thái **PUBLIC**: https://github.com/DuyITLOR/HW06-Api-Testing
 
 ## 1. Cấu hình pipeline
 
@@ -49,20 +49,53 @@ $ node tools/ci-gate.mjs reports/newman/*.json --strict
 
 Tức hai nhánh của cổng đều đã chạy thật, chỉ còn thiếu **hai lượt trên runner của GitHub**.
 
-## 3. Hai lượt mẫu (§6 bắt buộc) — việc còn lại
+## 3. Hai lượt mẫu (§6 bắt buộc) — ĐÃ CHẠY
 
-| Lượt | Cách tạo | `gate_mode` | Kết quả mong đợi | Commit | Link run | Ảnh |
+| Lượt | Cách tạo | `gate_mode` | Kết quả | Assertion đỏ (API-01 / 02 / 03) | Commit | Link run |
 |---|---|---|---|---|---|---|
-| **Tất cả pass** | `git push` (workflow tự chạy khi đổi `postman/**`) | `baseline` | **XANH** — 29/30/30 khớp baseline | | | |
-| **Có test fail** | `gh workflow run api-tests.yml -f gate_mode=strict` | `strict` | **ĐỎ** — 89 assertion đỏ | | | |
+| **Tất cả pass** | `git push` (workflow tự chạy khi đổi `postman/**`) | `baseline` | ✅ **success** · 45s | 29 / 30 / 30 — **khớp baseline** | `e53e4ae` | [runs/32168681284](https://github.com/DuyITLOR/HW06-Api-Testing/actions/runs/32168681284) |
+| **Có test fail** | `gh workflow run api-tests.yml -f gate_mode=strict` | `strict` | ❌ **failure** · 33s | 29 / 30 / 30 — cùng số, nhưng cổng `--strict` từ chối mọi assertion đỏ | `e53e4ae` | [runs/32168732958](https://github.com/DuyITLOR/HW06-Api-Testing/actions/runs/32168732958) |
 
-Sau khi chạy, điền: hash commit · link `https://github.com/DuyITLOR/HW06-Api-Testing/actions/runs/<id>` ·
-ảnh lưu ở `bug-report/screenshots/ci-xanh.png` và `ci-do.png`.
+Output cổng của lượt XANH (trích log thật):
 
-**Dự đoán ghi trước khi chạy** (để đối chiếu, kiểu Task 3 của HW05): runner dùng `database.sqlite` **sạch**
-trong repo SUT, còn local đã khởi động lại SUT nên cũng sạch → **kỳ vọng khớp baseline 29/30/30**. Nếu lệch,
-nguyên nhân đầu tiên cần kiểm là **dữ liệu seed** (số sản phẩm ban đầu khác nhau làm các assertion đếm dòng
-lệch), không phải code test. Ghi lại kết quả thật vào §4 kể cả khi dự đoán sai.
+```
+══ Cổng CI ══════════════════════════════════════════════════════════════
+  [XANH]  reports/newman/ci-api-01-products-search.json: 29/155 đỏ, khớp baseline (29)
+  [XANH]  reports/newman/ci-api-02-cart-add.json: 30/81 đỏ, khớp baseline (30)
+  [XANH]  reports/newman/ci-api-03-product-update.json: 30/93 đỏ, khớp baseline (30)
+  Build XANH.
+```
+
+Output cổng của lượt ĐỎ, **cùng dữ liệu đó**:
+
+```
+  [DO]    reports/newman/ci-api-01-products-search.json: 29/155 assertion đỏ (chế độ --strict)
+  [DO]    reports/newman/ci-api-02-cart-add.json: 30/81 assertion đỏ (chế độ --strict)
+  [DO]    reports/newman/ci-api-03-product-update.json: 30/93 assertion đỏ (chế độ --strict)
+  Build ĐỎ — 3 mục không đạt.
+```
+
+Bằng chứng lưu kèm mỗi lượt: artifact `newman-baseline-1` / `newman-strict-2` chứa HTML + JSON + `sut.log`
+(giữ 30 ngày, tải bằng `gh run download <id>`).
+
+**Ảnh:** `bug-report/screenshots/ci-xanh.png` và `ci-do.png` — chụp trang Actions của hai link trên.
+
+## 4. Dự đoán trước khi chạy, và kết quả thật
+
+**Dự đoán ghi trước khi push:** runner dùng `database.sqlite` sạch trong repo SUT, local cũng khởi động lại
+SUT trước mỗi collection nên cũng sạch → kỳ vọng **khớp baseline 29/30/30**; nếu lệch thì nghi dữ liệu seed
+trước, không nghi code test.
+
+**Kết quả thật: đúng — 29/30/30 trên runner, giống hệt local.** Ba điểm đáng ghi lại:
+
+1. **Bản sửa "ghi rồi kiểm chứng bản ghi còn sống" hoạt động trên runner ngay lần thử đầu:** log CI in
+   `[OK] user thứ hai hw06.user2@eshop.com đã tồn tại và sống sót (lần thử 1)`. Trên runner, DB là file sạch
+   mới checkout nên không có dữ liệu cũ để phục vụ trong cửa sổ chờ — tức đúng cái điều kiện đã làm lộ ra
+   lỗi #12 ở local lại **không** xảy ra ở CI. Nếu chỉ chạy CI thì lỗi đó đã không bao giờ bị phát hiện.
+2. **Số liệu ổn định qua 5 lượt** (3 local + 2 CI) trên hai môi trường khác nhau (macOS arm64 · Ubuntu
+   x86-64, Node v22 · Node 20). Với bài này, con số 29/30/30 là **thuộc tính của SUT**, không phải của máy.
+3. **Cổng đúng như thiết kế:** cùng một tập dữ liệu cho ra XANH ở chế độ `baseline` và ĐỎ ở `strict` — tức
+   phần quyết định đỏ/xanh nằm ở **ngưỡng đã ký nhận**, không nằm ở exit code của Newman.
 
 ## 4. Chênh lệch giữa lượt CI và lượt local (điền sau)
 

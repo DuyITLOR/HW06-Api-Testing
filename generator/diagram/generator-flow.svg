@@ -1,0 +1,128 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1680" height="1180" viewBox="0 0 1680 1180" font-family="-apple-system, Helvetica Neue, Arial, sans-serif">
+<rect width="1680" height="1180" fill="#ffffff"/>
+<defs><marker id="a334155" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#334155"/></marker></defs>
+<defs><marker id="adc2626" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#dc2626"/></marker></defs>
+<defs><marker id="aea580c" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#ea580c"/></marker></defs>
+<defs><marker id="a059669" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#059669"/></marker></defs>
+<defs><marker id="a2563eb" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#2563eb"/></marker></defs>
+<text x="40" y="46" font-size="24" font-weight="800" fill="#0f172a">AI-driven API Test Generator — 6 giai đoạn</text>
+<text x="40" y="70" font-size="13" fill="#475569">HW06 · Lê Nhựt Duy 23127178 · bản hiện thực: tools/gen-artifacts.mjs (đã sinh 136 test case / 329 assertion của bài này)</text>
+<rect x="40" y="95" width="500" height="74" rx="10" fill="#eef2f7" stroke="#64748b" stroke-width="2"/>
+<text x="54" y="120" font-size="15" font-weight="700" fill="#0f172a">1a. Đặc tả API</text>
+<text x="54" y="140" font-size="12.5" fill="#334155">api_specification.md — endpoint, tham số, body mẫu</text>
+<rect x="570" y="95" width="500" height="74" rx="10" fill="#eef2f7" stroke="#64748b" stroke-width="2"/>
+<text x="584" y="120" font-size="15" font-weight="700" fill="#0f172a">1b. Yêu cầu FR + SEC</text>
+<text x="584" y="140" font-size="12.5" fill="#334155">README SUT — FR-05/07/15, SEC-01…SEC-07</text>
+<rect x="1100" y="95" width="540" height="74" rx="10" fill="#eef2f7" stroke="#64748b" stroke-width="2"/>
+<text x="1114" y="120" font-size="15" font-weight="700" fill="#0f172a">1c. Source code</text>
+<text x="1114" y="140" font-size="12.5" fill="#334155">backend/server.js — hành vi THẬT + số dòng</text>
+<rect x="40" y="200" width="1600" height="80" rx="10" fill="#f8fafc" stroke="#334155" stroke-width="2"/>
+<text x="54" y="225" font-size="15" font-weight="700" fill="#0f172a">Giai đoạn 1 — Parse cả BA nguồn</text>
+<text x="54" y="245" font-size="12.5" fill="#334155">Ra: bảng tham số (nơi truyền · kiểu · bắt buộc · ràng buộc) + danh sách CHỖ SPEC IM LẶNG.</text>
+<text x="54" y="262" font-size="12.5" fill="#334155">Vì sao ba nguồn: expected bám spec, nhưng chỗ spec ≠ code chính là bug — một nguồn không thấy chỗ lệch.</text>
+<line x1="290" y1="169" x2="290" y2="198" stroke="#334155" stroke-width="2" marker-end="url(#a334155)"/>
+<line x1="820" y1="169" x2="820" y2="198" stroke="#334155" stroke-width="2" marker-end="url(#a334155)"/>
+<line x1="1370" y1="169" x2="1370" y2="198" stroke="#334155" stroke-width="2" marker-end="url(#a334155)"/>
+<rect x="40" y="315" width="1150" height="86" rx="10" fill="#f8fafc" stroke="#334155" stroke-width="2"/>
+<text x="54" y="340" font-size="15" font-weight="700" fill="#0f172a">Giai đoạn 2 — Suy ra ràng buộc miền giá trị</text>
+<text x="54" y="360" font-size="12.5" fill="#334155">Mỗi tham số → luật miền. `Authorization` được coi là MỘT tham số (8 phân vùng).</text>
+<text x="54" y="377" font-size="12.5" fill="#334155">Spec im lặng → KHÔNG bịa expected: hoặc suy từ FR/SEC (ghi rõ nguồn), hoặc chỉ khẳng định status + schema.</text>
+<rect x="1240" y="315" width="400" height="86" rx="10" fill="#fff7ed" stroke="#ea580c" stroke-width="2"/>
+<text x="1254" y="340" font-size="15" font-weight="700" fill="#9a3412">Câu hỏi cho NGƯỜI</text>
+<text x="1254" y="360" font-size="12.5" fill="#334155">OPEN-QUESTION: chỗ spec im lặng</text>
+<text x="1254" y="377" font-size="12.5" fill="#334155">và không suy được từ FR/SEC.</text>
+<text x="1254" y="394" font-size="12.5" fill="#334155">→ 3 case đã bị hạ expected</text>
+<line x1="820" y1="280" x2="820" y2="313" stroke="#334155" stroke-width="2" marker-end="url(#a334155)"/>
+<line x1="1190" y1="358" x2="1238" y2="358" stroke="#ea580c" stroke-width="2" marker-end="url(#aea580c)"/>
+<rect x="40" y="436" width="1600" height="42" rx="10" fill="#f8fafc" stroke="#334155" stroke-width="2"/>
+<text x="54" y="461" font-size="15" font-weight="700" fill="#0f172a">Giai đoạn 3 — Sinh case theo 4 NHÓM, mỗi nhóm MỘT lượt AI riêng (đề §2 cấm prompt gộp)</text>
+<rect x="40" y="492" width="385" height="92" rx="10" fill="#f1f5f9" stroke="#334155" stroke-width="2"/>
+<text x="54" y="517" font-size="15" font-weight="700" fill="#0f172a">3a. Domain partition</text>
+<text x="54" y="537" font-size="12.5" fill="#334155">mọi tham số × 11 loại phân vùng</text>
+<text x="54" y="554" font-size="12.5" fill="#334155">biên · rỗng · thiếu · sai kiểu · quá dài</text>
+<text x="54" y="571" font-size="12.5" fill="#334155">Unicode · % _ ' (wildcard/SQL)</text>
+<rect x="445" y="492" width="385" height="92" rx="10" fill="#f1f5f9" stroke="#334155" stroke-width="2"/>
+<text x="459" y="517" font-size="15" font-weight="700" fill="#0f172a">3b. State transition</text>
+<text x="459" y="537" font-size="12.5" fill="#334155">CHUỖI request có thứ tự</text>
+<text x="459" y="554" font-size="12.5" fill="#334155">mutate → verify ngay sau</text>
+<text x="459" y="571" font-size="12.5" fill="#334155">vd: add → cart → checkout → cart</text>
+<rect x="850" y="492" width="385" height="92" rx="10" fill="#f1f5f9" stroke="#334155" stroke-width="2"/>
+<text x="864" y="517" font-size="15" font-weight="700" fill="#0f172a">3c. Security SEC-01…07</text>
+<text x="864" y="537" font-size="12.5" fill="#334155">case tấn công + case CHỨNG MINH TÁC ĐỘNG</text>
+<text x="864" y="554" font-size="12.5" fill="#334155">ngoài phạm vi → ghi rõ, không nhận vơ</text>
+<rect x="1255" y="492" width="385" height="92" rx="10" fill="#f1f5f9" stroke="#334155" stroke-width="2"/>
+<text x="1269" y="517" font-size="15" font-weight="700" fill="#0f172a">3d. Schema validation</text>
+<text x="1269" y="537" font-size="12.5" fill="#334155">so với SPEC, không so với chính response</text>
+<text x="1269" y="554" font-size="12.5" fill="#334155">kiểu từng field · không lộ field nội bộ</text>
+<text x="1269" y="571" font-size="12.5" fill="#334155">jsonSchema thay vì chỉ status 200</text>
+<line x1="820" y1="401" x2="820" y2="434" stroke="#334155" stroke-width="2" marker-end="url(#a334155)"/>
+<line x1="232" y1="478" x2="232" y2="490" stroke="#334155" stroke-width="2" marker-end="url(#a334155)"/>
+<line x1="637" y1="478" x2="637" y2="490" stroke="#334155" stroke-width="2" marker-end="url(#a334155)"/>
+<line x1="1042" y1="478" x2="1042" y2="490" stroke="#334155" stroke-width="2" marker-end="url(#a334155)"/>
+<line x1="1447" y1="478" x2="1447" y2="490" stroke="#334155" stroke-width="2" marker-end="url(#a334155)"/>
+<rect x="40" y="620" width="1150" height="96" rx="10" fill="#f8fafc" stroke="#334155" stroke-width="2"/>
+<text x="54" y="645" font-size="15" font-weight="700" fill="#0f172a">Giai đoạn 4 — Khử trùng · xếp thứ tự · gán folder · LỌC CASE GÂY CHẾT DỊCH VỤ</text>
+<text x="54" y="665" font-size="12.5" fill="#334155">Case verify phải đứng NGAY SAU case mutate; fixture chọn id LẺ để tránh nhánh price.toString().</text>
+<text x="54" y="682" font-size="12.5" fill="#334155">Tiêu chí "đủ" = MA TRẬN PHỦ (tham số × loại phân vùng) và báo ô còn trống —</text>
+<text x="54" y="699" font-size="12.5" fill="#334155">không phải đếm số case (đề đòi ≥35, nhưng 35 case bỏ nhóm security thì kém 35 case phủ đều).</text>
+<rect x="1240" y="614" width="400" height="108" rx="10" fill="#fef2f2" stroke="#dc2626" stroke-width="2"/>
+<text x="1254" y="639" font-size="15" font-weight="700" fill="#991b1b">Case làm SẬP SUT</text>
+<text x="1254" y="659" font-size="12.5" fill="#334155">partial update → price NULL →</text>
+<text x="1254" y="676" font-size="12.5" fill="#334155">GET id chẵn → tiến trình chết.</text>
+<text x="1254" y="693" font-size="12.5" fill="#334155">→ tách ra bug-report/verify-bugs.sh</text>
+<text x="1254" y="710" font-size="12.5" fill="#334155">(có khởi động lại SUT)</text>
+<line x1="232" y1="584" x2="232" y2="618" stroke="#334155" stroke-width="2" marker-end="url(#a334155)"/>
+<line x1="637" y1="584" x2="637" y2="618" stroke="#334155" stroke-width="2" marker-end="url(#a334155)"/>
+<line x1="1042" y1="584" x2="1042" y2="618" stroke="#334155" stroke-width="2" marker-end="url(#a334155)"/>
+<line x1="1447" y1="584" x2="1447" y2="612" stroke="#dc2626" stroke-width="2" marker-end="url(#adc2626)"/>
+<line x1="1190" y1="668" x2="1238" y2="668" stroke="#dc2626" stroke-width="2" marker-end="url(#adc2626)"/>
+<rect x="40" y="752" width="1600" height="42" rx="10" fill="#f8fafc" stroke="#334155" stroke-width="2"/>
+<text x="54" y="777" font-size="15" font-weight="700" fill="#0f172a">Giai đoạn 5 — Sinh artefact từ MỘT nguồn định nghĩa (generator/specs/&lt;api&gt;.mjs)</text>
+<rect x="40" y="808" width="385" height="74" rx="10" fill="#ecfdf5" stroke="#059669" stroke-width="2"/>
+<text x="54" y="833" font-size="15" font-weight="700" fill="#065f46">generated.md</text>
+<text x="54" y="853" font-size="12.5" fill="#334155">bảng 12 cột · case Nguồn = AI</text>
+<rect x="445" y="808" width="385" height="74" rx="10" fill="#ecfdf5" stroke="#059669" stroke-width="2"/>
+<text x="459" y="833" font-size="15" font-weight="700" fill="#065f46">audit.md</text>
+<text x="459" y="853" font-size="12.5" fill="#334155">+ nhãn VALID/INVALID/INCOMPLETE</text>
+<rect x="850" y="808" width="385" height="74" rx="10" fill="#ecfdf5" stroke="#059669" stroke-width="2"/>
+<text x="864" y="833" font-size="15" font-weight="700" fill="#065f46">extended.md</text>
+<text x="864" y="853" font-size="12.5" fill="#334155">case SV + vì sao AI bỏ sót</text>
+<rect x="1255" y="808" width="385" height="74" rx="10" fill="#ecfdf5" stroke="#059669" stroke-width="2"/>
+<text x="1269" y="833" font-size="15" font-weight="700" fill="#065f46">collection Postman</text>
+<text x="1269" y="853" font-size="12.5" fill="#334155">+ pre-request X-Student-Id (§6.4)</text>
+<line x1="820" y1="716" x2="820" y2="750" stroke="#334155" stroke-width="2" marker-end="url(#a334155)"/>
+<line x1="232" y1="794" x2="232" y2="806" stroke="#334155" stroke-width="2" marker-end="url(#a334155)"/>
+<line x1="637" y1="794" x2="637" y2="806" stroke="#334155" stroke-width="2" marker-end="url(#a334155)"/>
+<line x1="1042" y1="794" x2="1042" y2="806" stroke="#334155" stroke-width="2" marker-end="url(#a334155)"/>
+<line x1="1447" y1="794" x2="1447" y2="806" stroke="#334155" stroke-width="2" marker-end="url(#a334155)"/>
+<rect x="40" y="918" width="1150" height="80" rx="10" fill="#f8fafc" stroke="#334155" stroke-width="2"/>
+<text x="54" y="943" font-size="15" font-weight="700" fill="#0f172a">Giai đoạn 6 — Chạy Newman rồi PHÂN LOẠI, không tự kết luận</text>
+<text x="54" y="963" font-size="12.5" fill="#334155">Cổng CI so với baseline đã ký nhận (29/30/30), KHÔNG so với 0 — bộ test cố ý bắt bug thật.</text>
+<text x="54" y="980" font-size="12.5" fill="#334155">Đỏ tăng = hồi quy mới · đỏ giảm = SUT đã sửa HOẶC test yếu đi. Cả hai đều cần người xem.</text>
+<line x1="232" y1="882" x2="232" y2="916" stroke="#334155" stroke-width="2" marker-end="url(#a334155)"/>
+<line x1="637" y1="882" x2="637" y2="916" stroke="#334155" stroke-width="2" marker-end="url(#a334155)"/>
+<line x1="1042" y1="882" x2="1042" y2="916" stroke="#334155" stroke-width="2" marker-end="url(#a334155)"/>
+<line x1="1447" y1="882" x2="1447" y2="916" stroke="#059669" stroke-width="2" marker-end="url(#a059669)"/>
+<rect x="1240" y="918" width="400" height="80" rx="10" fill="#ecfdf5" stroke="#059669" stroke-width="2"/>
+<text x="1254" y="943" font-size="15" font-weight="700" fill="#065f46">Bằng chứng</text>
+<text x="1254" y="963" font-size="12.5" fill="#334155">HTML + raw JSON theo timestamp</text>
+<text x="1254" y="980" font-size="12.5" fill="#334155">summary.md sinh tự động</text>
+<text x="40" y="1042" font-size="14" font-weight="700" fill="#0f172a">Mỗi assertion ĐỎ phải trả lời: đỏ vì đâu?</text>
+<rect x="430" y="1022" width="385" height="74" rx="10" fill="#fef2f2" stroke="#dc2626" stroke-width="2"/>
+<text x="444" y="1047" font-size="15" font-weight="700" fill="#991b1b">SUT sai → BUG</text>
+<text x="444" y="1067" font-size="12.5" fill="#334155">vào bug-report.md + GitHub Issue</text>
+<text x="444" y="1084" font-size="12.5" fill="#334155">19 bug, 19/19 tái hiện được</text>
+<rect x="835" y="1022" width="385" height="74" rx="10" fill="#fff7ed" stroke="#ea580c" stroke-width="2"/>
+<text x="849" y="1047" font-size="15" font-weight="700" fill="#9a3412">TEST sai → sửa expected</text>
+<text x="849" y="1067" font-size="12.5" fill="#334155">quay lại Giai đoạn 2</text>
+<text x="849" y="1084" font-size="12.5" fill="#334155">(3 case đã bị hạ expected)</text>
+<rect x="1240" y="1022" width="400" height="74" rx="10" fill="#eff6ff" stroke="#2563eb" stroke-width="2"/>
+<text x="1254" y="1047" font-size="15" font-weight="700" fill="#1e40af">MÔI TRƯỜNG → sửa runner</text>
+<text x="1254" y="1067" font-size="12.5" fill="#334155">4 assertion đỏ thuộc loại này;</text>
+<text x="1254" y="1084" font-size="12.5" fill="#334155">nếu không truy nguyên → 4 bug GIẢ</text>
+<line x1="500" y1="998" x2="560" y2="1020" stroke="#dc2626" stroke-width="2" marker-end="url(#adc2626)"/>
+<line x1="700" y1="998" x2="900" y2="1020" stroke="#ea580c" stroke-width="2" marker-end="url(#aea580c)"/>
+<line x1="900" y1="998" x2="1330" y2="1020" stroke="#2563eb" stroke-width="2" marker-end="url(#a2563eb)"/>
+<polyline points="1027,1096 1027,1130 20,1130 20,358 38,358" fill="none" stroke="#ea580c" stroke-width="2" stroke-dasharray="7,5" marker-end="url(#aea580c)"/>
+<text x="330" y="1148" font-size="12" font-weight="600" fill="#ea580c">vòng lặp: test sai → sửa luật miền ở Giai đoạn 2 rồi sinh lại</text>
+</svg>

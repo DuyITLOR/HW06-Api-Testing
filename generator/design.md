@@ -4,8 +4,9 @@
 - **Bản hiện thực chạy được:** [`tools/gen-artifacts.mjs`](../tools/gen-artifacts.mjs) +
   [`.claude/skills/api-test-design/SKILL.md`](../.claude/skills/api-test-design/SKILL.md)
 - **Đã dùng thật:** toàn bộ **136 test case / 329 assertion** của bài này do generator sinh ra.
-- **Sơ đồ:** `generator/diagram/generator-flow.png` — **sinh viên tự vẽ** (§11 cấm để AI sinh hình).
-  Xem [`diagram/README.md`](diagram/README.md). **Trạng thái: chưa vẽ.**
+- **Sơ đồ:** [`diagram/generator-flow.png`](diagram/generator-flow.png) (nguồn:
+  [`generator-flow.svg`](diagram/generator-flow.svg)) — **dựng bằng AI theo bản đề đã sửa** cho phép; xem
+  ghi chú xuất xứ ở [`diagram/README.md`](diagram/README.md).
 
 ## 1. Bài toán
 
@@ -44,8 +45,20 @@ làm cho những chỗ đó trở thành đầu ra hiển thị, thay vì bị l
 
 ## 4. Sơ đồ
 
-Chèn hình tự vẽ tại đây: `![Luồng generator](diagram/generator-flow.png)` — xem
-[`diagram/README.md`](diagram/README.md) để biết yêu cầu §11.
+![Luồng generator 6 giai đoạn](diagram/generator-flow.png)
+
+**Xuất xứ hình:** SVG viết tay bằng mã (`tools`-style script) từ **thiết kế 6 giai đoạn ở §3**, render ra
+PNG bằng Chrome headless. Hình do **AI dựng**, theo bản đề đã sửa cho phép — bản PDF đề trong `docs/`
+(§11) là bản cũ còn ghi *"self-drawn"*. Ghi rõ ở đây và ở `diagram/README.md` để không khai sai xuất xứ.
+File nguồn `.svg` nộp kèm nên hình dựng lại được và kiểm được từng phần tử.
+
+**Ba nhánh trong hình là ba quyết định thiết kế, không phải trang trí:**
+
+| Nhánh | Nội dung |
+|---|---|
+| Giai đoạn 2 → **Câu hỏi cho NGƯỜI** (cam) | chỗ spec im lặng mà không suy được từ FR/SEC thì thành câu hỏi, không thành expected. 3 case đã bị hạ expected qua nhánh này |
+| Giai đoạn 4 → **Case làm SẬP SUT** (đỏ) | case gây chết dịch vụ bị lọc khỏi collection, chuyển sang script tái hiện riêng |
+| Giai đoạn 6 → **3 hướng phân loại** | mỗi assertion đỏ phải trả lời: SUT sai / test sai / môi trường. 19 bug đi hướng thứ nhất, 3 case hướng thứ hai, 4 assertion hướng thứ ba |
 
 ## 5. Hai quyết định thiết kế đáng ghi lại
 
