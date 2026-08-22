@@ -97,10 +97,15 @@ print(sum(ws.max_row-1 for ws in wb if ws.title.startswith('API-')))"`, { encodi
                       : F(`Excel có ${rows} dòng case nhưng specs có ${tc}`);
 } catch (e) { F(`không đọc được Excel: ${String(e.message).slice(0, 60)}`); }
 
-// 11. commit log phải chứa commit mới nhất
+// 11. commit log phải mới — nhưng KHÔNG thể chứa chính commit đã đưa nó vào repo.
+// Xuất log → commit → HEAD đổi → log lại "thiếu HEAD": bất biến "phải chứa HEAD" là bất khả thi.
+// Bất biến đúng: log chứa HEAD **hoặc** HEAD~1, tức đi sau tối đa một commit (chính commit xuất log).
+const log = read("git-log/commit-log.txt");
 const head = execSync("git rev-parse --short HEAD", { encoding: "utf8" }).trim();
-read("git-log/commit-log.txt").includes(head) ? P(`commit-log.txt có commit mới nhất (${head})`)
-  : F(`commit-log.txt CŨ — thiếu ${head}. Xuất lại: bash tools/commit-plan.sh log`);
+const prev = execSync("git rev-parse --short HEAD~1", { encoding: "utf8" }).trim();
+log.includes(head) ? P(`commit-log.txt có commit mới nhất (${head})`)
+  : log.includes(prev) ? P(`commit-log.txt đi sau đúng 1 commit (${prev}) — đó là commit xuất chính nó`)
+  : F(`commit-log.txt CŨ hơn 1 commit — xuất lại: bash tools/commit-plan.sh log`);
 
 console.log(`\n  ${ok} khớp · ${bad} lệch\n`);
 process.exit(bad ? 1 : 0);
