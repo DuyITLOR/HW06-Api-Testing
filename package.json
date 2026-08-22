@@ -18,6 +18,7 @@
     "check:claims": "node tools/check-claims.mjs",
     "check:expect": "node tools/check-expect-vs-checks.mjs",
     "check:cases": "node tools/check-cases.mjs",
+    "check:submission": "node tools/check-submission.mjs",
     "review": "node tools/mark-reviewed.mjs",
     "package": "bash tools/package.sh"
   },

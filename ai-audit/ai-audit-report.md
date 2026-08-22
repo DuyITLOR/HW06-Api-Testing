@@ -19,9 +19,12 @@ Mỗi lượt hỏi AI = một mục `Interaction #N`, ghi đủ 5 trường §9
 output · human review) cộng 3 trường riêng của HW06 (bước trong quy trình · AI sai/bỏ sót · vì sao
 bỏ sót). Ba trường sau chép thẳng được sang §11 của `report/main-report.md`.
 
-Nhãn human review dùng đúng hai giá trị, **không** viết gộp thành "đã kiểm hết":
-- ***(SV đã kiểm)*** — sinh viên đã tự chạy lại / đối chiếu spec / đối chiếu source.
-- ***(SV chưa tự kiểm)*** — chưa kiểm, giữ nguyên để trung thực.
+Trường **Human review** ghi **ai kiểm gì**, không viết gộp thành "đã kiểm hết":
+- ***(SV đã kiểm)*** — sinh viên đã tự chạy lại / đối chiếu spec / đối chiếu source, kèm ngày và phạm vi.
+- *(phần đọc của SV: **chưa**)* — AI đã soát được phần nào thì ghi rõ phần đó (kèm phép kiểm bằng máy),
+  và ghi rõ **file sinh viên còn phải đọc**. Không viết "đã kiểm" thay sinh viên: §11 phạt đúng loại
+  bằng chứng đó, và ba lượt AI tự soát (Interaction #12, #13) đều còn tìm ra lỗi — nên lớp đọc của người
+  vẫn là lớp kiểm soát thật, không phải thủ tục.
 
 ---
 
@@ -43,9 +46,8 @@ Nhãn human review dùng đúng hai giá trị, **không** viết gộp thành "
 - **AI sai / bỏ sót:** *(chưa đánh giá — bộ API mới chỉ là đề xuất, chưa chạy request nào để xác nhận
   các giả thuyết bug)*
 - **Vì sao bỏ sót:** —
-- **Human review:** ***(SV chưa tự kiểm)*** — cần (1) xác nhận với nhóm là 4 bộ kia đúng như ảnh chat,
-  (2) tự gửi request kiểm từng giả thuyết bug trước khi viết vào bug report.
-- **Commit:** —
+- **Human review:** *(phần đọc của SV: **chưa**)* — **AI đã soát:** `check-cases.mjs` xác nhận mọi case của 3 API trỏ được vào spec §/FR/SEC (bất biến 2). **SV đã làm:** chốt bộ 3 API sau khi đối chiếu ảnh chat nhóm. **Còn lại:** SV đọc `docs/api-selection.md` để tự xác nhận lập luận chọn API — `npm run review 1`.
+- **Commit:** `107033b`
 
 ### Interaction #2
 - **API / Bước:** dựng khung repo + tooling (trước §6.1)
@@ -66,9 +68,8 @@ Nhãn human review dùng đúng hai giá trị, **không** viết gộp thành "
 - **AI sai / bỏ sót:** ghi 2 file vào thư mục HW05 do lỗi thư mục làm việc, đã phát hiện và chuyển về
   HW06 + hoàn nguyên HW05.
 - **Vì sao bỏ sót:** đặc điểm công cụ (shell giữ cwd giữa các lệnh) — không phải giới hạn của model.
-- **Human review:** ***(SV chưa tự kiểm)*** — cần chạy `npm run preflight` với SUT đang chạy để xác
-  nhận tooling hoạt động thật, và đọc lại `docs/api-selection.md` trước khi chốt với nhóm.
-- **Commit:** *(điền hash sau khi commit)*
+- **Human review:** *(phần đọc của SV: **chưa**)* — **AI đã soát:** `verify-all.sh` 37 mục xanh. **SV đã làm:** tự chạy chính bộ tooling này (`verify-bugs.sh` ×3, `npm run test:all`) trên máy mình ngày 23/08 — tức phần tooling đã được kiểm bằng cách dùng thật, không phải bằng cách đọc. **Còn lại:** SV đọc README §5–§6 — `npm run review 2`.
+- **Commit:** `72ae9b1`
 
 ### Interaction #3
 - **API / Bước:** cả 3 API — kiểm chứng giả thuyết bug trước khi thiết kế test case
@@ -95,7 +96,7 @@ Nhãn human review dùng đúng hai giá trị, **không** viết gộp thành "
   `TypeError: Cannot read properties of null (reading 'toString')` tại `server.js:162`), BUG-13 đổi được tên
   sản phẩm thành `HACKED-anon` và `HACKED-user` **không cần token**, BUG-08 để giá 1 đồng vào giỏ. Cả 3 đều
   tái hiện được. **Chưa tự chạy 16 bug còn lại** (chúng nằm trong `verify-bugs-output.txt`).
-- **Commit:** *(điền hash)*
+- **Commit:** `8a244d9`
 
 ### Interaction #4
 - **API / Bước:** API-01 · API-02 · API-03 — sinh test case
@@ -116,10 +117,8 @@ Nhãn human review dùng đúng hai giá trị, **không** viết gộp thành "
 - **Vì sao bỏ sót:** (1) **prompt quality** — không ai nói "chỗ spec im lặng thì không được bịa"; (2)
   **model limitations** — sinh mã bằng nội suy chuỗi mà không tự chạy thử; (3) **characteristics of the
   API** — không lường được một test case có thể giết cả SUT.
-- **Human review:** ***(SV chưa tự kiểm)*** — 3 case bịa expected đã được sửa và ghi trong `audit.md`
-  của từng API; lỗi cú pháp đã sửa trong generator; BUG-14 đã tách ra `verify-bugs.sh`. **Sinh viên cần
-  tự đọc lại 3 file `audit.md`** và tự chạy 2–3 case bằng curl để xác nhận expected đúng.
-- **Commit:** *(điền hash)*
+- **Human review:** *(phần đọc của SV: **chưa**)* — **AI đã soát:** `check-cases.mjs` (136 case · 7 bất biến nội dung · 0 vấn đề) và `check-expect-vs-checks.mjs` (135 case có assert status · 0 case lệch). **SV đã làm:** chạy toàn bộ 3 collection và tự thấy 29/30/30. **Còn lại:** SV đọc `test-cases/*/generated.md` — `npm run review 4`.
+- **Commit:** `29ef95c`
 
 ### Interaction #5
 - **API / Bước:** cả 3 API — audit (§6.2) + thêm case AI bỏ sót (§6.3)
@@ -134,9 +133,8 @@ Nhãn human review dùng đúng hai giá trị, **không** viết gộp thành "
   nó bắt được lỗi thuộc loại *chính nó không nghĩ tới*. Chính vì vậy 22 case §6.3 chủ yếu đến từ việc **đọc
   source và đọc dữ liệu thật**, không từ việc "nghĩ thêm".
 - **Vì sao bỏ sót:** **model limitations** — không thể tự phát hiện điểm mù của chính mình.
-- **Human review:** ***(SV chưa tự kiểm)*** — **đây là mục cần sinh viên can thiệp nhiều nhất.** §6.2 nói
-  *"You are fully responsible for the final test cases"*; nhãn VALID hiện tại là nhãn do AI đặt.
-- **Commit:** *(điền hash)*
+- **Human review:** *(phần đọc của SV: **chưa**)* — **AI đã soát:** lượt thứ ba soát **nội dung** 114 nhãn `VALID` và tìm ra lỗi #22 (`TC-CART-101/102` gán nhãn Security mà không trỏ được SEC-0x nào). **Đây là mục AI KHÔNG THAY ĐƯỢC:** §6.2 đặt trách nhiệm cuối về test case lên sinh viên, và chính lỗi #16 (case bị lượt AI tự audit dán nhãn `VALID` sai) là bằng chứng AI không tự thấy điểm mù của mình. **Còn lại:** SV đọc `test-cases/*/audit.md` + `extended.md`, đặc biệt mục `auditNotes` của API-02 (lập luận về `price` là **suy luận** từ FR-07/FR-08, không phải câu chữ spec) — `npm run review 5`.
+- **Commit:** `b0bb70c`
 
 ### Interaction #6
 - **API / Bước:** cả 3 API — thực thi (§6.4)
@@ -154,7 +152,7 @@ Nhãn human review dùng đúng hai giá trị, **không** viết gộp thành "
 - **Human review:** ***(SV đã kiểm)*** — 23/08/2026 00:09, sinh viên tự chạy `npm run test:all` và ra đúng
   **29 / 30 / 30** (155 / 85 / 93 assertion). Lượt chạy đó chính là bằng chứng được nộp
   (`reports/newman/*_20260823-0009*`), tức số liệu trong báo cáo là số liệu từ lượt **sinh viên tự chạy**.
-- **Commit:** *(điền hash)*
+- **Commit:** `146aa7c`
 
 ### Interaction #7
 - **API / Bước:** bug report (§6.5)
@@ -172,7 +170,7 @@ Nhãn human review dùng đúng hai giá trị, **không** viết gộp thành "
   (3 bug Critical nặng nhất). 16 bug còn lại **chưa tự chạy tay**, nhưng đều có khối request/response trong
   `verify-bugs-output.txt` và chạy lại được bằng `bash bug-report/verify-bugs.sh <số>`. 19 GitHub Issue đã
   mở (#323–#341).
-- **Commit:** *(điền hash)*
+- **Commit:** `df986df`
 
 ### Interaction #8
 - **API / Bước:** báo cáo, traceability, Excel, README
@@ -187,9 +185,8 @@ Nhãn human review dùng đúng hai giá trị, **không** viết gộp thành "
   `audit.md` nên mỗi case AI bị đếm hai lần. Phát hiện vì con số không khớp với `summary.md`.
 - **Vì sao bỏ sót:** **prompt quality** — `audit.md` là *bản cuối của cùng bộ case*, không phải bộ case
   mới; quy ước này không được nói rõ khi viết script.
-- **Human review:** ***(SV chưa tự kiểm)*** — cần đọc lại §11 và §12 của main-report (bảng lỗi AI và mục
-  giới hạn) vì đó là hai mục đề chấm nặng nhất, và tự viết lại phần nào không đồng ý.
-- **Commit:** *(điền hash)*
+- **Human review:** *(phần đọc của SV: **chưa**)* — **AI đã soát:** `check-claims.mjs` (18 con số công bố · link nội bộ · hash commit — 0 lệch) và lượt soát thứ hai tìm ra 3 lỗi tài liệu (#19 hash bịa, #20 bảng đánh số trùng, #21 trỏ file cũ). **Còn lại:** SV đọc `report/main-report.md` §11 (bảng 23 lỗi) và §12 (9 giới hạn) — `npm run review 8`.
+- **Commit:** `80965eb`
 
 ### Interaction #9
 - **API / Bước:** cả 3 API — kiểm tính tái lập của lượt chạy
@@ -212,7 +209,7 @@ Nhãn human review dùng đúng hai giá trị, **không** viết gộp thành "
   29/30/30, cộng với `regression suite 216/0`. Đây là lượt thứ **8** cho cùng kết quả (3 local trước đó,
   2 trên CI, 2 local hôm nay, 1 regression) — nghĩa là con số 29/30/30 tái lập được ở tay người khác, không
   chỉ trong phiên làm bài.
-- **Commit:** *(điền hash)*
+- **Commit:** `1321895`
 
 ### Interaction #10
 - **API / Bước:** tự chấm bài theo tiêu chí §15 rồi sửa những chỗ bị trừ
@@ -233,8 +230,8 @@ Nhãn human review dùng đúng hai giá trị, **không** viết gộp thành "
   nó — đúng hạn chế đã ghi ở #5.
 - **Vì sao bỏ sót:** **model limitations** — soát chéo *cột `expect` với cột `checks`* là phép kiểm mà
   chính nó không nghĩ tới khi viết case; chỉ khi đọc lại bài với vai người chấm mới thấy.
-- **Human review:** ***(SV chưa tự kiểm)*** — nên tự đọc lại 2 case đó và bảng lỗi §11 của main-report.
-- **Commit:** *(điền hash)*
+- **Human review:** *(phần đọc của SV: **chưa**)* — **AI đã soát:** tự chấm lại theo bảng §15 và tìm 6 mục bị trừ điểm, trong đó 2 mục là lỗi thật của bài (#22 assertion nghiêm hơn expected, #23 hai lượt CI không đúng nghĩa §6). **SV đã làm:** quyết định làm hết 6 mục đó thay vì nộp bản 92. **Còn lại:** SV đọc bảng lỗi §11 để tự đánh giá con số tự chấm — `npm run review 10`.
+- **Commit:** `4a110e1`
 
 ### Interaction #11
 - **API / Bước:** sửa các mục bị trừ — regression suite, 2 lượt CI mẫu, ảnh bằng chứng
@@ -262,7 +259,7 @@ Nhãn human review dùng đúng hai giá trị, **không** viết gộp thành "
   chọn environment, chạy folder `00-setup` bằng Collection Runner (12/12 xanh) và tự chụp
   `postman-console-gui.png`. Trong lúc làm còn tự gặp và tự hiểu 2 lỗi: import trùng file, và chạy khi chưa
   chọn environment (pre-request script chặn đúng với thông báo `Thiếu biến môi trường base_url`).
-- **Commit:** *(điền hash)*
+- **Commit:** `1245b56`
 
 ### Interaction #12
 - **API / Bước:** soát lại lần hai toàn bộ tài liệu (sau khi bài đã "xong")
@@ -289,9 +286,8 @@ Nhãn human review dùng đúng hai giá trị, **không** viết gộp thành "
   vì tra `git log`.
 - **Vì sao bỏ sót:** **model limitations** — sinh chi tiết trông hợp lý mà không kiểm nguồn. Đây đúng họ lỗi
   #1/#2/#3 (bịa expected khi spec im lặng), lần này xảy ra ở **tài liệu** thay vì ở test case.
-- **Human review:** ***(SV chưa tự kiểm)*** — lượt soát này là **AI tự soát output của AI**, không thay được
-  phần đọc của sinh viên. Hai hash mới có thể kiểm trong 5 giây: `git log --oneline | grep demo`.
-- **Commit:** *(điền hash)*
+- **Human review:** *(phần đọc của SV: **chưa**)* — **AI đã soát:** đây chính là lượt AI tự soát output của AI (tìm 3 lỗi tài liệu). Hai hash mới kiểm được trong 5 giây: `git log --oneline | grep demo`. **Còn lại:** SV kiểm 2 hash đó và đọc `ci/ci-report.md` §3 — `npm run review 12`.
+- **Commit:** `5eaf4de`
 
 ### Interaction #13
 - **API / Bước:** soát lần ba — soát **nội dung** 114 nhãn `VALID`, không chỉ số lượng
@@ -316,10 +312,8 @@ Nhãn human review dùng đúng hai giá trị, **không** viết gộp thành "
   SEC-01…07**, và ghi vào traceability rằng đây là **lỗ hổng của chính danh sách yêu cầu** (BUG-08 mức
   Critical mà không map được vào SEC nào), kèm đề nghị thêm một mục SEC về toàn vẹn giá. Script được sửa để
   chấp nhận ngoại lệ **đã khai báo**, không phải để bỏ qua.
-- **Human review:** ***(SV chưa tự kiểm)*** — đây là lượt thứ ba AI tự soát output của AI. Ba lượt soát tìm
-  được: lần 1 → 0 (chỉ chạy test), lần 2 → 3 lỗi tài liệu, lần 3 → 2 lỗi nội dung. Con số giảm dần nhưng
-  **chưa về 0 lần nào**, nên phần đọc của sinh viên vẫn còn giá trị thật.
-- **Commit:** *(điền hash)*
+- **Human review:** *(phần đọc của SV: **chưa**)* — **AI đã soát:** lượt thứ ba (soát nội dung nhãn `VALID`, tìm lỗi #22). **Số lỗi tìm được qua 3 lượt: 1 → 3 → 2 — chưa lần nào về 0**, nên lớp đọc của sinh viên vẫn còn giá trị thật. **Còn lại:** SV đọc `traceability-matrix.md` mục *Lỗ hổng trong chính danh sách yêu cầu* — `npm run review 13`.
+- **Commit:** `fef7773`
 
 <!-- NEW_INTERACTION_MARKER -->
 
@@ -340,7 +334,7 @@ cases"*, và 114 nhãn `VALID` hiện tại là nhãn **AI** đặt. Điền h�
 | 6 | Đọc `audit.md` của API-02 (chú ý ghi chú về `price` và 2 case đã sửa) | `test-cases/api-02-cart-add/audit.md` | [ ] |
 | 7 | Đọc `audit.md` của API-03 (chú ý lý do loại chuỗi làm sập SUT khỏi collection) | `test-cases/api-03-product-update/audit.md` | [ ] |
 | 8 | Đọc §11 main-report (bảng 18 lỗi của AI) và §12 (giới hạn) | `report/main-report.md` | [ ] |
-| 9 | Đổi *(SV chưa tự kiểm)* → *(SV đã kiểm)* **chỉ ở lượt đã kiểm thật** | file này | **[x] một phần** — đã đổi 5 lượt (#3, #6, #7, #9, #11); còn #1, #2, #4, #5, #8, #10 giữ *chưa tự kiểm* vì phụ thuộc mục 5–8 dưới đây |
+| 9 | Đổi *(phần đọc của SV: **chưa**)* → *(SV đã kiểm)* **chỉ ở lượt đã đọc thật** — bằng `npm run review <n>` | file này | **[x] một phần** — đã đổi 5 lượt (#3, #6, #7, #9, #11); còn #1, #2, #4, #5, #8, #10 giữ *chưa tự kiểm* vì phụ thuộc mục 5–8 dưới đây |
 
 **Mục 5–8 (đọc `audit.md` × 3 + §11/§12):** AI đã soát lại lần hai ngày 23/08 và tìm thêm 3 lỗi tài liệu
 (Interaction #12, bảng lỗi #19–#21), rồi biến hai loại lỗi đó thành **phép kiểm bằng máy**:
@@ -348,7 +342,7 @@ cases"*, và 114 nhãn `VALID` hiện tại là nhãn **AI** đặt. Điền h�
 mọi con số công bố, link nội bộ và hash commit). Cả hai đã vào `npm run verify` (mục 2b và 5b).
 
 **Nhưng đây là AI tự soát output của AI**, không thay được phần đọc của sinh viên. 7 lượt còn lại vì vậy
-vẫn giữ nhãn *(SV chưa tự kiểm)*. Đánh dấu khi đã đọc thật: `npm run review` (script in ra chính xác điều
+vẫn ghi *(phần đọc của SV: **chưa**)*, kèm **AI đã soát được phần nào** và **file còn phải đọc**. Đánh dấu khi đã đọc thật: `npm run review` (script in ra chính xác điều
 sắp được khai, đòi gõ xác nhận, ghi ngày — không tự chạy trong pipeline nào).
 
 **Đã xong (23/08/2026):** sinh viên tự import collection + environment vào **Postman GUI**, chọn environment,

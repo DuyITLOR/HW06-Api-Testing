@@ -42,7 +42,7 @@ const blocks = src.split(/(?=^### Interaction #)/m);
 const pending = [];
 for (const b of blocks) {
   const m = b.match(/^### Interaction #(\d+)/);
-  if (m && b.includes("(SV chưa tự kiểm)")) pending.push(Number(m[1]));
+  if (m && (b.includes("phần đọc của SV: **chưa**") || b.includes("(SV chưa tự kiểm)"))) pending.push(Number(m[1]));
 }
 
 if (!args.length || args.includes("--list")) {
@@ -90,8 +90,9 @@ ask(1, (confirmed) => {
     const m = b.match(/^### Interaction #(\d+)/);
     if (!m || !want.includes(Number(m[1]))) return b;
     n_done++;
-    return b.replace("***(SV chưa tự kiểm)***",
-      `***(SV đã kiểm)*** — SV tự đọc \`${WHAT[Number(m[1])]?.[1]}\` và xác nhận ngày ${today}.`);
+    const note = `***(SV đã kiểm)*** — SV tự đọc \`${WHAT[Number(m[1])]?.[1]}\` và xác nhận ngày ${today}. `;
+    if (b.includes("phần đọc của SV: **chưa**")) return b.replace("*(phần đọc của SV: **chưa**)* —", note + "—");
+    return b.replace("***(SV chưa tự kiểm)***", note);
   });
   writeFileSync(FILE, out.join(""), "utf8");
   console.log(`\n  Đã đánh dấu ${n_done} lượt. Còn lại: ${pending.filter((x) => !want.includes(x)).join(", ") || "không còn"}`);

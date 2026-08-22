@@ -110,7 +110,7 @@ trước, không nghi code test.
 3. **Cổng đúng như thiết kế:** cùng một tập dữ liệu cho ra XANH ở chế độ `baseline` và ĐỎ ở `strict` — tức
    phần quyết định đỏ/xanh nằm ở **ngưỡng đã ký nhận**, không nằm ở exit code của Newman.
 
-## 4. Chênh lệch giữa lượt CI và lượt local (điền sau)
+## 5. Chênh lệch giữa lượt CI và lượt local
 
 DB trên runner là `database.sqlite` sạch trong repo SUT, khác DB local đã seed nhiều lần → số sản phẩm
 khác, nên các assertion dựa vào **số dòng** phải viết theo kiểu tương đối (so trước/sau) chứ không

@@ -109,6 +109,13 @@ else
   f "có con số / link / hash lệch trong tài liệu. Chi tiết: node tools/check-claims.mjs"
 fi
 
+sect "5c. Toàn vẹn bộ nộp: bug→test case · issue · ảnh · PDF mới hơn .md · hash trong audit"
+if node tools/check-submission.mjs >/tmp/hw06-sub.log 2>&1; then
+  p "$(tail -2 /tmp/hw06-sub.log | head -1 | sed 's/^ *//')"
+else
+  f "$(grep -m3 LECH /tmp/hw06-sub.log | sed 's/^ *//' | tr '\n' ' ')"
+fi
+
 sect "6. Tài liệu bắt buộc (§14)"
 for doc in report/main-report.md report/main-report.pdf \
            ai-audit/ai-audit-report.md ai-audit/ai-audit-report.pdf \
