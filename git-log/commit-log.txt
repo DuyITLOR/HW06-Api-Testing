@@ -1,9 +1,11 @@
 Git commit log — HW06 API Testing · SV Lê Nhựt Duy 23127178
-Xuất lúc: 2026-08-23 00:39:55 +0700
+Xuất lúc: 2026-08-23 00:40:26 +0700
 Repo: https://github.com/DuyITLOR/HW06-Api-Testing.git
-Số commit: 51
+Số commit: 53
 
 ═══ Ngắn gọn ══════════════════════════════════════════════════════════
+f25c59b 2026-08-23 fix: make the commit-log invariant satisfiable
+dfb3e35 2026-08-23 docs: refresh the commit log after the PDF rebuild
 8a60585 2026-08-23 docs: rebuild PDFs
 3c6b6f9 2026-08-23 docs: refresh the commit log
 e969ba8 2026-08-23 docs: replace the bare 'not yet checked' labels with precise attribution
@@ -57,6 +59,25 @@ b0bb70c 2026-08-19 test(api-01): audit AI-generated cases, 35 VALID and 1 correc
 96f011e 2026-08-18 Initial commit
 
 ═══ Đầy đủ (kèm body) ═════════════════════════════════════════════════
+commit f25c59b97c03f8ddc86953b174ba1d22001240a1
+Author: DuyITLOR <153221271+DuyITLOR@users.noreply.github.com>
+Date:   Sun Aug 23 00:40:26 2026 +0700
+
+fix: make the commit-log invariant satisfiable
+
+Requiring the exported log to contain HEAD is impossible to satisfy: exporting it and committing it moves
+HEAD, so the log is stale the moment it lands. The invariant now allows exactly one commit of lag - the
+commit that exported the log - and still fails on anything older. Same class as the earlier over-strict
+check that flagged the line documenting a stale number.
+
+---
+commit dfb3e356c382edacc6d7f71c225f318d57bee7fc
+Author: DuyITLOR <153221271+DuyITLOR@users.noreply.github.com>
+Date:   Sun Aug 23 00:39:56 2026 +0700
+
+docs: refresh the commit log after the PDF rebuild
+
+---
 commit 8a60585e9afd5c8cd4d1571dfad47df8888cbe8f
 Author: DuyITLOR <153221271+DuyITLOR@users.noreply.github.com>
 Date:   Sun Aug 23 00:39:38 2026 +0700
