@@ -105,7 +105,9 @@ sect "7. Nội dung"
 W=$(sed -n '/^## Critique/,$p' ai-audit/ai-critique.md 2>/dev/null | sed '1d' | wc -w | tr -d ' ')
 if [ "${W:-0}" -ge 200 ] && [ "${W:-0}" -le 300 ]; then p "AI Critique $W từ (yêu cầu 200–300)"; else f "AI Critique $W từ — §10 đòi 200–300"; fi
 if grep -qE "issues/[0-9]+" bug-report/bug-report.md 2>/dev/null; then p "bug report có số GitHub Issue"; else f "bug report chưa có số GitHub Issue (§6.5)"; fi
-if grep -q "youtu" README.md 2>/dev/null; then p "README có link video demo"; else f "README chưa có link video demo Agent Skill (§7)"; fi
+# §7 ghi "You are encouraged to..." — khuyến khích, KHÔNG bắt buộc. Để ở mức cảnh báo thay vì FAIL,
+# nếu không script sẽ báo thiếu tài liệu bắt buộc cho một mục mà đề không đòi.
+if grep -q "youtu" README.md 2>/dev/null; then p "README có link video demo (§7)"; else printf "  [TUY CHON] chưa có link video demo — §7 chỉ *khuyến khích*\n"; fi
 if grep -qE "CHƯA (LÀM|VIẾT|CHỐT|CÓ|CHẠY)" report/main-report.md ai-audit/ai-critique.md 2>/dev/null; then
   f "còn dấu 'CHƯA …' trong báo cáo — nội dung chưa xong"
 else p "không còn dấu 'CHƯA …' trong báo cáo"; fi

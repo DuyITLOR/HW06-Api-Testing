@@ -16,7 +16,7 @@
 
 ## Bảng test case
 
-> Cột `Kết quả` điền **tự động** từ `reports/newman/*.json` (lượt `23127178_api-02-cart-add_20260819-005042.json`).
+> Cột `Kết quả` điền **tự động** từ `reports/newman/*.json` (lượt `23127178_api-02-cart-add_ci-32580345226.json`).
 
 | TC ID | Kỹ thuật | Tham số & phân vùng | Request | Auth | Query / Body | Expected status | Expected body / schema | Căn cứ | Nguồn | Audit | Kết quả |
 |---|---|---|---|---|---|---|---|---|---|---|---|
@@ -39,8 +39,8 @@
 | TC-CART-017 | Domain | `price = 0` | `POST /api/cart` | user thường | `{"id":"{{product_id}}","name":"HW06-Cart-Fixture","price":0,"quantity":1}` | 400/422 | từ chối — giá 0 không khớp catalog | FR-07/FR-08 (giá trong giỏ phải là giá thật) | AI |  | **FAIL** (1/1 đỏ) |
 | TC-CART-018 | Domain | `price = -1000` — âm | `POST /api/cart` | user thường | `{"id":"{{product_id}}","name":"HW06-Cart-Fixture","price":-1000,"quantity":1}` | 400/422 | từ chối | FR-08 (tiền không âm) | AI |  | **FAIL** (1/1 đỏ) |
 | TC-CART-019 | Domain | `price = "abc"` — sai kiểu | `POST /api/cart` | user thường | `{"id":"{{product_id}}","name":"HW06-Cart-Fixture","price":"abc","quantity":1}` | 400/422 | từ chối | spec §4.2 (`price: 100000` là số) | AI |  | **FAIL** (1/1 đỏ) |
-| TC-CART-020 | Domain | **thiếu** `price` | `POST /api/cart` | user thường | `{"id":"{{product_id}}","name":"HW06-Cart-Fixture","quantity":1}` | 200 / 400 / 422 | **hai hành vi đều hợp lệ**: từ chối (400), hoặc nhận rồi lấy giá từ catalog (200). Hệ quả kiểm ở TC-107 | spec §4.2 · FR-07 | AI |  | **FAIL** (1/1 đỏ) |
-| TC-CART-021 | Domain | `name` **rỗng** | `POST /api/cart` | user thường | `{"id":"{{product_id}}","name":"","price":111000,"quantity":1}` | 200 / 400 / 422 | **hai hành vi đều hợp lệ**: từ chối, hoặc nhận rồi lấy tên từ catalog. Hệ quả kiểm ở TC-107 | spec §4.2 · FR-07 | AI |  | **FAIL** (1/1 đỏ) |
+| TC-CART-020 | Domain | **thiếu** `price` | `POST /api/cart` | user thường | `{"id":"{{product_id}}","name":"HW06-Cart-Fixture","quantity":1}` | 200 / 400 / 422 | **hai hành vi đều hợp lệ**: từ chối (400), hoặc nhận rồi lấy giá từ catalog (200). Hệ quả kiểm ở TC-107 | spec §4.2 · FR-07 | AI |  | **Pass** (2/2) |
+| TC-CART-021 | Domain | `name` **rỗng** | `POST /api/cart` | user thường | `{"id":"{{product_id}}","name":"","price":111000,"quantity":1}` | 200 / 400 / 422 | **hai hành vi đều hợp lệ**: từ chối, hoặc nhận rồi lấy tên từ catalog. Hệ quả kiểm ở TC-107 | spec §4.2 · FR-07 | AI |  | **Pass** (2/2) |
 | TC-CART-022 | Domain | `name` **không khớp** sản phẩm thật | `POST /api/cart` | user thường | `{"id":"{{product_id}}","name":"Tên bịa không khớp id","price":111000,"quantity":1}` | 400/422 | từ chối — tên phải khớp `id`, hoặc server tự lấy tên | FR-07 (giỏ phản ánh sản phẩm thật) | AI |  | **FAIL** (1/1 đỏ) |
 | TC-CART-023 | Domain | `name` **rất dài** (300 ký tự) | `POST /api/cart` | user thường | `{"id":"{{product_id}}","name":"NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN` | 400/422 | từ chối (tên không khớp catalog) | FR-07 | AI |  | **FAIL** (1/1 đỏ) |
 | TC-CART-024 | State | bước 1: thêm 1 sản phẩm rồi **đọc lại giỏ** | `GET /api/cart` | user thường | – | 200 | giỏ có nhiều hơn mốc `cart_before` (các case hợp lệ ở trên đã thêm) | spec §4.1 + §4.2 | AI |  | **Pass** (3/3) |

@@ -50,12 +50,15 @@ need "postman/README.md"                        "Danh sách Postman feature đã
 need "generator/design.md"                      "Thiết kế AI test generator (§7)"
 need "generator/pseudocode.py"                  "Pseudocode generator (§7)"
 need "excel/${MSSV}_HW06_TestCases.xlsx"        "Excel test case + test summary (npm run excel)"
-needglob "postman/collections/${MSSV}_*.json" 3 "Postman collection (3 API)"
+needglob "postman/collections/${MSSV}_*.json" 4 "Postman collection (3 API + regression)"
 needglob "postman/environments/*.json" 1        "Postman environment"
-needglob "reports/newman/*.html" 3              "Newman HTML report"
+needglob "reports/newman/*.html" 4              "Newman HTML report (3 bug-hunting + regression)"
 needglob "reports/newman/*.json" 3              "Newman raw JSON (nguồn của test summary)"
 needglob "generator/diagram/*.png" 1            "Sơ đồ generator TỰ VẼ (§11)"
-needglob "bug-report/screenshots/*.png" 1       "Ảnh bug + ảnh console X-Student-Id (§11)"
+needglob "bug-report/screenshots/*.png" 6       "Ảnh: X-Student-Id · assertion đỏ · 2 lượt CI · issue · report"
+need "bug-report/screenshots/x-student-id-request-header.png" "Bằng chứng §11: header trên request thật"
+need "bug-report/screenshots/ci-xanh.png"    "Lượt CI tất cả pass (§6)"
+need "bug-report/screenshots/ci-do.png"      "Lượt CI có test fail (§6)"
 need ".github/workflows/api-tests.yml"          "Pipeline CI/CD"
 needglob "test-cases/*/generated.md" 3          "Test case AI sinh (§6.1)"
 needglob "test-cases/*/audit.md" 3              "Audit VALID/INVALID/INCOMPLETE (§6.2)"
@@ -68,7 +71,7 @@ if [ "${W:-0}" -ge 200 ] && [ "${W:-0}" -le 300 ]; then printf "  [OK]    AI Cri
 else printf "  [THIEU] AI Critique %s từ — §10 đòi 200–300\n" "$W"; MISSING=$((MISSING+1)); fi
 
 if grep -q "youtu" README.md 2>/dev/null; then printf "  [OK]    Link video demo Agent Skill có trong README\n";
-else printf "  [THIEU] README chưa có link video demo (§7 khuyến khích)\n"; MISSING=$((MISSING+1)); fi
+else printf "  [TUY CHON] chưa có link video demo — §7 chỉ *khuyến khích*, không tính là thiếu\n"; fi
 
 if grep -qE "issues/[0-9]+" bug-report/bug-report.md 2>/dev/null; then printf "  [OK]    Bug report có số GitHub Issue\n";
 else printf "  [THIEU] Bug report chưa có số GitHub Issue (§6.5)\n"; MISSING=$((MISSING+1)); fi

@@ -14,11 +14,11 @@
 |---|---|
 | API kiểm thử | **3** — mỗi pool một API, không trùng thành viên nhóm ([`docs/api-selection.md`](../docs/api-selection.md)) |
 | Test case | **136** (109 do AI sinh + **22 sinh viên tự thêm** + 24 request setup/teardown) |
-| Đã thực thi | **171 request · 329 assertion** trên SUT thật ở `localhost:3000` |
-| Kết quả | **240 assertion xanh · 89 đỏ** — mọi assertion đỏ đều map tới một bug đã tái hiện được |
+| Đã thực thi | **171 request · 333 assertion** trên SUT thật ở `localhost:3000` · thêm **regression suite 216 assertion, 0 đỏ** |
+| Kết quả | **244 assertion xanh · 89 đỏ** — mọi assertion đỏ đều map tới một bug đã tái hiện được |
 | Bug | **19 bug, 19/19 tái hiện được** — 5 Critical, 5 High, 7 Medium, 2 Low · Issues [#323–#341](https://github.com/DuyITLOR/group05_eshop/issues/323) |
 | Bug đáng chú ý nhất | **BUG-14**: khách **không đăng nhập** làm **sập cả backend** bằng 2 request — chuỗi 3 lỗi |
-| Lỗi của AI đã bắt và sửa | **11** (7 lỗi thiết kế test case + 2 lỗi kỹ thuật trong lượt chạy đầu + 2 lỗi quy trình) |
+| Lỗi của AI đã bắt và sửa | **18** — 5 lỗi thiết kế test case (gồm 2 case assertion nghiêm hơn expected), 5 lỗi kỹ thuật, 4 lỗi bỏ sót phân vùng, 2 lỗi số liệu, 2 lỗi quy trình |
 | Giả thuyết đã **loại** sau khi kiểm | **4** (ghi lại ở [bug-report §Bug đã loại](../bug-report/bug-report.md)) |
 
 ## Mục lục
@@ -190,7 +190,7 @@ liệu để kiểm. Giữ case + ghi rõ hạn chế, thay vì xoá case cho b�
 
 ### 4.7 Kết quả và bug
 
-**52 request · 81 assertion · 51 xanh · 30 đỏ.** Bug: **BUG-07** (không validate gì, High), **BUG-08**
+**52 request · 85 assertion · 55 xanh · 30 đỏ.** Bug: **BUG-07** (không validate gì, High), **BUG-08**
 (price tampering, Critical), **BUG-09** (giỏ không xoá sau checkout, High), **BUG-10** (mass assignment),
 **BUG-11** (sản phẩm không tồn tại), **BUG-12** (trùng dòng).
 
@@ -287,11 +287,15 @@ không `pkill` theo tên — máy có thể đang chạy backend của bài khá
 
 | Lượt | API-01 | API-02 | API-03 |
 |---|---|---|---|
-| 1 (bộ nộp) | 29/155 | 30/81 | 30/93 |
-| 2 | 29/155 | 30/81 | 30/93 |
-| 3 | 29/155 | 30/81 | 30/93 |
+| 1 local | 29/155 | 30/81 | 30/93 |
+| 2 local | 29/155 | 30/81 | 30/93 |
+| 3 local | 29/155 | 30/81 | 30/93 |
+| 4 CI (runner Ubuntu) | 29/155 | 30/85\* | 30/93 |
+| 5 CI **(bộ nộp)** | 29/155 | 30/85\* | 30/93 |
 
-Giống nhau tuyệt đối. Điều này **không** có sẵn: lượt kiểm tái lập đầu tiên cho API-02 ra **34** thay vì 30,
+\* API-02 có 85 assertion thay vì 81 sau khi sửa TC-CART-020/021 (§11 lỗi #16) — số **đỏ** không đổi.
+
+Số đỏ giống nhau tuyệt đối qua **5 lượt trên 2 hệ điều hành**. Điều này **không** có sẵn: lượt kiểm tái lập đầu tiên cho API-02 ra **34** thay vì 30,
 và truy nguyên ra một lỗi môi trường sâu hơn lỗi #10 — xem §11 lỗi #12. Chỉ giữ file của lượt mới nhất
 trong `reports/newman/` để bộ nộp không phình; hai lượt trước đã xoá sau khi ghi lại số liệu ở bảng này.
 
@@ -300,9 +304,10 @@ trong `reports/newman/` để bộ nộp không phình; hai lượt trước đ�
 | API | Request | Assertion | Passed | **Failed** |
 |---|---|---|---|---|
 | API-01 · `GET /api/products` | 62 | 155 | 126 | **29** |
-| API-02 · `POST /api/cart` | 52 | 81 | 51 | **30** |
+| API-02 · `POST /api/cart` | 52 | 85 | 55 | **30** |
 | API-03 · `PUT /api/products/:id` | 57 | 93 | 63 | **30** |
-| **Tổng** | **171** | **329** | **240** | **89** |
+| **Tổng** | **171** | **333** | **244** | **89** |
+| *(regression suite — cổng CI)* | 94 | 216 | 216 | **0** |
 
 <a id="7-bug"></a>
 ## 7. Bug (§6.5)
@@ -358,7 +363,13 @@ cho đủ danh sách.
 Cấu hình và hai lượt mẫu: [`ci/ci-report.md`](../ci/ci-report.md).
 Pipeline: [`.github/workflows/api-tests.yml`](../.github/workflows/api-tests.yml).
 
-**Quyết định thiết kế quan trọng nhất của phần này: cổng CI so với baseline, không so với 0.** Bộ test cố ý
+**Hai bộ test, hai cổng, hai vai trò.** Đề đòi một lượt *tất cả test case pass* và một lượt *có một test
+fail*. Bộ 136 case không đáp ứng được theo nghĩa chữ, nên pipeline có thêm **regression suite** — tập con
+các case đang xanh, **sinh tự động** bởi `tools/gen-regression.mjs`, giữ nguyên expected, cổng **0 đỏ**.
+Hai lượt mẫu: [XANH 216/0](https://github.com/DuyITLOR/HW06-Api-Testing/actions/runs/32580345226) ·
+[ĐỎ 1/217](https://github.com/DuyITLOR/HW06-Api-Testing/actions/runs/32580407707).
+
+**Vì sao bộ bug-hunting vẫn dùng cổng baseline chứ không phải 0.** Bộ test cố ý
 bắt bug thật nên số assertion đỏ ở trạng thái bình thường là **89**, không phải 0. Lấy "0 đỏ" làm cổng thì
 pipeline đỏ vĩnh viễn và **hồi quy mới không còn phân biệt được với bug cũ** — cổng mất hết tác dụng.
 `tools/ci-gate.mjs` so với [`ci/expected-failures.json`](../ci/expected-failures.json) (29 / 30 / 30, mỗi
@@ -394,6 +405,8 @@ Postman — 136 case, 329 assertion, từ **một** nguồn định nghĩa.
 | 8 | Chỉ kiểm endpoint được giao, không soát **route lân cận cùng nhóm quyền** | bỏ sót (prompt) | Đọc `server.js` quanh dòng 179 thấy `POST`/`DELETE` cũng thiếu middleware | Thêm TC-PRODUPD-107/108 → mở rộng **BUG-13** |
 | 9 | Sinh mã JS có **lỗi cú pháp**: giá trị chuỗi lồng trong tên `pm.test` không escape dấu `"` | kỹ thuật | Lượt Newman đầu: 2 case đỏ với `missing ) after argument list` — **không phải** bug SUT | Sửa hàm `fieldEq` trong generator (escape `"` → `'`) rồi sinh lại |
 | 10 | Chạy seed **trước khi SUT seed xong DB** → user2 bị xoá cùng bảng `users` | kỹ thuật | Lượt đầu: SETUP-03 của API-02 đỏ 401 — đỏ **vì môi trường**, không vì bug | Điều kiện "SUT sẵn sàng" đổi thành *login admin được*, không chỉ *cổng đã mở* |
+| 16 | **TC-CART-020 và TC-CART-021: assertion nghiêm hơn expected của chính nó** — cột expected ghi *"từ chối, **hoặc** lấy giá/tên từ catalog"* nhưng assertion chỉ nhận `400/422`. Nếu SUT chọn hành vi thứ hai thì test đỏ oan → sẽ bị báo thành bug của SUT | thiết kế test | soát chéo cột `expect` với `checks` khi tự chấm lại bài | **Không nới assertion cho qua**: chuyển phần khẳng định sang `TC-CART-107`, nơi cả hai hành vi hợp lệ đều dẫn tới cùng một kết luận kiểm được (giỏ không được chứa dòng thiếu giá / không tên). Bug vẫn bị bắt, bằng case không tranh cãi được về expected |
+| 17 | Cổng baseline quét luôn `ci-regression.json` → build đỏ vì *"chưa có baseline"* trong khi cả hai cổng thật đều xanh | kỹ thuật | đọc log lượt CI đầu sau khi thêm regression suite | thu hẹp glob về `ci-api-*.json`; regression có cổng riêng |
 | 12 | **Bản sửa cho lỗi #10 vẫn chưa đủ**: lấy "login admin được" làm mốc SUT sẵn sàng — nhưng mốc đó cũng sai | kỹ thuật | Chạy lại toàn bộ để kiểm tái lập: API-02 ra **34** thay vì 30. Tái hiện thủ công **3/3 lần**: `POST /api/register` trả `200 {"id":3}` rồi user **biến mất** | Mốc sẵn sàng đổi thành **ghi rồi kiểm chứng bản ghi còn sống** (thử tối đa 12 lần); seed thất bại thì **chặn** lượt chạy thay vì cảnh báo |
 | 13 | Xuất Excel **đếm đúp** case AI (250 thay vì 136) | prompt quality | Số không khớp `summary.md` | Bỏ `generated.md` khỏi sheet gộp khi đã có `audit.md` |
 | 14 | `verify-all.sh` đếm **dòng** thay vì **TC ID duy nhất** → mỗi API phồng thêm bằng số dòng bảng "vì sao AI bỏ sót" (50 thay vì 43) | kỹ thuật | Số không khớp `summary.md` và `excel/` | Đếm `sort -u` trên TC ID |
@@ -444,7 +457,13 @@ Ghi rõ vì một báo cáo không nêu giới hạn thì không kiểm chứng 
 6. **BUG-14 không nằm trong collection Postman** — có chủ ý (§5.5). Nghĩa là lượt Newman **không** chứng
    minh được BUG-14; bằng chứng của nó nằm ở `verify-bugs.sh` + stack trace trong `.run-logs/sut.log`.
 7. **Ảnh trong 19 GitHub Issue là ảnh báo cáo Newman**, không phải ảnh từng bước tái hiện. Mỗi issue có
-   lệnh `curl` chạy lại được và trỏ tới log `verify-bugs-output.txt`, nhưng nếu giảng viên đòi ảnh chụp
-   đúng thời điểm tái hiện từng bug thì phần đó còn thiếu.
-8. **Ảnh Postman Console** (§11) chưa có — bộ test chạy bằng Newman CLI, header `X-Student-Id` thấy trong
-   output CLI và trong HTML report; ảnh từ Postman GUI là việc còn lại.
+   lệnh `curl` chạy lại được và trỏ tới log `verify-bugs-output.txt`.
+8. **Bằng chứng `X-Student-Id` là ảnh bảng REQUEST HEADERS trong báo cáo Newman**
+   (`bug-report/screenshots/x-student-id-request-header.png`), không phải ảnh Postman Console GUI —
+   bộ test chạy bằng Newman CLI. Ảnh này cho thấy header **như đã gửi thật** kèm hostname `localhost:3000`,
+   tức phủ được cả hai yêu cầu của §11; nhưng nếu giảng viên đòi đúng cửa sổ Postman Console thì cần thêm
+   một ảnh nữa.
+9. **Lượt chạy được nộp là lượt trên runner GitHub** (`runs/32580345226`), không phải lượt local, vì cổng
+   3000 trên máy sinh viên đang bị một kind cluster khác chiếm khi chốt bài. Cả hai môi trường cho cùng
+   số đỏ 29/30/30 (§6), và runner cũng chạy trên `localhost` nên vẫn thoả §11. Chạy lại local:
+   `npm run test:all`.

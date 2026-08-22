@@ -10,6 +10,7 @@
 collections/23127178_api-01-products-search.postman_collection.json
 collections/23127178_api-02-cart-add.postman_collection.json
 collections/23127178_api-03-product-update.postman_collection.json
+collections/23127178_regression.postman_collection.json        ← sinh tự động, cổng CI 0 đỏ
 ```
 
 `tools/run-newman.sh <api-slug>` tìm collection theo đúng mẫu tên này — đổi tên là script không thấy.
@@ -32,17 +33,18 @@ collections/23127178_api-03-product-update.postman_collection.json
 | # | Feature | Dùng ở đâu | Trạng thái |
 |---|---|---|---|
 | 1 | Workspace | Workspace riêng cho HW06 | [x] |
-| 2 | Collection + folder lồng nhau | 3 collection · 27 folder (`00-setup` → `99-teardown`) | [x] |
+| 2 | Collection + folder lồng nhau | **4** collection · 27 folder (`00-setup` → `99-teardown`) · regression suite lồng 3 tầng (api → folder → request) | [x] |
 | 3 | Environment + biến | `HW06-local-23127178`, 17 biến | [x] đã tạo |
 | 4 | Biến **secret** | `admin_password`, `user_password` đặt type `secret` | [x] đã tạo |
 | 5 | Collection-level **pre-request script** | header `X-Student-Id` (§6.4) | [x] đã viết |
 | 6 | Test script (`pm.test`) | 329 assertion trên 171 request | [x] |
 | 7 | **JSON schema validation** (`pm.response.to.have.jsonSchema`) | folder `40-schema` của cả 3 API | [x] |
-| 8 | **Data-driven** với Collection Runner + file CSV | `postman/data/*.csv` (sinh bằng `npm run seed:api`) | [x] CSV đã có |
+| 8 | **Data-driven** với Collection Runner + file CSV | `postman/data/*.csv` (sinh bằng `npm run seed:api`) | [x] |
+| 16 | **Collection sinh tự động từ một nguồn** | `tools/gen-artifacts.mjs` + `tools/gen-regression.mjs` — bảng test case và collection không thể lệch nhau | [x] |
 | 9 | Biến động giữa request (`pm.environment.set`) | token, `product_id`, `total_products`, `cart_before` | [x] |
 | 10 | `pm.sendRequest` (setup trong script) | dọn fixture ở `00-setup` và `99-teardown` | [x] |
-| 11 | Newman CLI + **htmlextra** reporter | `tools/run-newman.sh` | [x] đã cấu hình |
-| 12 | Newman trong **CI/CD** (GitHub Actions) | `.github/workflows/api-tests.yml` | [x] đã cấu hình |
+| 11 | Newman CLI + **htmlextra** reporter | `tools/run-newman.sh` · 4 report HTML | [x] |
+| 12 | Newman trong **CI/CD** (GitHub Actions) | `.github/workflows/api-tests.yml` — 2 lượt mẫu §6 | [x] |
 | 13 | **Mock server** | **KHÔNG dùng** — cần Postman Cloud; `tools/gen-artifacts.mjs` giữ vai trò nguồn spec | [ ] |
 | 14 | **Monitor** | **KHÔNG dùng** — cần Postman Cloud; lịch chạy do GitHub Actions đảm nhiệm | [ ] |
 | 15 | **Examples** / tài liệu collection | mỗi collection có `description` ghi rõ được sinh từ spec nào | [x] |

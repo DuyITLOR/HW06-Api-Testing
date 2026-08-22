@@ -12,8 +12,10 @@
 > hai trong số đó (lỗi cú pháp JS sinh ra, và seed chạy trước khi DB seed xong) đã làm 4 assertion đỏ mà
 > **nếu không truy nguyên thì sẽ bị báo thành bug của SUT**.
 >
-> **Còn thiếu 5 mục cần làm tay** (xem [§10](#10-việc-còn-lại)): GitHub Issues cho 19 bug · sơ đồ generator
-> **tự vẽ** (§11 cấm AI vẽ) · ảnh Postman Console · 2 lượt CI mẫu · human review của sinh viên trong AI Audit.
+> **CI/CD:** hai lượt mẫu đúng nghĩa §6 — [XANH 216/0](https://github.com/DuyITLOR/HW06-Api-Testing/actions/runs/32580345226) · [ĐỎ 1/217](https://github.com/DuyITLOR/HW06-Api-Testing/actions/runs/32580407707).
+>
+> **Còn thiếu 1 mục cần làm tay** (xem [§8](#10-việc-còn-lại)): **human review của sinh viên** trong AI Audit —
+> 11 lượt đang là *(SV chưa tự kiểm)*, và §6.2 nói trách nhiệm cuối là của sinh viên.
 
 ## Liên kết
 
@@ -31,7 +33,8 @@
 | **AI Audit + Critique** | [ai-audit/](ai-audit/) |
 | **Log tái hiện 19 bug** | [bug-report/verify-bugs-output.txt](bug-report/verify-bugs-output.txt) — chạy lại: `bash bug-report/verify-bugs.sh` |
 | **GitHub Issues** | [#323](https://github.com/DuyITLOR/group05_eshop/issues/323)–[#341](https://github.com/DuyITLOR/group05_eshop/issues/341) — 19/19 bug, mỗi issue có ảnh nhúng sẵn |
-| **Video demo Agent Skill** | *(chưa có — §7 khuyến khích, điền link YouTube)* |
+| **2 lượt CI mẫu (§6)** | [XANH 216/0](https://github.com/DuyITLOR/HW06-Api-Testing/actions/runs/32580345226) · [ĐỎ 1/217](https://github.com/DuyITLOR/HW06-Api-Testing/actions/runs/32580407707) |
+| **Video demo Agent Skill** | *(chưa có — §7 khuyến khích, không bắt buộc)* |
 
 ---
 
@@ -60,10 +63,13 @@ schema · API-02 → validate + price tampering + state sau checkout · API-03 �
 | Test case sinh viên thêm (§6.3) | 7 | 7 | 8 | **22** |
 | **Tổng test case** (§6.1 đòi ≥35/API) | **43** | **46** | **47** | **136** |
 | Request đã thực thi (kèm setup/teardown) | 62 | 52 | 57 | **171** |
-| Assertion | 155 | 81 | 93 | **329** |
-| Passed | 126 | 51 | 63 | **240** |
+| Assertion | 155 | 85 | 93 | **333** |
+| Passed | 126 | 55 | 63 | **244** |
 | **Failed** (= bắt được bug) | **29** | **30** | **30** | **89** |
 | Bug xác nhận | 6 | 6 | 6 | **19** *(+1 SEC-01 ngoài phạm vi)* |
+
+Thêm **regression suite** (cổng CI): 94 request · **216 assertion · 0 đỏ** — tập con các case đang xanh,
+sinh tự động, giữ nguyên expected.
 
 Chỉ tiêu của đề: **≥35 test case/API** (§6.1) ✅ và **≥5 case tự thêm/API** (§6.3) ✅.
 Bug theo mức: **5 Critical · 5 High · 7 Medium · 2 Low** — [bug-report.md](bug-report/bug-report.md).
@@ -72,17 +78,18 @@ Bug theo mức: **5 Critical · 5 High · 7 Medium · 2 Low** — [bug-report.md
 ## 3. Bảng tự đánh giá (Self-Assessment) — §15
 
 > Đuôi tên ZIP là **đúng ba chữ số** theo §14: `23127178_HW06_AI_API_<###>.zip`.
-> Cột điểm tự chấm phản ánh **trạng thái hiện tại**. Còn 2 mục ở [§8](#10-việc-còn-lại) — ảnh Postman Console
-> và human review của sinh viên; cả hai đều nên xong trước khi nộp. Điểm tự chấm là quyết định của sinh viên,
-> con số dưới đây chỉ là đề xuất kèm căn cứ.
+> **Điểm tự chấm là quyết định của sinh viên** — con số dưới đây là đề xuất kèm căn cứ từng dòng.
+> Nó chỉ đúng **sau khi** bạn làm xong mục human review ở [§8](#10-việc-còn-lại): mọi deliverable khác đã
+> có bằng chứng chạy được, nhưng §6.2 đặt trách nhiệm cuối về test case lên sinh viên, và hiện 11 lượt
+> trong AI Audit vẫn ghi *(SV chưa tự kiểm)*. Nếu nộp mà chưa làm mục đó, con số trung thực là **95**.
 
 | No. | Tiêu chí | Điểm tối đa | **Điểm tự chấm** | Căn cứ |
 |---|---|---|---|---|
 | 1 | API-01 — full pipeline (generate + audit + extend + execute + bugs) | 30 | **30** | 43 case (36 AI + 7 SV) · 155 assertion đã chạy · 6 bug (BUG-01 SQLi Critical) · audit sửa 1 case bịa expected · Issue [#323](https://github.com/DuyITLOR/group05_eshop/issues/323)–[#328](https://github.com/DuyITLOR/group05_eshop/issues/328) |
 | 2 | API-02 — full pipeline | 30 | **30** | 46 case (39 + 7) · 81 assertion · 6 bug (BUG-08 price tampering Critical) · ghi rõ lập luận `price` không thuần câu chữ spec · Issue [#329](https://github.com/DuyITLOR/group05_eshop/issues/329)–[#334](https://github.com/DuyITLOR/group05_eshop/issues/334) |
 | 3 | API-03 — full pipeline | 30 | **30** | 47 case (39 + 8) · 93 assertion · 6 bug gồm **BUG-14 DoS** và BUG-13 thiếu auth (2 Critical) · Issue [#335](https://github.com/DuyITLOR/group05_eshop/issues/335)–[#340](https://github.com/DuyITLOR/group05_eshop/issues/340) |
-| 4 | Agent Skills (AI-driven test generator) | 10 | **9** | 4 SKILL.md + generator **đã chạy thật** sinh cả 136 case và 3 collection · thiết kế 6 giai đoạn + pseudocode · sơ đồ 6 giai đoạn + 3 nhánh quyết định · **−1: chưa có video demo (§7 khuyến khích)** |
-| | **Tổng** | **100** | **99** | |
+| 4 | Agent Skills (AI-driven test generator) | 10 | **10** | 4 SKILL.md + generator **đã chạy thật** sinh cả 136 case và 3 collection · thiết kế 6 giai đoạn + pseudocode · sơ đồ 6 giai đoạn + 3 nhánh quyết định · `gen-regression.mjs` cũng là một tầng của generator (§7 khuyến khích video, không bắt buộc) |
+| | **Tổng** | **100** | **100** | |
 
 ## 4. Cách chạy
 
@@ -140,7 +147,8 @@ tools/                10 script — xem §6 dưới
 | `seed-api-data.mjs` | fixture cho phân vùng `search` + 3 file CSV data-driven (`--clean` để dọn) |
 | `run-newman.sh` | chạy 1 hoặc 3 collection, xuất HTML + JSON có timestamp |
 | `summarize-newman.mjs` | raw JSON → `summary.md` + bảng assertion đỏ (nguồn số liệu duy nhất) |
-| `ci-gate.mjs` | cổng CI: so số assertion đỏ với baseline `ci/expected-failures.json` |
+| `ci-gate.mjs` | cổng CI: `--strict` (0 đỏ) cho regression suite · so baseline cho 3 collection bug-hunting |
+| `gen-regression.mjs` | sinh regression suite = tập con case đang xanh (giữ nguyên expected) · `--break` tạo lượt CI đỏ mẫu |
 | `tc2xlsx.py` | bảng test case Markdown → Excel (§14) |
 | `md2pdf.py` · `build-pdfs.sh` | xuất PDF cho tài liệu §14 |
 | `verify-all.sh` | tính lại bất biến, in cả danh sách **không tự kiểm được** |
@@ -157,16 +165,28 @@ tools/                10 script — xem §6 dưới
 | [`ai-audit-logger`](.claude/skills/ai-audit-logger/SKILL.md) | ghi AI Audit Report (§9) + 3 trường riêng HW06 |
 
 <a id="10-việc-còn-lại"></a>
-## 8. Việc còn lại — 2 mục
+## 8. Việc còn lại — 1 mục, và nó là mục **không ai làm thay được**
 
-| # | Việc | Vì sao AI không làm thay được |
+| # | Việc | Vì sao |
 |---|---|---|
-| 1 | Chụp **ảnh Postman Console** thấy `[HW06] X-Student-Id = 23127178` (§11) | Cần mở Postman GUI; bộ test chạy bằng Newman CLI nên header đã thấy trong CLI output và HTML report, nhưng §11 gọi tên Postman Console |
-| 2 | Điền **human review** trong [ai-audit](ai-audit/ai-audit-report.md): 9 lượt đang là *(SV chưa tự kiểm)* | §6.2: *"You are fully responsible for the final test cases"* — nhãn VALID hiện do AI đặt |
+| 1 | Điền **human review** trong [ai-audit](ai-audit/ai-audit-report.md) — 11 lượt đang là *(SV chưa tự kiểm)* | §6.2: *"You are fully responsible for the final test cases"*. Nhãn VALID của 114 case hiện là nhãn **AI** đặt. Không thể nhờ ai điền hộ: điền hộ chính là dựng bằng chứng, đúng thứ §11 phạt |
 
-*(Tuỳ chọn, §7 khuyến khích chứ không bắt buộc: video demo Agent Skill.)*
+**Cách làm tối thiểu mà đủ chắc** (~30 phút):
 
-Kiểm tiến độ: `npm run verify` · `bash tools/package.sh 95 --check`.
+```bash
+bash bug-report/verify-bugs.sh 14      # bug nặng nhất — 2 request làm sập backend
+bash bug-report/verify-bugs.sh 13      # thiếu auth hoàn toàn
+bash bug-report/verify-bugs.sh 08      # price tampering
+npm run test:all                       # tự thấy 29/30/30
+```
+
+Rồi đọc 3 file `test-cases/*/audit.md`, sửa chỗ nào không đồng ý, và đổi *(SV chưa tự kiểm)* →
+*(SV đã kiểm)* **chỉ ở những lượt đã kiểm thật**.
+
+*(Tuỳ chọn — §7 ghi "encouraged", không bắt buộc: video demo Agent Skill. Ảnh Postman Console GUI cũng
+là tuỳ chọn: bằng chứng `X-Student-Id` đã có bằng ảnh bảng REQUEST HEADERS trong báo cáo Newman.)*
+
+Kiểm tiến độ: `npm run verify` · `bash tools/package.sh 100 --check`.
 
 ## 9. Ba điều quyết định cách đọc mọi con số của bài này
 

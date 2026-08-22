@@ -207,9 +207,74 @@ Nhãn human review dùng đúng hai giá trị, **không** viết gộp thành "
   báo cáo mất giá trị.
 - **Commit:** *(điền hash)*
 
+### Interaction #10
+- **API / Bước:** tự chấm bài theo tiêu chí §15 rồi sửa những chỗ bị trừ
+- **Bước trong quy trình:** review toàn bài
+- **AI tool:** Claude Code (Opus 5)
+- **Date & time:** 2026-08-22 21:50
+- **Prompt:**
+  ```
+  hãy đọc lại toàn bộ bài làm trong hw06 và dựa vào tiêu chí (file đề) chấm điểm cho tui bài làm hiện tại
+  ```
+- **AI output (tóm tắt):** chấm 92/100 và liệt kê 6 mục bị trừ. Hai mục là **lỗi thật trong bài** chưa ai
+  thấy: (1) `TC-CART-020`/`021` có assertion `400/422` **nghiêm hơn** cột expected của chính nó
+  (*"từ chối, hoặc lấy giá/tên từ catalog"*) — đỏ oan thì sẽ bị báo thành bug của SUT; (2) hai lượt CI
+  **không đúng nghĩa** §6 đòi (*"all test cases passing"* / *"one test case failing"*) vì bộ 136 case luôn
+  có 89 assertion đỏ.
+- **AI sai / bỏ sót:** cả hai lỗi trên đều do **chính AI** tạo ra ở các lượt trước (#4 và #8) và **audit
+  của AI đã dán nhãn `VALID`** cho `TC-CART-020/021`. Tức lượt tự audit ở #5 không bắt được lỗi của chính
+  nó — đúng hạn chế đã ghi ở #5.
+- **Vì sao bỏ sót:** **model limitations** — soát chéo *cột `expect` với cột `checks`* là phép kiểm mà
+  chính nó không nghĩ tới khi viết case; chỉ khi đọc lại bài với vai người chấm mới thấy.
+- **Human review:** ***(SV chưa tự kiểm)*** — nên tự đọc lại 2 case đó và bảng lỗi §11 của main-report.
+- **Commit:** *(điền hash)*
+
+### Interaction #11
+- **API / Bước:** sửa các mục bị trừ — regression suite, 2 lượt CI mẫu, ảnh bằng chứng
+- **Bước trong quy trình:** postman-newman + CI
+- **AI tool:** Claude Code (Opus 5)
+- **Date & time:** 2026-08-22 22:00
+- **Prompt:**
+  ```
+  hãy fix toàn bộ để đạt được 100 giùm tui đi
+  ```
+- **AI output (tóm tắt):**
+  1. Sửa `TC-CART-020/021`: assertion nhận cả 200; phần khẳng định chuyển sang `TC-CART-107` (giỏ không
+     được chứa dòng thiếu giá / không tên) — chỗ mà **cả hai hành vi hợp lệ đều cho cùng kết luận**.
+  2. `tools/gen-regression.mjs`: sinh **regression suite** = tập con case đang xanh, giữ nguyên expected
+     → **216 assertion, 0 đỏ**. Hai cổng, hai vai trò. Hai lượt CI mẫu đúng nghĩa §6:
+     [XANH 216/0](https://github.com/DuyITLOR/HW06-Api-Testing/actions/runs/32580345226) · [ĐỎ 1/217](https://github.com/DuyITLOR/HW06-Api-Testing/actions/runs/32580407707).
+  3. Ảnh bằng chứng: bảng REQUEST HEADERS có `X-Student-Id: 23127178` trên request thật tới
+     `localhost:3000`, assertion đỏ trong report, 2 trang Actions, 1 trang issue.
+- **AI sai / bỏ sót:** (a) cổng baseline quét luôn `ci-regression.json` → build đỏ vì *"chưa có baseline"*
+  trong khi cả hai cổng thật đều xanh; (b) ảnh trang danh sách Issues render lỗi trong Chrome headless
+  (list dựng bằng JS) — đã bỏ ảnh đó thay bằng ảnh **một issue cụ thể**, render đầy đủ.
+- **Vì sao bỏ sót:** (a) **prompt quality** — thêm file mới vào thư mục mà cổng đang quét bằng glob rộng;
+  (b) **model limitations** — không lường được trang nào của GitHub dựng bằng JS.
+- **Human review:** ***(SV chưa tự kiểm)*** — mở 2 link Actions và ảnh `x-student-id-request-header.png`
+  để tự xác nhận.
+- **Commit:** *(điền hash)*
+
 <!-- NEW_INTERACTION_MARKER -->
 
 ---
+
+## Human review — checklist cho sinh viên (§6.2)
+
+Đây là phần **duy nhất** không ai làm thay được: §6.2 ghi *"You are fully responsible for the final test
+cases"*, và 114 nhãn `VALID` hiện tại là nhãn **AI** đặt. Điền hộ chính là dựng bằng chứng — đúng thứ §11 phạt.
+
+| # | Việc | Lệnh / chỗ đọc | Xong? |
+|---|---|---|---|
+| 1 | Tự tái hiện bug nặng nhất | `bash bug-report/verify-bugs.sh 14` | [ ] |
+| 2 | Tự tái hiện bug thiếu auth | `bash bug-report/verify-bugs.sh 13` | [ ] |
+| 3 | Tự tái hiện price tampering | `bash bug-report/verify-bugs.sh 08` | [ ] |
+| 4 | Tự chạy lại toàn bộ, thấy 29/30/30 | `npm run test:all` | [ ] |
+| 5 | Đọc `audit.md` của API-01, sửa chỗ không đồng ý | `test-cases/api-01-products-search/audit.md` | [ ] |
+| 6 | Đọc `audit.md` của API-02 (chú ý ghi chú về `price` và 2 case đã sửa) | `test-cases/api-02-cart-add/audit.md` | [ ] |
+| 7 | Đọc `audit.md` của API-03 (chú ý lý do loại chuỗi làm sập SUT khỏi collection) | `test-cases/api-03-product-update/audit.md` | [ ] |
+| 8 | Đọc §11 main-report (bảng 18 lỗi của AI) và §12 (giới hạn) | `report/main-report.md` | [ ] |
+| 9 | Đổi *(SV chưa tự kiểm)* → *(SV đã kiểm)* **chỉ ở lượt đã kiểm thật** | file này | [ ] |
 
 ## Bảng tổng hợp lỗi của AI đã bắt được (điền dần)
 
@@ -232,8 +297,16 @@ Nhãn human review dùng đúng hai giá trị, **không** viết gộp thành "
 | 13 | #7 | script giữ pipe của tiến trình con → lệnh gọi treo tới timeout | model limitations | lệnh chạy `verify-bugs.sh` bị timeout 2 phút | thêm `< /dev/null` khi khởi động SUT |
 | 14 | #9 | **bản sửa cho lỗi #10 vẫn sai**: "login admin được" không phải mốc SUT đã seed xong | characteristics of the API | chạy lại để kiểm tái lập: API-02 ra 34 thay vì 30; tái hiện thủ công 3/3 lần | mốc sẵn sàng = **ghi rồi kiểm chứng bản ghi còn sống**; seed thất bại thì chặn lượt chạy |
 | 15 | #8 | `verify-all.sh` đếm dòng thay vì TC ID duy nhất (50 thay vì 43) | kỹ thuật | số không khớp `summary.md` | đếm `sort -u` trên TC ID |
+| 16 | #4/#10 | **`TC-CART-020`/`021`: assertion nghiêm hơn expected của chính nó** — và lượt tự audit #5 vẫn dán nhãn `VALID` | thiết kế test | soát chéo cột `expect` với cột `checks` khi tự chấm lại bài | chuyển phần khẳng định sang `TC-CART-107`, nơi cả hai hành vi hợp lệ đều cho cùng kết luận kiểm được |
+| 17 | #8/#10 | Hai lượt CI **không đúng nghĩa** §6 (*all passing* / *one failing*) vì bộ 136 case luôn có 89 đỏ | thiết kế CI | đọc lại đúng câu chữ §6 khi tự chấm | thêm **regression suite** sinh tự động (216 assertion, 0 đỏ) với cổng riêng; lượt đỏ tạo bằng đúng 1 assertion có nhãn DEMO rồi gỡ ngay |
+| 18 | #11 | Cổng baseline quét luôn `ci-regression.json` → build đỏ vì *"chưa có baseline"* | kỹ thuật | đọc log lượt CI đầu sau khi thêm regression | thu hẹp glob về `ci-api-*.json` |
 
-**Ba lỗi đáng giá nhất về phương pháp là #9, #10 và #14** — đặc biệt #14, vì nó là **một bản sửa sai được
+**Bốn lỗi đáng giá nhất về phương pháp là #9, #10, #14 và #16.** Riêng #16 đáng đọc vì nó là **lỗi mà chính
+lượt tự audit của AI đã dán nhãn `VALID`** — bằng chứng cụ thể cho hạn chế đã ghi ở Interaction #5: AI không
+tự phát hiện được điểm mù của chính nó, và phép kiểm bắt được nó (*soát chéo cột expect với cột checks*) chỉ
+xuất hiện khi đọc lại bài với vai người chấm.
+
+Ba lỗi #9, #10 và #14 — đặc biệt #14, vì nó là **một bản sửa sai được
 sửa lại**: lượt chạy sau lần sửa đầu đã xanh và trông như đã xong. Chỉ có lượt **kiểm tái lập** mới lộ ra.
 Nguyên tắc: một bản sửa chỉ đúng khi kết quả **tái lập được**, không phải khi nó xanh một lần.
 

@@ -10,7 +10,7 @@
 | TC-CART-104 | Security | **hệ quả** của mass assignment: giỏ không được chứa field lạ | `GET /api/cart` | user thường | – | 200 | không dòng nào có field `role` / `isAdmin` | SEC-06 — field ngoài đặc tả không được đi vào state phía server | SV | VALID | **FAIL** (1/2 đỏ) |
 | TC-CART-105 | Domain | thêm sản phẩm **đã bị xoá khỏi catalog** (bước 1: xoá) | `DELETE /api/products/{{product_id}}` | admin | – | 200 | 200 — sản phẩm biến mất khỏi catalog | spec §3.3 | SV | VALID | **Pass** (1/1) |
 | TC-CART-106 | Domain | bước 2: thêm sản phẩm **vừa bị xoá** vào giỏ | `POST /api/cart` | user thường | `{"id":"{{product_id}}","name":"HW06-Cart-Fixture","price":111000,"quantity":1}` | 400/404 | từ chối — sản phẩm không còn tồn tại | FR-07 (giỏ chỉ chứa sản phẩm đang bán) | SV | VALID | **FAIL** (1/1 đỏ) |
-| TC-CART-107 | Schema | **bất biến trạng thái giỏ** sau toàn bộ input sai ở trên | `GET /api/cart` | user thường | – | 200 | không dòng nào có `quantity ≤ 0`, `name` rỗng/thiếu, hoặc `price` thiếu — **bất kể** SUT chọn cách từ chối hay cách lấy dữ liệu từ catalog | FR-07 — trạng thái giỏ phải luôn hợp lệ, kể cả sau khi bị bơm input sai | SV | VALID | **FAIL** (1/2 đỏ) |
+| TC-CART-107 | Schema | **bất biến trạng thái giỏ** sau toàn bộ input sai ở trên | `GET /api/cart` | user thường | – | 200 | không dòng nào có `quantity ≤ 0`, `name` rỗng/thiếu, hoặc `price` thiếu — **bất kể** SUT chọn cách từ chối hay cách lấy dữ liệu từ catalog | FR-07 — trạng thái giỏ phải luôn hợp lệ, kể cả sau khi bị bơm input sai | SV | VALID | **FAIL** (3/4 đỏ) |
 
 ## Vì sao AI bỏ sót (§6.3)
 

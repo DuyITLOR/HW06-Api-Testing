@@ -11,8 +11,8 @@ có cách nào phân biệt "việc này đã làm" với "việc này được 
 bash tools/verify-all.sh      # hoặc: npm run verify
 ```
 
-Trạng thái hiện tại: **31 PASS · 4 FAIL**. Bốn mục FAIL đều là mục **chỉ người làm được**: sơ đồ tự vẽ (§11),
-ảnh bằng chứng (§11), số GitHub Issue (§6.5), link video demo (§7).
+Trạng thái hiện tại: **34 PASS · 0 FAIL**. Mục duy nhất còn lại không phải là file thiếu mà là **human review
+của sinh viên** (§6.2) — xem checklist ở cuối `ai-audit/ai-audit-report.md`.
 
 ---
 
@@ -72,7 +72,7 @@ Trạng thái hiện tại: **31 PASS · 4 FAIL**. Bốn mục FAIL đều là m
 |---|---|---|
 | Dùng càng nhiều feature Postman càng tốt + **liệt kê** | [postman/README.md](postman/README.md) bảng 15 feature | đọc cột trạng thái; mỗi `[x]` phải trỏ được vào file thật |
 | Newman trong CI/CD | [.github/workflows/api-tests.yml](.github/workflows/api-tests.yml) | `gh run list --workflow api-tests.yml` |
-| CI/CD report + **2 commit mẫu** (1 xanh, 1 đỏ) | [ci/ci-report.md](ci/ci-report.md) §3 | `verify-all.sh` — tìm link `actions/runs/<id>` |
+| CI/CD report + **2 commit mẫu** (1 xanh, 1 đỏ) | [ci/ci-report.md](ci/ci-report.md) §3 — [XANH 216/0](https://github.com/DuyITLOR/HW06-Api-Testing/actions/runs/32580345226) · [ĐỎ 1/217](https://github.com/DuyITLOR/HW06-Api-Testing/actions/runs/32580407707) | `gh run list --workflow api-tests.yml` |
 
 ## §7 — Agent Skill / AI test generator
 
