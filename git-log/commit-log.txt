@@ -1,9 +1,12 @@
 Git commit log — HW06 API Testing · SV Lê Nhựt Duy 23127178
-Xuất lúc: 2026-08-23 00:24:37 +0700
+Xuất lúc: 2026-08-23 00:33:09 +0700
 Repo: https://github.com/DuyITLOR/HW06-Api-Testing.git
-Số commit: 44
+Số commit: 47
 
 ═══ Ngắn gọn ══════════════════════════════════════════════════════════
+fef7773 2026-08-23 test: review the content of the 114 VALID labels, not just their count
+6a1b53a 2026-08-23 fix: make the review helper forgiving about input, strict about intent
+755c7b3 2026-08-23 docs: refresh the commit log
 eb71e4e 2026-08-23 test: script the two error classes the manual review pass caught
 cdbc7ba 2026-08-23 docs: refresh the commit log
 5eaf4de 2026-08-23 docs: second review pass finds three documentation defects, one serious
@@ -50,6 +53,54 @@ b0bb70c 2026-08-19 test(api-01): audit AI-generated cases, 35 VALID and 1 correc
 96f011e 2026-08-18 Initial commit
 
 ═══ Đầy đủ (kèm body) ═════════════════════════════════════════════════
+commit fef77732908186ec135d8517e0aa147a95650528
+Author: DuyITLOR <153221271+DuyITLOR@users.noreply.github.com>
+Date:   Sun Aug 23 00:33:07 2026 +0700
+
+test: review the content of the 114 VALID labels, not just their count
+
+tools/check-cases.mjs asserts seven invariants about what the cases SAY: unique ids, a Cau cu column
+pointing at something checkable (spec section, FR-, SEC-0, server.js, database.js), valid audit labels with
+a reason on INVALID/INCOMPLETE, Security cases traceable to a specific SEC requirement, every case having
+assertions, every student case carrying a why-the-AI-missed-it line in one of the three categories section
+6.3 names, and every case in the table also present in the generated collection.
+
+First run found two: TC-CART-101 and TC-CART-102 are labelled Security but their basis only cites FR-07 and
+FR-08, because SEC-01..SEC-07 contains nothing about price or money integrity. So BUG-08 - price tampering,
+Critical - maps to no SEC requirement at all.
+
+The fix is not relabelling them to keep the script quiet. The spec now states they sit outside SEC-01..07,
+the traceability matrix records this as a gap in the SUT's own requirement list, and suggests the missing
+requirement. The checker accepts a declared exception, not a silent one.
+
+Also: check-claims flagged '329 assertion' inside the very row documenting that stale number. That is
+error #11's family again - a check stricter than its intent - so it now skips lines that are recounting a
+past value. Three review passes, three separate checkers, none of them found zero: 1, then 3, then 2.
+
+---
+commit 6a1b53a015c52c11ec87859222d4816d602ae7b3
+Author: DuyITLOR <153221271+DuyITLOR@users.noreply.github.com>
+Date:   Sun Aug 23 00:28:01 2026 +0700
+
+fix: make the review helper forgiving about input, strict about intent
+
+Two friction points, both mine. Running 'npm run review # comment' passes the comment through as argv,
+so the script saw junk arguments and refused with 'no valid entries' - which reads like it is broken.
+Junk now falls back to showing the pending list. And a typo in the confirmation phrase cancelled the whole
+thing with no second chance; it now normalises diacritics, shows what was typed, and allows one retry.
+
+What did not change: it still requires the phrase typed by hand, still refuses to run without a TTY, and
+still is not reachable from any pipeline. The friction that matters - that a person has to assert they read
+it - is the point of the script.
+
+---
+commit 755c7b31352563127abafe26a17a3ffaa21646fb
+Author: DuyITLOR <153221271+DuyITLOR@users.noreply.github.com>
+Date:   Sun Aug 23 00:24:37 2026 +0700
+
+docs: refresh the commit log
+
+---
 commit eb71e4e07fd7294e046c4e3960341748d380f838
 Author: DuyITLOR <153221271+DuyITLOR@users.noreply.github.com>
 Date:   Sun Aug 23 00:24:35 2026 +0700
