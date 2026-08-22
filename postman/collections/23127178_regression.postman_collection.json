@@ -1,8 +1,8 @@
 {
   "info": {
-    "name": "23127178 · HW06 Regression suite",
+    "name": "23127178 · HW06 Regression suite (DEMO 1 test fail)",
     "_postman_id": "hw06-regression",
-    "description": "Sinh tự động bởi tools/gen-regression.mjs — tập con CÁC CASE ĐANG XANH của 3 collection chính (giữ nguyên expected). Vai trò: cổng chống hồi quy, phải 0 assertion đỏ. Bộ bug-hunting 136 case nằm ở 3 collection kia và có cổng riêng theo baseline.",
+    "description": "Sinh tự động bởi tools/gen-regression.mjs — tập con CÁC CASE ĐANG XANH của 3 collection chính (giữ nguyên expected). Vai trò: cổng chống hồi quy, phải 0 assertion đỏ. Bộ bug-hunting 136 case nằm ở 3 collection kia và có cổng riêng theo baseline. Bản này CỐ Ý thêm 1 assertion sai ở TC-PRODLIST-003 để tạo lượt CI đỏ mẫu (§6).",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "event": [
@@ -514,6 +514,12 @@
                   "script": {
                     "type": "text/javascript",
                     "exec": [
+                      "// ── DEMO §6: assertion CỐ Ý SAI để tạo lượt CI ĐỎ mẫu ──────────────────",
+                      "// Đề đòi một lượt pipeline có ĐÚNG MỘT test case fail. Thay vì làm hỏng một case thật",
+                      "// (sẽ làm mất một phép kiểm), thêm một assertion vô nghĩa và gỡ ngay sau khi có lượt đỏ.",
+                      "pm.test(\"DEMO cố ý fail — tạo lượt CI đỏ mẫu (§6)\", () => {",
+                      "  pm.expect(1, \"assertion này được thiết kế để fail\").to.eql(2);",
+                      "});",
                       "// TC-PRODLIST-003 · Domain · khớp **nhiều dòng** — Laptop",
                       "pm.test(\"status = 200\", () => pm.response.to.have.status(200));",
                       "pm.test(\"body là mảng JSON\", () => pm.expect(pm.response.json()).to.be.an(\"array\"));",
