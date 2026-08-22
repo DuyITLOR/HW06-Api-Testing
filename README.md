@@ -31,6 +31,7 @@
 | **CI/CD report** | [ci/ci-report.md](ci/ci-report.md) |
 | **Bug report** | [bug-report/bug-report.md](bug-report/bug-report.md) |
 | **AI Audit + Critique** | [ai-audit/](ai-audit/) |
+| **Bằng chứng §11** | [console-x-student-id.png](bug-report/screenshots/console-x-student-id.png) — khối CONSOLE LOGS in `[HW06] X-Student-Id =23127178\|POST/api/login\|…` |
 | **Log tái hiện 19 bug** | [bug-report/verify-bugs-output.txt](bug-report/verify-bugs-output.txt) — chạy lại: `bash bug-report/verify-bugs.sh` |
 | **GitHub Issues** | [#323](https://github.com/DuyITLOR/group05_eshop/issues/323)–[#341](https://github.com/DuyITLOR/group05_eshop/issues/341) — 19/19 bug, mỗi issue có ảnh nhúng sẵn |
 | **2 lượt CI mẫu (§6)** | [XANH 216/0](https://github.com/DuyITLOR/HW06-Api-Testing/actions/runs/32580345226) · [ĐỎ 1/217](https://github.com/DuyITLOR/HW06-Api-Testing/actions/runs/32580407707) |
@@ -166,6 +167,9 @@ tools/                10 script — xem §6 dưới
 
 <a id="10-việc-còn-lại"></a>
 ## 8. Việc còn lại — 1 mục, và nó là mục **không ai làm thay được**
+
+> Ảnh Postman Console **đã có**: `--reporter-htmlextra-logs` đưa `console.log` của pre-request script vào
+> báo cáo Newman, và ảnh chụp khối CONSOLE LOGS là bằng chứng §11 đúng nghĩa. Không cần mở Postman GUI.
 
 | # | Việc | Vì sao |
 |---|---|---|

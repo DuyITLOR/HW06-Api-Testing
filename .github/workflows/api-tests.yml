@@ -122,6 +122,7 @@ jobs:
             --reporters cli,json,htmlextra \
             --reporter-json-export reports/newman/ci-regression.json \
             --reporter-htmlextra-export reports/newman/ci-regression.html \
+            --reporter-htmlextra-logs \
             --timeout-request 10000 || true
           node tools/ci-gate.mjs reports/newman/ci-regression.json --strict
 
@@ -141,6 +142,7 @@ jobs:
               --reporters cli,json,htmlextra \
               --reporter-json-export "reports/newman/ci-${slug}.json" \
               --reporter-htmlextra-export "reports/newman/ci-${slug}.html" \
+              --reporter-htmlextra-logs \
               --timeout-request 10000 || rc=$?
           done
           # rc của Newman KHÔNG quyết định build — cổng ở bước sau mới quyết định.

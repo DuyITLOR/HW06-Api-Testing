@@ -119,9 +119,13 @@ run_one() {
   local htmlargs=()
   if newman run --help 2>/dev/null | grep -q htmlextra || npm ls -g newman-reporter-htmlextra >/dev/null 2>&1; then
     reporters="cli,json,htmlextra"
+    # --reporter-htmlextra-logs: đưa console.log của pre-request script vào report. Đó chính là
+    # bằng chứng §11 đòi ("evidenced by a console screenshot from your pre-request script") — nằm
+    # trong artefact của lượt chạy thật, không phải ảnh chụp rời rạc.
     htmlargs=(--reporter-htmlextra-export "${base}.html"
               --reporter-htmlextra-title "HW06 API Testing — ${slug} — ${MSSV}"
-              --reporter-htmlextra-showEnvironmentData)
+              --reporter-htmlextra-showEnvironmentData
+              --reporter-htmlextra-logs)
   else
     echo "   [LUU Y] chưa có newman-reporter-htmlextra → chỉ xuất JSON. Cài: npm i -g newman-reporter-htmlextra"
   fi
