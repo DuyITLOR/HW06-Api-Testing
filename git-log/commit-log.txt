@@ -1,9 +1,11 @@
 Git commit log — HW06 API Testing · SV Lê Nhựt Duy 23127178
-Xuất lúc: 2026-08-23 00:13:39 +0700
+Xuất lúc: 2026-08-23 00:19:44 +0700
 Repo: https://github.com/DuyITLOR/HW06-Api-Testing.git
-Số commit: 40
+Số commit: 42
 
 ═══ Ngắn gọn ══════════════════════════════════════════════════════════
+5eaf4de 2026-08-23 docs: second review pass finds three documentation defects, one serious
+f453d83 2026-08-23 docs: refresh the commit log
 bc2f428 2026-08-23 docs: record the student's own verification run as the submitted evidence
 d7d50ce 2026-08-23 docs: refresh the commit log
 142d6f3 2026-08-23 docs: add the Postman GUI console screenshot the student captured
@@ -46,6 +48,40 @@ b0bb70c 2026-08-19 test(api-01): audit AI-generated cases, 35 VALID and 1 correc
 96f011e 2026-08-18 Initial commit
 
 ═══ Đầy đủ (kèm body) ═════════════════════════════════════════════════
+commit 5eaf4de87f9e13d20df9a449321dd78f8d50400c
+Author: DuyITLOR <153221271+DuyITLOR@users.noreply.github.com>
+Date:   Sun Aug 23 00:19:41 2026 +0700
+
+docs: second review pass finds three documentation defects, one serious
+
+Read the three audit.md files and the report's sections 11 and 12 as a grader would, and found three
+errors no earlier pass caught:
+
+1. ci/ci-report.md cited two commit hashes that do not exist. One real hash was known and the other two
+   were filled in from memory instead of read from git log. That is the worst kind of error to leave in a
+   report - a detail a grader can check in five seconds, and wrong. Real hashes are e388146 and 4e2f302.
+2. The section 11 error table was misnumbered (…10, 16, 17, 12, 13…) and was missing one row that the AI
+   audit table had, so the two documents disagreed 17 vs 18. Renumbered, row added, three cross-references
+   corrected.
+3. Section 12 still pointed at report files that had been replaced.
+
+Error 1 is the same family as errors 1-3 (inventing an expected value where the spec is silent), this time
+in prose rather than in a test case - which is why the fix is not just the corrected hashes but
+tools/check-expect-vs-checks.mjs: it extracts the status codes each case's status column claims and
+compares them against what its assertions actually accept, turning error 11 into a machine-checked
+invariant. 135 cases, 0 mismatches, now part of npm run verify.
+
+The six remaining audit entries still read 'not yet checked by the student'. This pass was the AI auditing
+its own output; it does not substitute for the student's reading.
+
+---
+commit f453d83fce4ad4aa6555832bba64287d022d94d6
+Author: DuyITLOR <153221271+DuyITLOR@users.noreply.github.com>
+Date:   Sun Aug 23 00:13:39 2026 +0700
+
+docs: refresh the commit log
+
+---
 commit bc2f428af812ff7d62f4579abc49cf85fb631c95
 Author: DuyITLOR <153221271+DuyITLOR@users.noreply.github.com>
 Date:   Sun Aug 23 00:13:36 2026 +0700
