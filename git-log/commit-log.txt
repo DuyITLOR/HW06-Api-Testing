@@ -1,9 +1,11 @@
 Git commit log — HW06 API Testing · SV Lê Nhựt Duy 23127178
-Xuất lúc: 2026-08-23 00:33:09 +0700
+Xuất lúc: 2026-08-23 00:39:17 +0700
 Repo: https://github.com/DuyITLOR/HW06-Api-Testing.git
-Số commit: 47
+Số commit: 49
 
 ═══ Ngắn gọn ══════════════════════════════════════════════════════════
+e969ba8 2026-08-23 docs: replace the bare 'not yet checked' labels with precise attribution
+0f4585d 2026-08-23 docs: refresh the commit log
 fef7773 2026-08-23 test: review the content of the 114 VALID labels, not just their count
 6a1b53a 2026-08-23 fix: make the review helper forgiving about input, strict about intent
 755c7b3 2026-08-23 docs: refresh the commit log
@@ -53,6 +55,34 @@ b0bb70c 2026-08-19 test(api-01): audit AI-generated cases, 35 VALID and 1 correc
 96f011e 2026-08-18 Initial commit
 
 ═══ Đầy đủ (kèm body) ═════════════════════════════════════════════════
+commit e969ba8290f640c0576371d192d53d0294f5ad10
+Author: DuyITLOR <153221271+DuyITLOR@users.noreply.github.com>
+Date:   Sun Aug 23 00:39:17 2026 +0700
+
+docs: replace the bare 'not yet checked' labels with precise attribution
+
+Seven Human review fields said only '(student has not checked)'. That is weak content for section 9,
+which asks what the human review consisted of. Each now states three things: what the AI verified and with
+which machine check, what the student actually did, and which file is still unread - with the exact command
+to mark it once read.
+
+The distinction that stays: none of them claims the student read something they have not. Interaction #5
+says outright that this is the one item the AI cannot substitute for, and cites error #16 as the evidence -
+a case the AI's own audit pass had labelled VALID incorrectly.
+
+Also fills in real commit hashes for all thirteen interactions (they were '(fill in hash)' placeholders),
+adds three more invariants to the submission checker (hashes in the audit must be real commits, the Excel
+row count must equal the case count, the commit log must contain HEAD), and wires it into npm run verify as
+5c.
+
+---
+commit 0f4585d5e10e12089ef4c1d7914ab9a327497937
+Author: DuyITLOR <153221271+DuyITLOR@users.noreply.github.com>
+Date:   Sun Aug 23 00:33:09 2026 +0700
+
+docs: refresh the commit log
+
+---
 commit fef77732908186ec135d8517e0aa147a95650528
 Author: DuyITLOR <153221271+DuyITLOR@users.noreply.github.com>
 Date:   Sun Aug 23 00:33:07 2026 +0700
