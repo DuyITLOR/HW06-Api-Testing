@@ -86,7 +86,9 @@ const ask = (attempt, done) => rl.question(`  Gõ "toi da doc" rồi Enter: `, (
 ask(1, (confirmed) => {
   rl.close();
   if (!confirmed) { console.log("\n  Huỷ — không thay đổi gì. Chạy lại khi bạn đã đọc.\n"); process.exit(1); }
-  const today = new Date().toISOString().slice(0, 10).split("-").reverse().join("/");
+  // Ngày ĐỊA PHƯƠNG: toISOString() cho ngày UTC, nên lúc 00:50 ngày 23/08 giờ VN nó ghi 22/08.
+  const d = new Date();
+  const today = `${String(d.getDate()).padStart(2,"0")}/${String(d.getMonth()+1).padStart(2,"0")}/${d.getFullYear()}`;
   let n_done = 0;
   const out = blocks.map((b) => {
     const m = b.match(/^### Interaction #(\d+)/);

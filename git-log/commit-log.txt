@@ -1,9 +1,11 @@
 Git commit log — HW06 API Testing · SV Lê Nhựt Duy 23127178
-Xuất lúc: 2026-08-23 00:46:09 +0700
+Xuất lúc: 2026-08-23 00:53:15 +0700
 Repo: https://github.com/DuyITLOR/HW06-Api-Testing.git
-Số commit: 55
+Số commit: 57
 
 ═══ Ngắn gọn ══════════════════════════════════════════════════════════
+19657f7 2026-08-23 fix: the review helper broke when the delegation wording landed
+bd20c95 2026-08-23 docs: refresh the commit log
 59b2ae7 2026-08-23 docs: declare the delegation instead of faking the attestation
 b9ae670 2026-08-23 docs: refresh the commit log
 f25c59b 2026-08-23 fix: make the commit-log invariant satisfiable
@@ -61,6 +63,32 @@ b0bb70c 2026-08-19 test(api-01): audit AI-generated cases, 35 VALID and 1 correc
 96f011e 2026-08-18 Initial commit
 
 ═══ Đầy đủ (kèm body) ═════════════════════════════════════════════════
+commit 19657f7166521f0028d75c539af614e7148d8760
+Author: DuyITLOR <153221271+DuyITLOR@users.noreply.github.com>
+Date:   Sun Aug 23 00:49:27 2026 +0700
+
+fix: the review helper broke when the delegation wording landed
+
+Two defects the student hit while trying to use it. Interaction #13 was added to the audit after the
+helper was written, so its lookup table had no entry and the prompt printed 'undefined'. And once the
+Human review fields were rewritten to record the delegation, the helper stopped recognising those entries
+as markable at all - it only looked for the older 'not yet checked' wording - so asking for eight entries
+offered one.
+
+Delegation is the current state, not a final answer: if the student reads the files later, the entry has to
+be upgradable. Marking now replaces the delegation clause with the attestation and rewrites the sentence
+that said the review was delegated, so the two statements cannot end up contradicting each other in the
+same paragraph. When no delegated entries remain it prints what else to update - the README table and the
+self-assessment, which currently deduct five points for exactly that delegation.
+
+---
+commit bd20c95c18ecdd43e940d983f03a13d775b93fc5
+Author: DuyITLOR <153221271+DuyITLOR@users.noreply.github.com>
+Date:   Sun Aug 23 00:46:09 2026 +0700
+
+docs: refresh the commit log
+
+---
 commit 59b2ae729ce2965ee7f5264ea8a7847fb290c253
 Author: DuyITLOR <153221271+DuyITLOR@users.noreply.github.com>
 Date:   Sun Aug 23 00:46:09 2026 +0700

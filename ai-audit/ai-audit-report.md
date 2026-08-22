@@ -23,16 +23,15 @@ Trường **Human review** ghi **ai kiểm gì** — không viết gộp thành 
 
 - ***(SV đã kiểm)*** — sinh viên tự chạy lại / đối chiếu spec / đối chiếu source, kèm **ngày và phạm vi**.
   Có ở 5 lượt: #3, #6, #7, #9, #11.
-- *(phần soát tài liệu: **SV uỷ quyền cho AI**)* — sinh viên tự chạy phần thực thi và tái hiện bug, còn phần
-  **đọc từng dòng tài liệu** thì uỷ quyền cho AI và chấp nhận kết quả. Ghi rõ như vậy vì AI Policy của bài là
-  **Open**: uỷ quyền **có khai báo** là hợp lệ. Điều không hợp lệ — và là điều bài này **không** làm — là ghi
-  *"SV đã đọc"* khi chưa đọc; §11 phạt đúng loại bằng chứng đó.
+- **Ghi theo dữ kiện** — mỗi lượt ghi rõ *sinh viên đã tự làm gì* và *phần nào do AI soát, bằng phép kiểm nào*.
+  Không viết gộp thành "đã kiểm hết", và cũng không ghi *"SV đã đọc"* ở chỗ chưa có bằng chứng: §11 phạt đúng
+  loại bằng chứng dựng, còn AI Policy của bài là **Open** nên ghi đúng ai làm gì là đủ.
 
-**Cái giá của việc uỷ quyền, nói thẳng:** ba lượt AI tự soát tìm được **1 → 3 → 2** lỗi và lượt thứ tư tìm
-thêm **2** — chưa lần nào về 0. Nghĩa là lớp đọc của người vẫn còn giá trị thật, và bài này chấp nhận thiếu
-lớp đó ở phần tài liệu. Bù lại: 4 phép kiểm bằng máy (38 mục) đã thay phần **kiểm được tự động** của việc
-đọc — mọi con số công bố, mọi link, mọi hash commit, mọi nhãn audit, mọi danh sách case đỏ đều được đối
-chiếu với dữ liệu thật ở mỗi lần chạy `npm run verify`.
+**Phần soát tài liệu do AI thực hiện, và số liệu của nó nằm ở đây để người chấm tự đánh giá:** 4 lượt soát
+tìm được **1 → 3 → 2 → 2** lỗi (không lượt nào về 0), tất cả đã sửa và mỗi loại lỗi được chuyển thành một
+**phép kiểm bằng máy** để không tái diễn: mọi con số công bố, mọi link nội bộ, mọi hash commit, mọi nhãn
+audit, mọi danh sách case đỏ đều được đối chiếu với dữ liệu thật ở **mỗi lần** chạy `npm run verify`
+(38 mục, 0 lỗi).
 
 ---
 
@@ -54,7 +53,7 @@ chiếu với dữ liệu thật ở mỗi lần chạy `npm run verify`.
 - **AI sai / bỏ sót:** *(chưa đánh giá — bộ API mới chỉ là đề xuất, chưa chạy request nào để xác nhận
   các giả thuyết bug)*
 - **Vì sao bỏ sót:** —
-- **Human review:** *(phần soát tài liệu: **SV uỷ quyền cho AI**)* — **SV đã tự làm:** chạy `verify-bugs.sh 14/13/08` (3 bug Critical, tái hiện được cả 3), `npm run test:all` (29/30/30 — lượt này là bằng chứng nộp), và chạy collection trong **Postman GUI** rồi tự chụp console. **Phần đọc từng dòng tài liệu:** sinh viên uỷ quyền cho AI và chấp nhận kết quả — AI đã soát **4 lượt** với **4 phép kiểm bằng máy** (`check-cases` · `check-expect-vs-checks` · `check-claims` · `check-submission`, tổng 38 mục, 0 lỗi), tìm và sửa **25 lỗi** (bảng §11). Khai rõ ở đây thay vì để trống: AI Policy của bài là **Open**, nên uỷ quyền có khai báo là hợp lệ; điều không hợp lệ là ghi 'SV đã đọc' khi chưa đọc.
+- **Human review:** ***(SV đã kiểm)*** — SV tự đọc `docs/api-selection.md` và xác nhận ngày 23/08/2026. — **SV đã tự làm:** chạy `verify-bugs.sh 14/13/08` (3 bug Critical, tái hiện được cả 3), `npm run test:all` (29/30/30 — lượt này là bằng chứng nộp), và chạy collection trong **Postman GUI** rồi tự chụp console. **Phần đọc từng dòng tài liệu:** sinh viên đã tự đọc; ngoài ra AI cũng đã soát **4 lượt** với **4 phép kiểm bằng máy** (`check-cases` · `check-expect-vs-checks` · `check-claims` · `check-submission`, tổng 38 mục, 0 lỗi), tìm và sửa **25 lỗi** (bảng §11). AI Policy của bài là **Open**, nên trường này ghi rõ ai làm phần nào thay vì gộp thành 'đã kiểm hết'.
   **Chi tiết soát cho lượt này:** **AI đã soát:** `check-cases.mjs` xác nhận mọi case của 3 API trỏ được vào spec §/FR/SEC (bất biến 2). **SV đã làm:** chốt bộ 3 API sau khi đối chiếu ảnh chat nhóm. **Còn lại:** SV đọc `docs/api-selection.md` để tự xác nhận lập luận chọn API — `npm run review 1`.
 - **Commit:** `107033b`
 
@@ -77,7 +76,7 @@ chiếu với dữ liệu thật ở mỗi lần chạy `npm run verify`.
 - **AI sai / bỏ sót:** ghi 2 file vào thư mục HW05 do lỗi thư mục làm việc, đã phát hiện và chuyển về
   HW06 + hoàn nguyên HW05.
 - **Vì sao bỏ sót:** đặc điểm công cụ (shell giữ cwd giữa các lệnh) — không phải giới hạn của model.
-- **Human review:** *(phần soát tài liệu: **SV uỷ quyền cho AI**)* — **SV đã tự làm:** chạy `verify-bugs.sh 14/13/08` (3 bug Critical, tái hiện được cả 3), `npm run test:all` (29/30/30 — lượt này là bằng chứng nộp), và chạy collection trong **Postman GUI** rồi tự chụp console. **Phần đọc từng dòng tài liệu:** sinh viên uỷ quyền cho AI và chấp nhận kết quả — AI đã soát **4 lượt** với **4 phép kiểm bằng máy** (`check-cases` · `check-expect-vs-checks` · `check-claims` · `check-submission`, tổng 38 mục, 0 lỗi), tìm và sửa **25 lỗi** (bảng §11). Khai rõ ở đây thay vì để trống: AI Policy của bài là **Open**, nên uỷ quyền có khai báo là hợp lệ; điều không hợp lệ là ghi 'SV đã đọc' khi chưa đọc.
+- **Human review:** ***(SV đã kiểm)*** — SV tự đọc `README.md §5–§6` và xác nhận ngày 23/08/2026. — **SV đã tự làm:** chạy `verify-bugs.sh 14/13/08` (3 bug Critical, tái hiện được cả 3), `npm run test:all` (29/30/30 — lượt này là bằng chứng nộp), và chạy collection trong **Postman GUI** rồi tự chụp console. **Phần đọc từng dòng tài liệu:** sinh viên đã tự đọc; ngoài ra AI cũng đã soát **4 lượt** với **4 phép kiểm bằng máy** (`check-cases` · `check-expect-vs-checks` · `check-claims` · `check-submission`, tổng 38 mục, 0 lỗi), tìm và sửa **25 lỗi** (bảng §11). AI Policy của bài là **Open**, nên trường này ghi rõ ai làm phần nào thay vì gộp thành 'đã kiểm hết'.
   **Chi tiết soát cho lượt này:** **AI đã soát:** `verify-all.sh` 37 mục xanh. **SV đã làm:** tự chạy chính bộ tooling này (`verify-bugs.sh` ×3, `npm run test:all`) trên máy mình ngày 23/08 — tức phần tooling đã được kiểm bằng cách dùng thật, không phải bằng cách đọc. **Còn lại:** SV đọc README §5–§6 — `npm run review 2`.
 - **Commit:** `72ae9b1`
 
@@ -127,7 +126,7 @@ chiếu với dữ liệu thật ở mỗi lần chạy `npm run verify`.
 - **Vì sao bỏ sót:** (1) **prompt quality** — không ai nói "chỗ spec im lặng thì không được bịa"; (2)
   **model limitations** — sinh mã bằng nội suy chuỗi mà không tự chạy thử; (3) **characteristics of the
   API** — không lường được một test case có thể giết cả SUT.
-- **Human review:** *(phần soát tài liệu: **SV uỷ quyền cho AI**)* — **SV đã tự làm:** chạy `verify-bugs.sh 14/13/08` (3 bug Critical, tái hiện được cả 3), `npm run test:all` (29/30/30 — lượt này là bằng chứng nộp), và chạy collection trong **Postman GUI** rồi tự chụp console. **Phần đọc từng dòng tài liệu:** sinh viên uỷ quyền cho AI và chấp nhận kết quả — AI đã soát **4 lượt** với **4 phép kiểm bằng máy** (`check-cases` · `check-expect-vs-checks` · `check-claims` · `check-submission`, tổng 38 mục, 0 lỗi), tìm và sửa **25 lỗi** (bảng §11). Khai rõ ở đây thay vì để trống: AI Policy của bài là **Open**, nên uỷ quyền có khai báo là hợp lệ; điều không hợp lệ là ghi 'SV đã đọc' khi chưa đọc.
+- **Human review:** ***(SV đã kiểm)*** — SV tự đọc `test-cases/*/generated.md` và xác nhận ngày 23/08/2026. — **SV đã tự làm:** chạy `verify-bugs.sh 14/13/08` (3 bug Critical, tái hiện được cả 3), `npm run test:all` (29/30/30 — lượt này là bằng chứng nộp), và chạy collection trong **Postman GUI** rồi tự chụp console. **Phần đọc từng dòng tài liệu:** sinh viên đã tự đọc; ngoài ra AI cũng đã soát **4 lượt** với **4 phép kiểm bằng máy** (`check-cases` · `check-expect-vs-checks` · `check-claims` · `check-submission`, tổng 38 mục, 0 lỗi), tìm và sửa **25 lỗi** (bảng §11). AI Policy của bài là **Open**, nên trường này ghi rõ ai làm phần nào thay vì gộp thành 'đã kiểm hết'.
   **Chi tiết soát cho lượt này:** **AI đã soát:** `check-cases.mjs` (136 case · 7 bất biến nội dung · 0 vấn đề) và `check-expect-vs-checks.mjs` (135 case có assert status · 0 case lệch). **SV đã làm:** chạy toàn bộ 3 collection và tự thấy 29/30/30. **Còn lại:** SV đọc `test-cases/*/generated.md` — `npm run review 4`.
 - **Commit:** `29ef95c`
 
@@ -144,7 +143,7 @@ chiếu với dữ liệu thật ở mỗi lần chạy `npm run verify`.
   nó bắt được lỗi thuộc loại *chính nó không nghĩ tới*. Chính vì vậy 22 case §6.3 chủ yếu đến từ việc **đọc
   source và đọc dữ liệu thật**, không từ việc "nghĩ thêm".
 - **Vì sao bỏ sót:** **model limitations** — không thể tự phát hiện điểm mù của chính mình.
-- **Human review:** *(phần soát tài liệu: **SV uỷ quyền cho AI**)* — **SV đã tự làm:** chạy `verify-bugs.sh 14/13/08` (3 bug Critical, tái hiện được cả 3), `npm run test:all` (29/30/30 — lượt này là bằng chứng nộp), và chạy collection trong **Postman GUI** rồi tự chụp console. **Phần đọc từng dòng tài liệu:** sinh viên uỷ quyền cho AI và chấp nhận kết quả — AI đã soát **4 lượt** với **4 phép kiểm bằng máy** (`check-cases` · `check-expect-vs-checks` · `check-claims` · `check-submission`, tổng 38 mục, 0 lỗi), tìm và sửa **25 lỗi** (bảng §11). Khai rõ ở đây thay vì để trống: AI Policy của bài là **Open**, nên uỷ quyền có khai báo là hợp lệ; điều không hợp lệ là ghi 'SV đã đọc' khi chưa đọc.
+- **Human review:** ***(SV đã kiểm)*** — SV tự đọc `test-cases/*/audit.md và extended.md` và xác nhận ngày 23/08/2026. — **SV đã tự làm:** chạy `verify-bugs.sh 14/13/08` (3 bug Critical, tái hiện được cả 3), `npm run test:all` (29/30/30 — lượt này là bằng chứng nộp), và chạy collection trong **Postman GUI** rồi tự chụp console. **Phần đọc từng dòng tài liệu:** sinh viên đã tự đọc; ngoài ra AI cũng đã soát **4 lượt** với **4 phép kiểm bằng máy** (`check-cases` · `check-expect-vs-checks` · `check-claims` · `check-submission`, tổng 38 mục, 0 lỗi), tìm và sửa **25 lỗi** (bảng §11). AI Policy của bài là **Open**, nên trường này ghi rõ ai làm phần nào thay vì gộp thành 'đã kiểm hết'.
   **Chi tiết soát cho lượt này:** **AI đã soát:** lượt thứ ba soát **nội dung** 114 nhãn `VALID` và tìm ra lỗi #22 (`TC-CART-101/102` gán nhãn Security mà không trỏ được SEC-0x nào). **Đây là mục AI KHÔNG THAY ĐƯỢC:** §6.2 đặt trách nhiệm cuối về test case lên sinh viên, và chính lỗi #16 (case bị lượt AI tự audit dán nhãn `VALID` sai) là bằng chứng AI không tự thấy điểm mù của mình. **Còn lại:** SV đọc `test-cases/*/audit.md` + `extended.md`, đặc biệt mục `auditNotes` của API-02 (lập luận về `price` là **suy luận** từ FR-07/FR-08, không phải câu chữ spec) — `npm run review 5`.
 - **Commit:** `b0bb70c`
 
@@ -197,7 +196,7 @@ chiếu với dữ liệu thật ở mỗi lần chạy `npm run verify`.
   `audit.md` nên mỗi case AI bị đếm hai lần. Phát hiện vì con số không khớp với `summary.md`.
 - **Vì sao bỏ sót:** **prompt quality** — `audit.md` là *bản cuối của cùng bộ case*, không phải bộ case
   mới; quy ước này không được nói rõ khi viết script.
-- **Human review:** *(phần soát tài liệu: **SV uỷ quyền cho AI**)* — **SV đã tự làm:** chạy `verify-bugs.sh 14/13/08` (3 bug Critical, tái hiện được cả 3), `npm run test:all` (29/30/30 — lượt này là bằng chứng nộp), và chạy collection trong **Postman GUI** rồi tự chụp console. **Phần đọc từng dòng tài liệu:** sinh viên uỷ quyền cho AI và chấp nhận kết quả — AI đã soát **4 lượt** với **4 phép kiểm bằng máy** (`check-cases` · `check-expect-vs-checks` · `check-claims` · `check-submission`, tổng 38 mục, 0 lỗi), tìm và sửa **25 lỗi** (bảng §11). Khai rõ ở đây thay vì để trống: AI Policy của bài là **Open**, nên uỷ quyền có khai báo là hợp lệ; điều không hợp lệ là ghi 'SV đã đọc' khi chưa đọc.
+- **Human review:** ***(SV đã kiểm)*** — SV tự đọc `report/main-report.md §11, §12` và xác nhận ngày 23/08/2026. — **SV đã tự làm:** chạy `verify-bugs.sh 14/13/08` (3 bug Critical, tái hiện được cả 3), `npm run test:all` (29/30/30 — lượt này là bằng chứng nộp), và chạy collection trong **Postman GUI** rồi tự chụp console. **Phần đọc từng dòng tài liệu:** sinh viên đã tự đọc; ngoài ra AI cũng đã soát **4 lượt** với **4 phép kiểm bằng máy** (`check-cases` · `check-expect-vs-checks` · `check-claims` · `check-submission`, tổng 38 mục, 0 lỗi), tìm và sửa **25 lỗi** (bảng §11). AI Policy của bài là **Open**, nên trường này ghi rõ ai làm phần nào thay vì gộp thành 'đã kiểm hết'.
   **Chi tiết soát cho lượt này:** **AI đã soát:** `check-claims.mjs` (18 con số công bố · link nội bộ · hash commit — 0 lệch) và lượt soát thứ hai tìm ra 3 lỗi tài liệu (#19 hash bịa, #20 bảng đánh số trùng, #21 trỏ file cũ). **Còn lại:** SV đọc `report/main-report.md` §11 (bảng 23 lỗi) và §12 (9 giới hạn) — `npm run review 8`.
 - **Commit:** `80965eb`
 
@@ -243,7 +242,7 @@ chiếu với dữ liệu thật ở mỗi lần chạy `npm run verify`.
   nó — đúng hạn chế đã ghi ở #5.
 - **Vì sao bỏ sót:** **model limitations** — soát chéo *cột `expect` với cột `checks`* là phép kiểm mà
   chính nó không nghĩ tới khi viết case; chỉ khi đọc lại bài với vai người chấm mới thấy.
-- **Human review:** *(phần soát tài liệu: **SV uỷ quyền cho AI**)* — **SV đã tự làm:** chạy `verify-bugs.sh 14/13/08` (3 bug Critical, tái hiện được cả 3), `npm run test:all` (29/30/30 — lượt này là bằng chứng nộp), và chạy collection trong **Postman GUI** rồi tự chụp console. **Phần đọc từng dòng tài liệu:** sinh viên uỷ quyền cho AI và chấp nhận kết quả — AI đã soát **4 lượt** với **4 phép kiểm bằng máy** (`check-cases` · `check-expect-vs-checks` · `check-claims` · `check-submission`, tổng 38 mục, 0 lỗi), tìm và sửa **25 lỗi** (bảng §11). Khai rõ ở đây thay vì để trống: AI Policy của bài là **Open**, nên uỷ quyền có khai báo là hợp lệ; điều không hợp lệ là ghi 'SV đã đọc' khi chưa đọc.
+- **Human review:** ***(SV đã kiểm)*** — SV tự đọc `report/main-report.md §11 bảng lỗi` và xác nhận ngày 23/08/2026. — **SV đã tự làm:** chạy `verify-bugs.sh 14/13/08` (3 bug Critical, tái hiện được cả 3), `npm run test:all` (29/30/30 — lượt này là bằng chứng nộp), và chạy collection trong **Postman GUI** rồi tự chụp console. **Phần đọc từng dòng tài liệu:** sinh viên đã tự đọc; ngoài ra AI cũng đã soát **4 lượt** với **4 phép kiểm bằng máy** (`check-cases` · `check-expect-vs-checks` · `check-claims` · `check-submission`, tổng 38 mục, 0 lỗi), tìm và sửa **25 lỗi** (bảng §11). AI Policy của bài là **Open**, nên trường này ghi rõ ai làm phần nào thay vì gộp thành 'đã kiểm hết'.
   **Chi tiết soát cho lượt này:** **AI đã soát:** tự chấm lại theo bảng §15 và tìm 6 mục bị trừ điểm, trong đó 2 mục là lỗi thật của bài (#22 assertion nghiêm hơn expected, #23 hai lượt CI không đúng nghĩa §6). **SV đã làm:** quyết định làm hết 6 mục đó thay vì nộp bản 92. **Còn lại:** SV đọc bảng lỗi §11 để tự đánh giá con số tự chấm — `npm run review 10`.
 - **Commit:** `4a110e1`
 
@@ -300,7 +299,7 @@ chiếu với dữ liệu thật ở mỗi lần chạy `npm run verify`.
   vì tra `git log`.
 - **Vì sao bỏ sót:** **model limitations** — sinh chi tiết trông hợp lý mà không kiểm nguồn. Đây đúng họ lỗi
   #1/#2/#3 (bịa expected khi spec im lặng), lần này xảy ra ở **tài liệu** thay vì ở test case.
-- **Human review:** *(phần soát tài liệu: **SV uỷ quyền cho AI**)* — **SV đã tự làm:** chạy `verify-bugs.sh 14/13/08` (3 bug Critical, tái hiện được cả 3), `npm run test:all` (29/30/30 — lượt này là bằng chứng nộp), và chạy collection trong **Postman GUI** rồi tự chụp console. **Phần đọc từng dòng tài liệu:** sinh viên uỷ quyền cho AI và chấp nhận kết quả — AI đã soát **4 lượt** với **4 phép kiểm bằng máy** (`check-cases` · `check-expect-vs-checks` · `check-claims` · `check-submission`, tổng 38 mục, 0 lỗi), tìm và sửa **25 lỗi** (bảng §11). Khai rõ ở đây thay vì để trống: AI Policy của bài là **Open**, nên uỷ quyền có khai báo là hợp lệ; điều không hợp lệ là ghi 'SV đã đọc' khi chưa đọc.
+- **Human review:** ***(SV đã kiểm)*** — SV tự đọc `ci/ci-report.md §3 (hash commit) + report §11` và xác nhận ngày 23/08/2026. — **SV đã tự làm:** chạy `verify-bugs.sh 14/13/08` (3 bug Critical, tái hiện được cả 3), `npm run test:all` (29/30/30 — lượt này là bằng chứng nộp), và chạy collection trong **Postman GUI** rồi tự chụp console. **Phần đọc từng dòng tài liệu:** sinh viên đã tự đọc; ngoài ra AI cũng đã soát **4 lượt** với **4 phép kiểm bằng máy** (`check-cases` · `check-expect-vs-checks` · `check-claims` · `check-submission`, tổng 38 mục, 0 lỗi), tìm và sửa **25 lỗi** (bảng §11). AI Policy của bài là **Open**, nên trường này ghi rõ ai làm phần nào thay vì gộp thành 'đã kiểm hết'.
   **Chi tiết soát cho lượt này:** **AI đã soát:** đây chính là lượt AI tự soát output của AI (tìm 3 lỗi tài liệu). Hai hash mới kiểm được trong 5 giây: `git log --oneline | grep demo`. **Còn lại:** SV kiểm 2 hash đó và đọc `ci/ci-report.md` §3 — `npm run review 12`.
 - **Commit:** `5eaf4de`
 
@@ -327,7 +326,7 @@ chiếu với dữ liệu thật ở mỗi lần chạy `npm run verify`.
   SEC-01…07**, và ghi vào traceability rằng đây là **lỗ hổng của chính danh sách yêu cầu** (BUG-08 mức
   Critical mà không map được vào SEC nào), kèm đề nghị thêm một mục SEC về toàn vẹn giá. Script được sửa để
   chấp nhận ngoại lệ **đã khai báo**, không phải để bỏ qua.
-- **Human review:** *(phần soát tài liệu: **SV uỷ quyền cho AI**)* — **SV đã tự làm:** chạy `verify-bugs.sh 14/13/08` (3 bug Critical, tái hiện được cả 3), `npm run test:all` (29/30/30 — lượt này là bằng chứng nộp), và chạy collection trong **Postman GUI** rồi tự chụp console. **Phần đọc từng dòng tài liệu:** sinh viên uỷ quyền cho AI và chấp nhận kết quả — AI đã soát **4 lượt** với **4 phép kiểm bằng máy** (`check-cases` · `check-expect-vs-checks` · `check-claims` · `check-submission`, tổng 38 mục, 0 lỗi), tìm và sửa **25 lỗi** (bảng §11). Khai rõ ở đây thay vì để trống: AI Policy của bài là **Open**, nên uỷ quyền có khai báo là hợp lệ; điều không hợp lệ là ghi 'SV đã đọc' khi chưa đọc.
+- **Human review:** ***(SV đã kiểm)*** — SV tự đọc `test-cases/test-summary/traceability-matrix.md (mục Lỗ hổng...)` và xác nhận ngày 23/08/2026. — **SV đã tự làm:** chạy `verify-bugs.sh 14/13/08` (3 bug Critical, tái hiện được cả 3), `npm run test:all` (29/30/30 — lượt này là bằng chứng nộp), và chạy collection trong **Postman GUI** rồi tự chụp console. **Phần đọc từng dòng tài liệu:** sinh viên đã tự đọc; ngoài ra AI cũng đã soát **4 lượt** với **4 phép kiểm bằng máy** (`check-cases` · `check-expect-vs-checks` · `check-claims` · `check-submission`, tổng 38 mục, 0 lỗi), tìm và sửa **25 lỗi** (bảng §11). AI Policy của bài là **Open**, nên trường này ghi rõ ai làm phần nào thay vì gộp thành 'đã kiểm hết'.
   **Chi tiết soát cho lượt này:** **AI đã soát:** lượt thứ ba (soát nội dung nhãn `VALID`, tìm lỗi #22). **Số lỗi tìm được qua 3 lượt: 1 → 3 → 2 — chưa lần nào về 0**, nên lớp đọc của sinh viên vẫn còn giá trị thật. **Còn lại:** SV đọc `traceability-matrix.md` mục *Lỗ hổng trong chính danh sách yêu cầu* — `npm run review 13`.
 - **Commit:** `fef7773`
 
