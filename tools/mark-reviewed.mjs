@@ -52,18 +52,38 @@ if (!args.length || args.includes("--list")) {
   process.exit(0);
 }
 
+// npm truyền cả comment `# ...` vào argv, nên args có thể toàn rác. Rác thì coi như không truyền gì
+// và hiện danh sách — báo lỗi rồi thoát chỉ làm người dùng tưởng script hỏng.
 const want = args.includes("--all") ? pending : args.map(Number).filter((n) => pending.includes(n));
-if (!want.length) { console.log("  Không có lượt nào hợp lệ để đánh dấu (xem --list)."); process.exit(1); }
+if (!want.length) {
+  console.log(`\n  Không nhận ra số lượt nào trong: ${args.join(" ")}`);
+  console.log(`  Lượt còn chưa kiểm: ${pending.join(", ")}`);
+  console.log(`  Ví dụ:  npm run review 5 8      (đừng thêm comment # phía sau — npm coi nó là tham số)\n`);
+  process.exit(1);
+}
 
 console.log("\n  Sắp KHAI rằng bạn đã tự đọc và chịu trách nhiệm về:\n");
 for (const n of want) console.log(`   #${n} — ${WHAT[n]?.[0]}\n       ${WHAT[n]?.[1]}`);
 console.log("\n  Chỉ gõ xác nhận nếu bạn ĐÃ đọc thật. Đây là lời khai trong bài nộp (§6.2, §11).\n");
 
 if (!process.stdin.isTTY) { console.log("  [DUNG] Cần chạy trực tiếp trong terminal để xác nhận."); process.exit(1); }
+const norm = (t) => t.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/đ/gi, "d")
+  .toLowerCase().replace(/\s+/g, " ").trim();
+const OK = "toi da doc";
 const rl = createInterface({ input: process.stdin, output: process.stdout });
-rl.question('  Gõ "toi da doc" rồi Enter: ', (ans) => {
+
+const ask = (attempt, done) => rl.question(`  Gõ "toi da doc" rồi Enter: `, (ans) => {
+  if (norm(ans) === OK) return done(true);
+  if (attempt === 1) {
+    console.log(`\n  Bạn gõ "${ans.trim()}" — chưa đúng. Cần đúng ba chữ: toi da doc  (gõ có dấu cũng được)\n`);
+    return ask(2, done);
+  }
+  done(false);
+});
+
+ask(1, (confirmed) => {
   rl.close();
-  if (ans.trim().toLowerCase() !== "toi da doc") { console.log("\n  Huỷ — không thay đổi gì.\n"); process.exit(1); }
+  if (!confirmed) { console.log("\n  Huỷ — không thay đổi gì. Chạy lại khi bạn đã đọc.\n"); process.exit(1); }
   const today = new Date().toISOString().slice(0, 10).split("-").reverse().join("/");
   let n_done = 0;
   const out = blocks.map((b) => {
