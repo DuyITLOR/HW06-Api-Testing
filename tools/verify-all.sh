@@ -95,6 +95,13 @@ PY
 then p "ci/expected-failures.json đã điền baseline cho cả 3 collection"
 else f "ci/expected-failures.json còn baseline null — cổng CI sẽ báo thiếu baseline"; fi
 
+sect "5b. Con số công bố trong tài liệu có khớp dữ liệu thật? (§11)"
+if node tools/check-claims.mjs >/tmp/hw06-claims.log 2>&1; then
+  p "$(tail -2 /tmp/hw06-claims.log | head -1 | sed 's/^ *//')"
+else
+  f "có con số / link / hash lệch trong tài liệu. Chi tiết: node tools/check-claims.mjs"
+fi
+
 sect "6. Tài liệu bắt buộc (§14)"
 for doc in report/main-report.md report/main-report.pdf \
            ai-audit/ai-audit-report.md ai-audit/ai-audit-report.pdf \

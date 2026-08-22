@@ -5,7 +5,7 @@
 - **SUT:** EShop — https://github.com/ttbhanh/eshop-sut · spec: `api_specification.md`
 
 > **Trạng thái nội dung:** 3 API hoàn tất pipeline §6.1–§6.5 — **136 test case** (109 AI sinh + **22 sinh
-> viên tự thêm**), đã chạy thật **171 request / 329 assertion** bằng Newman, **89 assertion đỏ** và mỗi
+> viên tự thêm**), đã chạy thật **171 request / 333 assertion** bằng Newman, **89 assertion đỏ** và mỗi
 > assertion đỏ map tới một trong **19 bug đã tái hiện được bằng request thật** (5 Critical). Bug nặng nhất:
 > **hai request không cần token làm sập cả backend** (BUG-14) — lộ ra vì SUT chết giữa lúc dò thử, không do
 > test case nào sinh ra. Bảng **11 lỗi của AI đã bắt và sửa** ở [main-report §11](report/main-report.md);
@@ -153,6 +153,9 @@ tools/                10 script — xem §6 dưới
 | `tc2xlsx.py` | bảng test case Markdown → Excel (§14) |
 | `md2pdf.py` · `build-pdfs.sh` | xuất PDF cho tài liệu §14 |
 | `verify-all.sh` | tính lại bất biến, in cả danh sách **không tự kiểm được** |
+| `check-claims.mjs` | soát **mọi con số công bố** trong 7 tài liệu so với raw JSON + kiểm link nội bộ + kiểm hash commit có thật |
+| `check-expect-vs-checks.mjs` | bắt lỗi **assertion nghiêm hơn expected** trên toàn bộ 136 case (lỗi #11) |
+| `mark-reviewed.mjs` | đánh dấu human review §6.2 — có hỏi xác nhận, ghi ngày |
 | `package.sh` | soát đúng danh sách §14 rồi zip theo tên §14 |
 | `commit-plan.sh` | commit theo từng bước (§12) + xuất `git-log/commit-log.txt` |
 
@@ -175,6 +178,16 @@ tools/                10 script — xem §6 dưới
 | # | Việc | Vì sao |
 |---|---|---|
 | 1 | Điền **human review** trong [ai-audit](ai-audit/ai-audit-report.md) — 11 lượt đang là *(SV chưa tự kiểm)* | §6.2: *"You are fully responsible for the final test cases"*. Nhãn VALID của 114 case hiện là nhãn **AI** đặt. Không thể nhờ ai điền hộ: điền hộ chính là dựng bằng chứng, đúng thứ §11 phạt |
+
+**Đánh dấu sau khi đọc** — thay vì sửa tay 7 chỗ trong file audit:
+
+```bash
+npm run review              # xem lượt nào còn chưa kiểm + cần đọc file nào
+npm run review 5 8          # đánh dấu lượt #5 và #8 (script hỏi lại trước khi ghi)
+```
+
+Script in ra chính xác điều sắp được khai, đòi bạn gõ xác nhận, rồi ghi ngày vào audit. Nó **không**
+thay việc đọc — chỉ thay việc sửa tay.
 
 **Cách làm tối thiểu mà đủ chắc** (~30 phút):
 

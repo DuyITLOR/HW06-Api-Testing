@@ -349,7 +349,7 @@ sự xoá bảng, SQLi ở `:id`) — ghi lại trong bug report để không nh
 | 2 | Environment + biến | `HW06-local-23127178`, 17 biến |
 | 3 | Biến **secret** | `admin_password`, `user_password`, `user2_password` |
 | 4 | **Pre-request script cấp collection** | header `X-Student-Id` cho **mọi** request (§6.4) |
-| 5 | Test script `pm.test` | 329 assertion |
+| 5 | Test script `pm.test` | 333 assertion (+216 ở regression suite) |
 | 6 | **JSON schema validation** | `pm.response.to.have.jsonSchema` — folder `40-schema` của cả 3 API |
 | 7 | Biến động giữa request | `pm.environment.set` cho token, `product_id`, `total_products`, `cart_before` |
 | 8 | **`pm.sendRequest`** | dọn fixture ở `00-setup` và `99-teardown` (giữ mỗi lượt độc lập) |
@@ -392,7 +392,7 @@ Thiết kế, sơ đồ và pseudocode: [`generator/design.md`](../generator/des
 Điểm khác biệt so với một bản thiết kế trên giấy: generator này **đã chạy và sinh ra chính bộ test của bài
 này**. `tools/gen-artifacts.mjs` đọc `generator/specs/<api>.mjs` rồi sinh: `generated.md` (case AI),
 `audit.md` (case AI + nhãn audit), `extended.md` (case sinh viên + bảng "vì sao AI bỏ sót"), và collection
-Postman — 136 case, 329 assertion, từ **một** nguồn định nghĩa.
+Postman — 136 case, 333 assertion, từ **một** nguồn định nghĩa.
 
 <a id="11-human-review"></a>
 ## 11. Human review — AI sai và bỏ sót gì

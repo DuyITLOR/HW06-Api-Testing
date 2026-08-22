@@ -315,8 +315,13 @@ cases"*, và 114 nhãn `VALID` hiện tại là nhãn **AI** đặt. Điền h�
 | 9 | Đổi *(SV chưa tự kiểm)* → *(SV đã kiểm)* **chỉ ở lượt đã kiểm thật** | file này | **[x] một phần** — đã đổi 5 lượt (#3, #6, #7, #9, #11); còn #1, #2, #4, #5, #8, #10 giữ *chưa tự kiểm* vì phụ thuộc mục 5–8 dưới đây |
 
 **Mục 5–8 (đọc `audit.md` × 3 + §11/§12):** AI đã soát lại lần hai ngày 23/08 và tìm thêm 3 lỗi tài liệu
-(Interaction #12, bảng lỗi #19–#21). **Đây là AI tự soát output của AI**, không thay được phần đọc của sinh
-viên — 6 lượt còn lại vì vậy vẫn giữ nhãn *(SV chưa tự kiểm)*.
+(Interaction #12, bảng lỗi #19–#21), rồi biến hai loại lỗi đó thành **phép kiểm bằng máy**:
+`tools/check-expect-vs-checks.mjs` (135 case · 0 lệch) và `tools/check-claims.mjs` (18 khớp · 0 lệch — soát
+mọi con số công bố, link nội bộ và hash commit). Cả hai đã vào `npm run verify` (mục 2b và 5b).
+
+**Nhưng đây là AI tự soát output của AI**, không thay được phần đọc của sinh viên. 7 lượt còn lại vì vậy
+vẫn giữ nhãn *(SV chưa tự kiểm)*. Đánh dấu khi đã đọc thật: `npm run review` (script in ra chính xác điều
+sắp được khai, đòi gõ xác nhận, ghi ngày — không tự chạy trong pipeline nào).
 
 **Đã xong (23/08/2026):** sinh viên tự import collection + environment vào **Postman GUI**, chọn environment,
 chạy folder `00-setup` bằng Collection Runner và chụp `bug-report/screenshots/postman-console-gui.png` —

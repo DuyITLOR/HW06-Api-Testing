@@ -15,6 +15,9 @@
     "excel": "python3 tools/tc2xlsx.py",
     "pdf": "bash tools/build-pdfs.sh",
     "verify": "bash tools/verify-all.sh",
+    "check:claims": "node tools/check-claims.mjs",
+    "check:expect": "node tools/check-expect-vs-checks.mjs",
+    "review": "node tools/mark-reviewed.mjs",
     "package": "bash tools/package.sh"
   },
   "devDependencies": {
