@@ -268,8 +268,11 @@ npm run test:all      # 3 collection, mỗi collection chạy trên SUT vừa kh
 npm run summary       # reports/newman/*.json → test-cases/test-summary/summary.md
 ```
 
-**Header `X-Student-Id` (§6.4, §11).** Bằng chứng: [`console-x-student-id.png`](../bug-report/screenshots/console-x-student-id.png)
-(khối CONSOLE LOGS của report) và [`x-student-id-request-header.png`](../bug-report/screenshots/x-student-id-request-header.png)
+**Header `X-Student-Id` (§6.4, §11).** Bằng chứng:
+[`postman-console-gui.png`](../bug-report/screenshots/postman-console-gui.png) — **Postman Console trong GUI**,
+12 dòng do pre-request script in ra, mỗi dòng kèm request tới `http://localhost:3000` trả `200`;
+[`console-x-student-id.png`](../bug-report/screenshots/console-x-student-id.png) (khối CONSOLE LOGS trong
+báo cáo Newman) và [`x-student-id-request-header.png`](../bug-report/screenshots/x-student-id-request-header.png)
 (bảng REQUEST HEADERS). Đặt bằng **pre-request script cấp collection**
 ([`postman/prerequest-collection.js`](../postman/prerequest-collection.js)) chứ không gắn tay từng request:
 171 request thì gắn tay là 171 chỗ có thể sót, và sót một chỗ là mất bằng chứng §11 cho request đó. Script
@@ -460,12 +463,13 @@ Ghi rõ vì một báo cáo không nêu giới hạn thì không kiểm chứng 
    minh được BUG-14; bằng chứng của nó nằm ở `verify-bugs.sh` + stack trace trong `.run-logs/sut.log`.
 7. **Ảnh trong 19 GitHub Issue là ảnh báo cáo Newman**, không phải ảnh từng bước tái hiện. Mỗi issue có
    lệnh `curl` chạy lại được và trỏ tới log `verify-bugs-output.txt`.
-8. **Bằng chứng `X-Student-Id` (§11) gồm hai ảnh, cả hai lấy từ báo cáo của lượt chạy được nộp:**
-   `console-x-student-id.png` — khối **CONSOLE LOGS** in đúng dòng do pre-request script sinh ra
-   (`[HW06] X-Student-Id =23127178|POST/api/login|2026-08-22T15:17:35.271Z`), bật bằng
-   `--reporter-htmlextra-logs`; và `x-student-id-request-header.png` — bảng **REQUEST HEADERS** cho thấy
-   header **như đã gửi** kèm hostname `localhost:3000`. Đây là console của Postman (reporter chính thức),
-   không phải cửa sổ Postman GUI.
+8. **Bằng chứng `X-Student-Id` (§11) gồm ba ảnh, ba nguồn độc lập:**
+   `postman-console-gui.png` — **cửa sổ Postman Console thật** trong Postman GUI, 12 dòng
+   `[HW06] X-Student-Id = "23127178" | POST | /api/login | …` do pre-request script in ra, mỗi dòng kèm
+   request `POST http://localhost:3000/api/login → 200`; `console-x-student-id.png` — khối CONSOLE LOGS
+   trong báo cáo Newman của lượt nộp (`--reporter-htmlextra-logs`); `x-student-id-request-header.png` —
+   bảng REQUEST HEADERS cho thấy header **như đã gửi**. Ba ảnh này cũng phủ luôn yêu cầu hostname
+   `localhost` của §11.
 9. **Lượt chạy được nộp là lượt local** (`reports/newman/*_20260822-2217*.json`, `localhost:3000`), và
    cùng số đỏ 29/30/30 với lượt CI `runs/32580345226` trên Ubuntu. Tổng cộng **7 lượt trên 2 hệ điều hành**
    cho cùng kết quả — nhưng bài **không** khẳng định gì về môi trường khác hai môi trường đó.

@@ -276,6 +276,11 @@ cases"*, và 114 nhãn `VALID` hiện tại là nhãn **AI** đặt. Điền h�
 | 8 | Đọc §11 main-report (bảng 18 lỗi của AI) và §12 (giới hạn) | `report/main-report.md` | [ ] |
 | 9 | Đổi *(SV chưa tự kiểm)* → *(SV đã kiểm)* **chỉ ở lượt đã kiểm thật** | file này | [ ] |
 
+**Đã xong (23/08/2026):** sinh viên tự import collection + environment vào **Postman GUI**, chọn environment,
+chạy folder `00-setup` bằng Collection Runner và chụp `bug-report/screenshots/postman-console-gui.png` —
+12 request xanh, 12 dòng `[HW06] X-Student-Id = "23127178"`. Đây là lần chạy **do sinh viên tự thao tác**,
+độc lập với các lượt Newman, và nó cũng xác nhận collection import vào Postman GUI chạy được bình thường.
+
 ## Bảng tổng hợp lỗi của AI đã bắt được (điền dần)
 
 > Bảng này trùng nội dung với §11 của `report/main-report.md` — viết một lần, dùng hai chỗ.
