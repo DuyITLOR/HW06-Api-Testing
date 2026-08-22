@@ -1,9 +1,15 @@
 Git commit log — HW06 API Testing · SV Lê Nhựt Duy 23127178
-Xuất lúc: 2026-08-19 01:13:28 +0700
+Xuất lúc: 2026-08-22 22:09:47 +0700
 Repo: https://github.com/DuyITLOR/HW06-Api-Testing.git
-Số commit: 28
+Số commit: 34
 
 ═══ Ngắn gọn ══════════════════════════════════════════════════════════
+4a110e1 2026-08-22 docs: evidence screenshots, updated numbers, and the student review checklist
+4e2f302 2026-08-22 ci(demo): remove the intentional failing assertion
+e388146 2026-08-22 ci(demo): deliberately fail one assertion to produce the red sample run (section 6)
+5a07ebf 2026-08-22 ci: scope the baseline gate to the bug-hunting collections only
+1245b56 2026-08-22 ci: add a regression suite with a zero-failure gate
+bfeb29d 2026-08-19 docs: refresh the commit log
 b018905 2026-08-19 docs: open 19 GitHub issues and link them back into every document
 ff582d0 2026-08-19 docs: add the generator diagram and real Newman report screenshots
 e53e4ae 2026-08-19 docs: refresh the commit log
@@ -34,6 +40,101 @@ b0bb70c 2026-08-19 test(api-01): audit AI-generated cases, 35 VALID and 1 correc
 96f011e 2026-08-18 Initial commit
 
 ═══ Đầy đủ (kèm body) ═════════════════════════════════════════════════
+commit 4a110e1ccfbabfe1e51b4e433505abb6b7826fe3
+Author: DuyITLOR <153221271+DuyITLOR@users.noreply.github.com>
+Date:   Sat Aug 22 22:08:37 2026 +0700
+
+docs: evidence screenshots, updated numbers, and the student review checklist
+
+Screenshots are all captures of real artefacts: the REQUEST HEADERS table from the submitted Newman
+report showing X-Student-Id: 23127178 on a real call to localhost:3000 (which covers both things
+section 11 asks for in one image), the failed-assertion detail showing 'expected 404 but got 200' and
+'expected 11 to deeply equal 0', both Actions run pages, and issue #336.
+
+Submitted run is now the CI run 32580345226 rather than a local one, because port 3000 on the student's
+machine is currently held by another project's kind cluster. Both environments produced the same 29/30/30,
+the runner also serves on localhost, and the report says all of this in its limitations section.
+
+Totals move to 333 assertions / 244 passed / 89 failed - API-02 gained four assertions from the
+TC-CART-020/021 fix without changing its failure count.
+
+The AI audit gains two interactions and errors #16-#18, including the one worth reading: the AI's own
+audit pass had marked TC-CART-020/021 as VALID, so error #16 is concrete evidence for the limitation
+already written at interaction #5 - a model does not find its own blind spots. Also adds a nine-line
+human-review checklist, because that is the one deliverable nobody can fill in for the student: doing
+it for them would be manufacturing the evidence section 11 penalises.
+
+---
+commit 4e2f30295f3636705dcff636c714fc2e7d75117a
+Author: DuyITLOR <153221271+DuyITLOR@users.noreply.github.com>
+Date:   Sat Aug 22 22:01:01 2026 +0700
+
+ci(demo): remove the intentional failing assertion
+
+The red sample run is recorded at
+https://github.com/DuyITLOR/HW06-Api-Testing/actions/runs/32580407707 - regression suite 1 failed
+assertion out of 217, build red. The submitted collection is back to the generated 0-failure state.
+
+---
+commit e3881469f2228df10f303b62353aa17aee38e6a6
+Author: DuyITLOR <153221271+DuyITLOR@users.noreply.github.com>
+Date:   Sat Aug 22 22:00:07 2026 +0700
+
+ci(demo): deliberately fail one assertion to produce the red sample run (section 6)
+
+Section 6 asks for a second sample commit whose pipeline run shows one test case failing. This commit
+adds exactly one assertion, labelled as intentional, to TC-PRODLIST-003 in the regression suite.
+
+Breaking a real check instead would have cost a real verification, and loosening one to make it fail
+would be dishonest about what the suite covers. The next commit regenerates the suite and removes it,
+so the demo is visible in history without staying in the submitted collection.
+
+---
+commit 5a07ebf978812b256b594ccb0f928a49db1ddb2b
+Author: DuyITLOR <153221271+DuyITLOR@users.noreply.github.com>
+Date:   Sat Aug 22 21:59:00 2026 +0700
+
+ci: scope the baseline gate to the bug-hunting collections only
+
+The regression suite has its own zero-failure gate in the previous step. Letting the baseline gate glob
+pick it up made the build red for an unrelated reason - 'no baseline entry' - while both real gates were
+green. Same class of mistake as the earlier environment failures: a red that says nothing about the SUT.
+
+This run also confirms the TC-CART-020/021 fix landed correctly: API-02 is now 30 failures out of 85
+assertions, matching the signed-off baseline of 30, with the two wrongly-strict assertions gone and the
+claim moved into TC-CART-107.
+
+---
+commit 1245b56a2a9b82388645790b92799c83840b80d3
+Author: DuyITLOR <153221271+DuyITLOR@users.noreply.github.com>
+Date:   Sat Aug 22 21:57:27 2026 +0700
+
+ci: add a regression suite with a zero-failure gate
+
+Section 6 asks for two sample pipeline runs: one where all API test cases pass and one where a test
+fails. The 136-case suite cannot satisfy that literally - it is built to catch real bugs, so 89
+assertions fail by design and the baseline gate is what makes the build green.
+
+So there are now two suites with two different jobs. The regression suite is generated, not written:
+tools/gen-regression.mjs keeps exactly those requests that had zero failing assertions in the latest
+run, with their expected values untouched. It cannot go green by loosening an assertion, because every
+case in it is a case from the main suite. Its gate is 0 failures, and it runs first, on a freshly
+seeded SUT, before the bug-hunting collections write deliberately invalid data.
+
+Also fixes two cases the audit had wrongly marked VALID: TC-CART-020 and TC-CART-021 asserted 400/422
+while their own expected column allowed 'reject OR take the value from the catalogue'. An assertion
+stricter than its stated expectation goes red for the wrong reason, and a red for the wrong reason gets
+filed as a SUT bug. The claim moved to TC-CART-107, where both acceptable behaviours lead to the same
+checkable conclusion: the cart must not contain a row with no name or no price.
+
+---
+commit bfeb29d6239dea67740bad13141d8f711a174b72
+Author: DuyITLOR <153221271+DuyITLOR@users.noreply.github.com>
+Date:   Wed Aug 19 01:13:28 2026 +0700
+
+docs: refresh the commit log
+
+---
 commit b018905ff1469a5546eca83977ce8369ca799a09
 Author: DuyITLOR <153221271+DuyITLOR@users.noreply.github.com>
 Date:   Wed Aug 19 01:13:26 2026 +0700
