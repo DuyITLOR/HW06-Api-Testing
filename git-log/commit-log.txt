@@ -1,9 +1,11 @@
 Git commit log — HW06 API Testing · SV Lê Nhựt Duy 23127178
-Xuất lúc: 2026-08-23 00:06:26 +0700
+Xuất lúc: 2026-08-23 00:13:39 +0700
 Repo: https://github.com/DuyITLOR/HW06-Api-Testing.git
-Số commit: 38
+Số commit: 40
 
 ═══ Ngắn gọn ══════════════════════════════════════════════════════════
+bc2f428 2026-08-23 docs: record the student's own verification run as the submitted evidence
+d7d50ce 2026-08-23 docs: refresh the commit log
 142d6f3 2026-08-23 docs: add the Postman GUI console screenshot the student captured
 5341183 2026-08-22 docs: refresh the commit log
 9f596f7 2026-08-22 test: local run as the submitted evidence, with the console screenshot section 11 names
@@ -44,6 +46,30 @@ b0bb70c 2026-08-19 test(api-01): audit AI-generated cases, 35 VALID and 1 correc
 96f011e 2026-08-18 Initial commit
 
 ═══ Đầy đủ (kèm body) ═════════════════════════════════════════════════
+commit bc2f428af812ff7d62f4579abc49cf85fb631c95
+Author: DuyITLOR <153221271+DuyITLOR@users.noreply.github.com>
+Date:   Sun Aug 23 00:13:36 2026 +0700
+
+docs: record the student's own verification run as the submitted evidence
+
+The submitted reports are now the run the student executed themselves (23/08 00:09): 29/30/30 across the
+three collections plus 216/0 on the regression suite, identical to every earlier run. That is a better
+provenance than a run produced during the authoring session.
+
+Human review is filled in only for what was actually verified, with the scope written down: three of the
+nineteen bugs reproduced by hand (BUG-08, BUG-13, BUG-14 - the Critical ones), the full suite re-run, and
+the Postman GUI console capture. Six interactions still say 'not yet checked by the student' because they
+depend on reading the three audit.md files, and marking those would be exactly the manufactured evidence
+section 11 penalises.
+
+---
+commit d7d50ceb2048686d064ffd79830c2f1857f2ddcf
+Author: DuyITLOR <153221271+DuyITLOR@users.noreply.github.com>
+Date:   Sun Aug 23 00:06:26 2026 +0700
+
+docs: refresh the commit log
+
+---
 commit 142d6f373563456f181a25b8f55d5f26b3209cc7
 Author: DuyITLOR <153221271+DuyITLOR@users.noreply.github.com>
 Date:   Sun Aug 23 00:06:23 2026 +0700
