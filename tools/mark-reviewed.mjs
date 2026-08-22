@@ -34,6 +34,7 @@ const WHAT = {
   10: ["tự chấm theo §15", "report/main-report.md §11 bảng lỗi"],
   11: ["regression suite + 2 lượt CI", "ci/ci-report.md §3"],
   12: ["soát lại lần hai", "ci/ci-report.md §3 (hash commit) + report §11"],
+  13: ["soát nội dung 114 nhãn VALID", "test-cases/test-summary/traceability-matrix.md (mục Lỗ hổng...)"],
 };
 
 const args = process.argv.slice(2);
@@ -42,7 +43,8 @@ const blocks = src.split(/(?=^### Interaction #)/m);
 const pending = [];
 for (const b of blocks) {
   const m = b.match(/^### Interaction #(\d+)/);
-  if (m && (b.includes("phần đọc của SV: **chưa**") || b.includes("(SV chưa tự kiểm)"))) pending.push(Number(m[1]));
+  if (m && (b.includes("SV uỷ quyền cho AI") || b.includes("phần đọc của SV: **chưa**")
+    || b.includes("(SV chưa tự kiểm)"))) pending.push(Number(m[1]));
 }
 
 if (!args.length || args.includes("--list")) {
@@ -90,11 +92,24 @@ ask(1, (confirmed) => {
     const m = b.match(/^### Interaction #(\d+)/);
     if (!m || !want.includes(Number(m[1]))) return b;
     n_done++;
-    const note = `***(SV đã kiểm)*** — SV tự đọc \`${WHAT[Number(m[1])]?.[1]}\` và xác nhận ngày ${today}. `;
-    if (b.includes("phần đọc của SV: **chưa**")) return b.replace("*(phần đọc của SV: **chưa**)* —", note + "—");
+    const note = `***(SV đã kiểm)*** — SV tự đọc \`${WHAT[Number(m[1])]?.[1]}\` và xác nhận ngày ${today}.`;
+    // Nâng từ "uỷ quyền" lên "đã kiểm": bỏ luôn câu nói sinh viên uỷ quyền, nếu không hai câu sẽ mâu thuẫn.
+    if (b.includes("SV uỷ quyền cho AI")) {
+      return b.replace(/\*\(phần soát tài liệu: \*\*SV uỷ quyền cho AI\*\*\)\* —/, note + " —")
+              .replace("**Phần đọc từng dòng tài liệu:** sinh viên uỷ quyền cho AI và chấp nhận kết quả — AI đã soát",
+                       "**Phần đọc từng dòng tài liệu:** sinh viên đã tự đọc; ngoài ra AI cũng đã soát");
+    }
+    if (b.includes("phần đọc của SV: **chưa**")) return b.replace("*(phần đọc của SV: **chưa**)* —", note + " —");
     return b.replace("***(SV chưa tự kiểm)***", note);
   });
   writeFileSync(FILE, out.join(""), "utf8");
   console.log(`\n  Đã đánh dấu ${n_done} lượt. Còn lại: ${pending.filter((x) => !want.includes(x)).join(", ") || "không còn"}`);
+  const left = readFileSync(FILE, "utf8").split(/(?=^### Interaction #)/m)
+    .filter((b) => /^### Interaction #/.test(b) && b.includes("SV uỷ quyền cho AI")).length;
+  if (!left) {
+    console.log(`\n  Không còn lượt nào ghi "uỷ quyền" → phần human review đã hoàn chỉnh.`);
+    console.log(`  Nên cập nhật README: bảng §8 (đổi dòng "đọc từng dòng tài liệu" sang **sinh viên**)`);
+    console.log(`  và tự chấm 95 → 100, rồi đóng gói: bash tools/package.sh 100`);
+  }
   console.log(`  Nhớ: npm run pdf && bash tools/commit-plan.sh log\n`);
 });
