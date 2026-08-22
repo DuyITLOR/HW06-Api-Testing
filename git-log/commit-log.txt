@@ -1,9 +1,11 @@
 Git commit log — HW06 API Testing · SV Lê Nhựt Duy 23127178
-Xuất lúc: 2026-08-23 00:19:44 +0700
+Xuất lúc: 2026-08-23 00:24:37 +0700
 Repo: https://github.com/DuyITLOR/HW06-Api-Testing.git
-Số commit: 42
+Số commit: 44
 
 ═══ Ngắn gọn ══════════════════════════════════════════════════════════
+eb71e4e 2026-08-23 test: script the two error classes the manual review pass caught
+cdbc7ba 2026-08-23 docs: refresh the commit log
 5eaf4de 2026-08-23 docs: second review pass finds three documentation defects, one serious
 f453d83 2026-08-23 docs: refresh the commit log
 bc2f428 2026-08-23 docs: record the student's own verification run as the submitted evidence
@@ -48,6 +50,36 @@ b0bb70c 2026-08-19 test(api-01): audit AI-generated cases, 35 VALID and 1 correc
 96f011e 2026-08-18 Initial commit
 
 ═══ Đầy đủ (kèm body) ═════════════════════════════════════════════════
+commit eb71e4e07fd7294e046c4e3960341748d380f838
+Author: DuyITLOR <153221271+DuyITLOR@users.noreply.github.com>
+Date:   Sun Aug 23 00:24:35 2026 +0700
+
+test: script the two error classes the manual review pass caught
+
+check-claims.mjs verifies every published number against the raw Newman JSON and the case definitions -
+136 cases, 333 assertions, 89 failures, per-API counts, 19 bugs, 216 regression assertions - and also
+checks that internal links point at files that exist and that commit hashes cited in the CI report are
+real commits. It immediately found one more stale number (329 assertions in three places), now fixed:
+18 claims checked, 0 mismatches.
+
+check-expect-vs-checks.mjs covers the other class: a case whose status column allows N behaviours while
+its assertions accept fewer will go red for the wrong reason. 135 cases, 0 mismatches.
+
+Both are wired into npm run verify (36 PASS, 0 FAIL), so these two failure modes cannot come back quietly.
+
+mark-reviewed.mjs handles the last step of the human review: it prints exactly what is about to be
+attested and which file backs it, requires the student to type a confirmation, and stamps the date. It is
+deliberately not callable from any pipeline - the label means the student read it, so the script replaces
+the editing, not the reading.
+
+---
+commit cdbc7bac5adeafd43e13eedc70cf445582df44ba
+Author: DuyITLOR <153221271+DuyITLOR@users.noreply.github.com>
+Date:   Sun Aug 23 00:19:44 2026 +0700
+
+docs: refresh the commit log
+
+---
 commit 5eaf4de87f9e13d20df9a449321dd78f8d50400c
 Author: DuyITLOR <153221271+DuyITLOR@users.noreply.github.com>
 Date:   Sun Aug 23 00:19:41 2026 +0700
