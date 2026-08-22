@@ -9,10 +9,19 @@
 #    Runner của GitHub không có SUT, và một pipeline chỉ chạy được trên máy của sinh viên thì
 #    không phải pipeline.
 #
-# 2. Cổng đỏ/xanh KHÔNG dùng exit code của Newman mà dùng `tools/ci-gate.mjs` so với baseline
-#    `ci/expected-failures.json`. Bộ test này cố ý bắt bug thật, nên "0 assertion đỏ" là điều
-#    không bao giờ đạt được — lấy nó làm cổng thì pipeline đỏ vĩnh viễn và mất hết tín hiệu.
-#    Baseline biến câu hỏi thành "số đỏ có ĐÚNG như đã ký nhận không", tức phát hiện được hồi quy.
+# 2. HAI bộ test, HAI cổng, vì chúng có hai vai trò khác nhau:
+#
+#      · regression suite (23127178_regression) — tập con các case ĐANG XANH của bộ chính, sinh tự
+#        động bởi tools/gen-regression.mjs. Vai trò: chốt phần hành vi đã đúng. Cổng: **0 assertion
+#        đỏ** (--strict). Đây là lượt "all API test cases passing" mà §6 đòi.
+#
+#      · 3 collection bug-hunting (136 case) — cố ý bắt bug thật nên luôn có 89 assertion đỏ.
+#        Lấy "0 đỏ" làm cổng thì pipeline đỏ vĩnh viễn và mất hết tín hiệu hồi quy. Cổng: so với
+#        baseline đã ký nhận trong ci/expected-failures.json — đỏ tăng = hồi quy mới, đỏ giảm =
+#        SUT đã sửa HOẶC test yếu đi.
+#
+#    Regression chạy TRƯỚC (trên SUT vừa seed sạch) rồi mới tới bộ bug-hunting, vì bộ sau cố tình
+#    ghi dữ liệu sai vào CSDL.
 #
 # 3. `gate_mode` cho phép chạy tay ở chế độ `strict` (đỏ nếu có bất kỳ assertion đỏ) — đây là cách
 #    tạo **lượt ĐỎ mẫu** mà §6 đòi, không cần cố tình viết một test sai vào repo.
@@ -103,6 +112,19 @@ jobs:
 
       # Không dùng tools/run-newman.sh ở đây: script đó tự gọi preflight và tự đặt tên theo giờ
       # local. Trên CI cần tên file cố định để bước cổng và bước upload artifact trỏ tới được.
+      # Lượt "tất cả pass" của §6: regression suite phải 0 đỏ.
+      - name: Chạy regression suite (cổng 0 đỏ)
+        run: |
+          set -uo pipefail
+          mkdir -p reports/newman
+          newman run postman/collections/23127178_regression.postman_collection.json \
+            -e postman/environments/HW06-local.postman_environment.json \
+            --reporters cli,json,htmlextra \
+            --reporter-json-export reports/newman/ci-regression.json \
+            --reporter-htmlextra-export reports/newman/ci-regression.html \
+            --timeout-request 10000 || true
+          node tools/ci-gate.mjs reports/newman/ci-regression.json --strict
+
       - name: Chạy 3 collection bằng Newman
         run: |
           set -uo pipefail

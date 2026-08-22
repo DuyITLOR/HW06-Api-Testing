@@ -144,15 +144,17 @@ export default {
       checks: [["statusIn", "400,422"]] },
 
     { id: `${P}-020`, folder: "12-domain-price", tech: "Domain", part: "**thiếu** `price`",
-      ...add({ id: "{{product_id}}", name: "HW06-Cart-Fixture", quantity: 1 }), status: "400/422",
-      expect: "từ chối, **hoặc** lấy giá từ catalog", basis: "spec §4.2", src: "AI", audit: "VALID",
-      checks: [["statusIn", "400,422"]] },
+      ...add({ id: "{{product_id}}", name: "HW06-Cart-Fixture", quantity: 1 }), status: "200 / 400 / 422",
+      expect: "**hai hành vi đều hợp lệ**: từ chối (400), hoặc nhận rồi lấy giá từ catalog (200). Hệ quả kiểm ở TC-107", basis: "spec §4.2 · FR-07", src: "AI",
+      audit: "INVALID: bản AI sinh đặt assertion `400/422` trong khi cột expected của chính nó ghi *'hoặc lấy giá từ catalog'* — assertion **nghiêm hơn** expected, nên nếu SUT lấy giá từ catalog và trả 200 thì test đỏ oan (test sai, không phải SUT sai). Đã sửa: nhận cả 200, và chuyển phần khẳng định sang **hệ quả trong giỏ** ở TC-107 — chỗ mà cả hai hành vi hợp lệ đều cho cùng một kết luận kiểm được.",
+      checks: [["statusIn", "200,400,422"], ["ctJson"]] },
 
     // ── 13-domain-name ───────────────────────────────────────────────────────
     { id: `${P}-021`, folder: "13-domain-name", tech: "Domain", part: "`name` **rỗng**",
-      ...add({ id: "{{product_id}}", name: "", price: PRICE, quantity: 1 }), status: "400/422",
-      expect: "từ chối, hoặc lấy tên từ catalog", basis: "spec §4.2", src: "AI", audit: "VALID",
-      checks: [["statusIn", "400,422"]] },
+      ...add({ id: "{{product_id}}", name: "", price: PRICE, quantity: 1 }), status: "200 / 400 / 422",
+      expect: "**hai hành vi đều hợp lệ**: từ chối, hoặc nhận rồi lấy tên từ catalog. Hệ quả kiểm ở TC-107", basis: "spec §4.2 · FR-07", src: "AI",
+      audit: "INVALID: cùng lỗi với TC-020 — assertion `400/422` nghiêm hơn expected đã ghi. Đã sửa tương tự.",
+      checks: [["statusIn", "200,400,422"], ["ctJson"]] },
 
     { id: `${P}-022`, folder: "13-domain-name", tech: "Domain", part: "`name` **không khớp** sản phẩm thật",
       ...add({ id: "{{product_id}}", name: "Tên bịa không khớp id", price: PRICE, quantity: 1 }), status: "400/422",
@@ -308,13 +310,21 @@ export default {
       expect: "từ chối — sản phẩm không còn tồn tại", basis: "FR-07 (giỏ chỉ chứa sản phẩm đang bán)", src: "SV", audit: "VALID",
       checks: [["statusIn", "400,404"]] },
 
-    { id: `${P}-107`, folder: "90-sv-extended", tech: "Schema", part: "**giỏ không được chứa dòng có `quantity ≤ 0`** sau tất cả case trên",
+    { id: `${P}-107`, folder: "90-sv-extended", tech: "Schema", part: "**bất biến trạng thái giỏ** sau toàn bộ input sai ở trên",
       method: "GET", path: "/api/cart", auth: "user", status: 200,
-      expect: "không dòng nào `quantity ≤ 0`", basis: "FR-07 — trạng thái giỏ phải luôn hợp lệ, kể cả sau khi bị gửi input sai", src: "SV", audit: "VALID",
+      expect: "không dòng nào có `quantity ≤ 0`, `name` rỗng/thiếu, hoặc `price` thiếu — **bất kể** SUT chọn cách từ chối hay cách lấy dữ liệu từ catalog", basis: "FR-07 — trạng thái giỏ phải luôn hợp lệ, kể cả sau khi bị bơm input sai", src: "SV", audit: "VALID",
       checks: [["status", 200],
         ["raw", `pm.test("không dòng nào có quantity <= 0", () => {
   const bad = pm.response.json().filter(r => !(Number(r.quantity) > 0));
   pm.expect(bad.length, "có " + bad.length + " dòng quantity không hợp lệ: " + JSON.stringify(bad.slice(0,3))).to.eql(0);
+});`],
+        ["raw", `pm.test("không dòng nào có name rỗng hoặc thiếu (hệ quả TC-021)", () => {
+  const bad = pm.response.json().filter(r => !String(r.name || "").trim());
+  pm.expect(bad.length, "có " + bad.length + " dòng không có tên: " + JSON.stringify(bad.slice(0,3))).to.eql(0);
+});`],
+        ["raw", `pm.test("không dòng nào thiếu price (hệ quả TC-020)", () => {
+  const bad = pm.response.json().filter(r => r.price === undefined || r.price === null || r.price === "");
+  pm.expect(bad.length, "có " + bad.length + " dòng không có giá: " + JSON.stringify(bad.slice(0,3))).to.eql(0);
 });`]] },
   ],
 
@@ -325,6 +335,13 @@ export default {
   ],
 
   auditNotes: [
+    "**Sửa 3 case.** `TC-CART-020` và `TC-CART-021`: assertion `400/422` **nghiêm hơn** cột expected của chính nó",
+    "(*'từ chối, hoặc lấy giá/tên từ catalog'*). Một test mà expected cho phép hai hành vi nhưng assertion chỉ nhận một",
+    "sẽ đỏ oan nếu SUT chọn hành vi còn lại — và đỏ oan thì bị báo thành bug của SUT. Cách sửa **không** phải là nới",
+    "assertion cho qua: phần khẳng định được chuyển sang `TC-CART-107`, nơi **cả hai hành vi hợp lệ đều dẫn tới cùng",
+    "một kết luận kiểm được** (giỏ không được chứa dòng thiếu giá / không tên). Bug vẫn bị bắt, nhưng bằng một case",
+    "không thể tranh cãi về expected.",
+    "",
     "**Sửa 1 case (`TC-CART-008`).** Bản AI sinh ghi expected *'từ chối vì vượt tồn kho'* nhưng bảng `products` của SUT",
     "**không có** cột tồn kho (`database.js:64-72`) — tức ràng buộc FR-07 này không có dữ liệu để kiểm. Giữ lại case (yêu cầu",
     "vẫn tồn tại) nhưng ghi rõ hạn chế, thay vì xoá case cho bảng đẹp hoặc giả vờ có tồn kho.",

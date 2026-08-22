@@ -7,11 +7,18 @@
 
 | Nhãn | Số case |
 |---|---|
-| VALID | 38 |
-| INVALID (đã sửa) | 0 |
+| VALID | 36 |
+| INVALID (đã sửa) | 2 |
 | INCOMPLETE (đã bổ sung) | 1 |
 
 ## Ghi chú audit
+
+**Sửa 3 case.** `TC-CART-020` và `TC-CART-021`: assertion `400/422` **nghiêm hơn** cột expected của chính nó
+(*'từ chối, hoặc lấy giá/tên từ catalog'*). Một test mà expected cho phép hai hành vi nhưng assertion chỉ nhận một
+sẽ đỏ oan nếu SUT chọn hành vi còn lại — và đỏ oan thì bị báo thành bug của SUT. Cách sửa **không** phải là nới
+assertion cho qua: phần khẳng định được chuyển sang `TC-CART-107`, nơi **cả hai hành vi hợp lệ đều dẫn tới cùng
+một kết luận kiểm được** (giỏ không được chứa dòng thiếu giá / không tên). Bug vẫn bị bắt, nhưng bằng một case
+không thể tranh cãi về expected.
 
 **Sửa 1 case (`TC-CART-008`).** Bản AI sinh ghi expected *'từ chối vì vượt tồn kho'* nhưng bảng `products` của SUT
 **không có** cột tồn kho (`database.js:64-72`) — tức ràng buộc FR-07 này không có dữ liệu để kiểm. Giữ lại case (yêu cầu
@@ -49,8 +56,8 @@ khởi động lại SUT thì số tuyệt đối sẽ khác.
 | TC-CART-017 | Domain | `price = 0` | `POST /api/cart` | user thường | `{"id":"{{product_id}}","name":"HW06-Cart-Fixture","price":0,"quantity":1}` | 400/422 | từ chối — giá 0 không khớp catalog | FR-07/FR-08 (giá trong giỏ phải là giá thật) | AI | VALID | **FAIL** (1/1 đỏ) |
 | TC-CART-018 | Domain | `price = -1000` — âm | `POST /api/cart` | user thường | `{"id":"{{product_id}}","name":"HW06-Cart-Fixture","price":-1000,"quantity":1}` | 400/422 | từ chối | FR-08 (tiền không âm) | AI | VALID | **FAIL** (1/1 đỏ) |
 | TC-CART-019 | Domain | `price = "abc"` — sai kiểu | `POST /api/cart` | user thường | `{"id":"{{product_id}}","name":"HW06-Cart-Fixture","price":"abc","quantity":1}` | 400/422 | từ chối | spec §4.2 (`price: 100000` là số) | AI | VALID | **FAIL** (1/1 đỏ) |
-| TC-CART-020 | Domain | **thiếu** `price` | `POST /api/cart` | user thường | `{"id":"{{product_id}}","name":"HW06-Cart-Fixture","quantity":1}` | 400/422 | từ chối, **hoặc** lấy giá từ catalog | spec §4.2 | AI | VALID | **FAIL** (1/1 đỏ) |
-| TC-CART-021 | Domain | `name` **rỗng** | `POST /api/cart` | user thường | `{"id":"{{product_id}}","name":"","price":111000,"quantity":1}` | 400/422 | từ chối, hoặc lấy tên từ catalog | spec §4.2 | AI | VALID | **FAIL** (1/1 đỏ) |
+| TC-CART-020 | Domain | **thiếu** `price` | `POST /api/cart` | user thường | `{"id":"{{product_id}}","name":"HW06-Cart-Fixture","quantity":1}` | 200 / 400 / 422 | **hai hành vi đều hợp lệ**: từ chối (400), hoặc nhận rồi lấy giá từ catalog (200). Hệ quả kiểm ở TC-107 | spec §4.2 · FR-07 | AI | INVALID: bản AI sinh đặt assertion `400/422` trong khi cột expected của chính nó ghi *'hoặc lấy giá từ catalog'* — assertion **nghiêm hơn** expected, nên nếu SUT lấy giá từ catalog và trả 200 thì test đỏ oan (test sai, không phải SUT sai). Đã sửa: nhận cả 200, và chuyển phần khẳng định sang **hệ quả trong giỏ** ở TC-107 — chỗ mà cả hai hành vi hợp lệ đều cho cùng một kết luận kiểm được. | **FAIL** (1/1 đỏ) |
+| TC-CART-021 | Domain | `name` **rỗng** | `POST /api/cart` | user thường | `{"id":"{{product_id}}","name":"","price":111000,"quantity":1}` | 200 / 400 / 422 | **hai hành vi đều hợp lệ**: từ chối, hoặc nhận rồi lấy tên từ catalog. Hệ quả kiểm ở TC-107 | spec §4.2 · FR-07 | AI | INVALID: cùng lỗi với TC-020 — assertion `400/422` nghiêm hơn expected đã ghi. Đã sửa tương tự. | **FAIL** (1/1 đỏ) |
 | TC-CART-022 | Domain | `name` **không khớp** sản phẩm thật | `POST /api/cart` | user thường | `{"id":"{{product_id}}","name":"Tên bịa không khớp id","price":111000,"quantity":1}` | 400/422 | từ chối — tên phải khớp `id`, hoặc server tự lấy tên | FR-07 (giỏ phản ánh sản phẩm thật) | AI | VALID | **FAIL** (1/1 đỏ) |
 | TC-CART-023 | Domain | `name` **rất dài** (300 ký tự) | `POST /api/cart` | user thường | `{"id":"{{product_id}}","name":"NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN` | 400/422 | từ chối (tên không khớp catalog) | FR-07 | AI | VALID | **FAIL** (1/1 đỏ) |
 | TC-CART-024 | State | bước 1: thêm 1 sản phẩm rồi **đọc lại giỏ** | `GET /api/cart` | user thường | – | 200 | giỏ có nhiều hơn mốc `cart_before` (các case hợp lệ ở trên đã thêm) | spec §4.1 + §4.2 | AI | VALID | **Pass** (3/3) |

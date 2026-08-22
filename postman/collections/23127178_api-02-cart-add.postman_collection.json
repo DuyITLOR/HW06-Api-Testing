@@ -968,7 +968,8 @@
                 "type": "text/javascript",
                 "exec": [
                   "// TC-CART-020 · Domain · **thiếu** price",
-                  "pm.test(\"status thuộc [400,422]\", () => pm.expect([400,422]).to.include(pm.response.code));"
+                  "pm.test(\"status thuộc [200,400,422]\", () => pm.expect([200,400,422]).to.include(pm.response.code));",
+                  "pm.test(\"Content-Type là application/json\", () => pm.expect(pm.response.headers.get(\"Content-Type\") || \"\").to.include(\"application/json\"));"
                 ]
               }
             }
@@ -1011,7 +1012,8 @@
                 "type": "text/javascript",
                 "exec": [
                   "// TC-CART-021 · Domain · name **rỗng**",
-                  "pm.test(\"status thuộc [400,422]\", () => pm.expect([400,422]).to.include(pm.response.code));"
+                  "pm.test(\"status thuộc [200,400,422]\", () => pm.expect([200,400,422]).to.include(pm.response.code));",
+                  "pm.test(\"Content-Type là application/json\", () => pm.expect(pm.response.headers.get(\"Content-Type\") || \"\").to.include(\"application/json\"));"
                 ]
               }
             }
@@ -1878,18 +1880,26 @@
           }
         },
         {
-          "name": "TC-CART-107 · **giỏ không được chứa dòng có quantity ≤ 0** sau tất cả case trên",
+          "name": "TC-CART-107 · **bất biến trạng thái giỏ** sau toàn bộ input sai ở trên",
           "event": [
             {
               "listen": "test",
               "script": {
                 "type": "text/javascript",
                 "exec": [
-                  "// TC-CART-107 · Schema · **giỏ không được chứa dòng có quantity ≤ 0** sau tất cả case trên",
+                  "// TC-CART-107 · Schema · **bất biến trạng thái giỏ** sau toàn bộ input sai ở trên",
                   "pm.test(\"status = 200\", () => pm.response.to.have.status(200));",
                   "pm.test(\"không dòng nào có quantity <= 0\", () => {",
                   "  const bad = pm.response.json().filter(r => !(Number(r.quantity) > 0));",
                   "  pm.expect(bad.length, \"có \" + bad.length + \" dòng quantity không hợp lệ: \" + JSON.stringify(bad.slice(0,3))).to.eql(0);",
+                  "});",
+                  "pm.test(\"không dòng nào có name rỗng hoặc thiếu (hệ quả TC-021)\", () => {",
+                  "  const bad = pm.response.json().filter(r => !String(r.name || \"\").trim());",
+                  "  pm.expect(bad.length, \"có \" + bad.length + \" dòng không có tên: \" + JSON.stringify(bad.slice(0,3))).to.eql(0);",
+                  "});",
+                  "pm.test(\"không dòng nào thiếu price (hệ quả TC-020)\", () => {",
+                  "  const bad = pm.response.json().filter(r => r.price === undefined || r.price === null || r.price === \"\");",
+                  "  pm.expect(bad.length, \"có \" + bad.length + \" dòng không có giá: \" + JSON.stringify(bad.slice(0,3))).to.eql(0);",
                   "});"
                 ]
               }
