@@ -149,9 +149,11 @@ jobs:
       - name: Cổng đỏ/xanh
         run: |
           shopt -s nullglob
-          files=(reports/newman/ci-*.json)
+          # CHỈ 3 collection bug-hunting. `ci-regression.json` có cổng riêng (0 đỏ) ở bước trước —
+          # quét chung sẽ báo "chưa có baseline" cho nó và làm build đỏ vì lý do không liên quan.
+          files=(reports/newman/ci-api-*.json)
           if [ ${#files[@]} -eq 0 ]; then
-            echo "::error::Không có collection nào chạy được — chưa có file collection trong repo?"
+            echo "::error::Không có collection bug-hunting nào chạy được — thiếu file collection?"
             exit 1
           fi
           if [ "${{ inputs.gate_mode || 'baseline' }}" = "strict" ]; then
