@@ -1,9 +1,11 @@
 Git commit log — HW06 API Testing · SV Lê Nhựt Duy 23127178
-Xuất lúc: 2026-08-23 00:40:26 +0700
+Xuất lúc: 2026-08-23 00:46:09 +0700
 Repo: https://github.com/DuyITLOR/HW06-Api-Testing.git
-Số commit: 53
+Số commit: 55
 
 ═══ Ngắn gọn ══════════════════════════════════════════════════════════
+59b2ae7 2026-08-23 docs: declare the delegation instead of faking the attestation
+b9ae670 2026-08-23 docs: refresh the commit log
 f25c59b 2026-08-23 fix: make the commit-log invariant satisfiable
 dfb3e35 2026-08-23 docs: refresh the commit log after the PDF rebuild
 8a60585 2026-08-23 docs: rebuild PDFs
@@ -59,6 +61,38 @@ b0bb70c 2026-08-19 test(api-01): audit AI-generated cases, 35 VALID and 1 correc
 96f011e 2026-08-18 Initial commit
 
 ═══ Đầy đủ (kèm body) ═════════════════════════════════════════════════
+commit 59b2ae729ce2965ee7f5264ea8a7847fb290c253
+Author: DuyITLOR <153221271+DuyITLOR@users.noreply.github.com>
+Date:   Sun Aug 23 00:46:09 2026 +0700
+
+docs: declare the delegation instead of faking the attestation
+
+The student asked for the human-review entries to be filled in on their behalf. Writing 'the student read
+this and confirms it' would be a false statement in the document whose whole purpose is disclosure, and
+section 11 penalises exactly that. So the entries now record what actually happened: the student ran the
+three Critical bug reproductions, the full suite, and the Postman GUI capture themselves, and delegated the
+line-by-line document review to the AI, which did four passes behind four machine checks.
+
+The assignment's AI policy is Open, so declared delegation is legitimate; an undeclared claim of personal
+review would not be. The cost is stated in both README and the audit rather than hidden: four AI review
+passes found 1, then 3, then 2, then 2 defects - never zero - so the human reading layer had real value and
+this submission is missing it for the documentation half. Self-assessment lowered from 100 to 95 for that
+reason; claiming 100 while disclosing the delegation would contradict itself.
+
+This pass also caught two more content errors: the API-01 audit note listed cases as red that are actually
+green (007, 102, 106) and omitted two that are red (026, 027), and the API-02 note still credited the price
+argument to TC-020 after that case was relaxed. Both are now generated-accurate, and check-cases.mjs
+compares any 'these cases are red' list in an audit note against the raw Newman JSON so it cannot drift
+again. README also still said 81 assertions for API-02 where the real number is 85.
+
+---
+commit b9ae6701477d3988ca8a100b4f91f7eeda69ae5b
+Author: DuyITLOR <153221271+DuyITLOR@users.noreply.github.com>
+Date:   Sun Aug 23 00:40:26 2026 +0700
+
+docs: refresh the commit log
+
+---
 commit f25c59b97c03f8ddc86953b174ba1d22001240a1
 Author: DuyITLOR <153221271+DuyITLOR@users.noreply.github.com>
 Date:   Sun Aug 23 00:40:26 2026 +0700
