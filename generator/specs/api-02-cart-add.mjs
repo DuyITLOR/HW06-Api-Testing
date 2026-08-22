@@ -348,7 +348,7 @@ export default {
     "**không có** cột tồn kho (`database.js:64-72`) — tức ràng buộc FR-07 này không có dữ liệu để kiểm. Giữ lại case (yêu cầu",
     "vẫn tồn tại) nhưng ghi rõ hạn chế, thay vì xoá case cho bảng đẹp hoặc giả vờ có tồn kho.",
     "",
-    "**Một điểm cần nói rõ về `price` (ảnh hưởng TC-016…020 và TC-101/102).** spec §4.2 CÓ ghi `price` trong body, nên",
+    "**Một điểm cần nói rõ về `price` (ảnh hưởng TC-017, 018, 019 và TC-101/102 — *không* còn TC-020 sau khi sửa).** spec §4.2 CÓ ghi `price` trong body, nên",
     "đọc thuần câu chữ thì gửi giá là *đúng đặc tả*. Bài này vẫn khẳng định giá trong giỏ phải bằng giá catalog, vì FR-08",
     "tính tiền đơn từ giỏ — nếu client đặt giá thì client đặt luôn số tiền phải trả. Đây là **suy luận từ FR-07/FR-08**,",
     "không phải câu chữ spec, và cột 'Căn cứ' ghi đúng như vậy để người chấm tự đánh giá được lập luận.",

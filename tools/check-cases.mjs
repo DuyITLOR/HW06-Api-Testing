@@ -67,5 +67,24 @@ for (const slug of SLUGS) {
   walk(col.item);
   for (const c of spec.cases) if (!inCol.has(c.id)) issues.push(`[CÓ TRONG BẢNG, THIẾU TRONG COLLECTION] ${c.id}`);
 }
+// 8. danh sách case "ĐỎ ở lượt nộp" nêu trong audit.md phải khớp raw JSON của Newman
+//    (bản trước ghi sai: liệt kê case XANH và gộp khoảng "101–107")
+{
+  const { readFileSync, readdirSync } = await import("node:fs");
+  for (const slug of SLUGS) {
+    const md = readFileSync(`test-cases/${slug}/audit.md`, "utf8");
+    const m = md.match(/case dưới đây ĐỎ ở lượt nộp[^`]*`([^`]+)`/);
+    if (!m) continue;
+    const claimed = new Set(m[1].split("·").map((x) => x.trim()));
+    const f = readdirSync("reports/newman").filter((x) => x.includes(slug) && x.endsWith(".json")).sort().pop();
+    const run = JSON.parse(readFileSync(`reports/newman/${f}`, "utf8")).run;
+    const real = new Set(run.failures.map((fl) => fl.source.name.split(" · ")[0].split("-").pop()));
+    const extra = [...claimed].filter((x) => !real.has(x));
+    const miss = [...real].filter((x) => !claimed.has(x));
+    if (extra.length) issues.push(`[AUDIT NÊU CASE KHÔNG ĐỎ] ${slug}: ${extra.join(", ")}`);
+    if (miss.length) issues.push(`[AUDIT THIẾU CASE ĐỎ] ${slug}: ${miss.join(", ")}`);
+  }
+}
+
 console.log(issues.length ? issues.map(s=>"  "+s).join("\n") : "  không tìm thấy vấn đề");
 console.log(`\n  ${allIds.size} test case · ${issues.length} vấn đề`);

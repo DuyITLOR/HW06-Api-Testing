@@ -298,8 +298,11 @@ export default {
     "status 200 + schema. Đây là kiểu lỗi nguy hiểm nhất khi để AI sinh test: expected trông hợp lý nhưng không có căn cứ,",
     "và nó sinh ra **bug giả** trong báo cáo.",
     "",
-    "**Không sửa expected để khớp SUT.** Nhiều case dưới đây sẽ ĐỎ (007/023/024/025/033/034/035/036/101–107). Sửa expected",
-    "cho khớp hành vi sai của SUT là cách nhanh nhất để bộ test mất hết giá trị — đỏ ở đây là **phát hiện**, không phải lỗi test.",
+    "**Không sửa expected để khớp SUT.** 14 case dưới đây ĐỎ ở lượt nộp — đúng danh sách, không gộp khoảng:",
+    "`023 · 024 · 025 · 026 · 027 · 033 · 034 · 035 · 036 · 101 · 103 · 104 · 105 · 107`.",
+    "Sửa expected cho khớp hành vi sai của SUT là cách nhanh nhất để bộ test mất hết giá trị — đỏ ở đây là",
+    "**phát hiện**, không phải lỗi test. (Danh sách này được `tools/check-cases.mjs` đối chiếu với raw JSON của",
+    "lượt chạy, nên nó không thể lệch âm thầm — bản trước ghi `007/…/101–107`, trong đó 007, 102 và 106 thực ra XANH.)",
   ],
 
   whyMissed: [

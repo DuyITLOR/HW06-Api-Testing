@@ -59,7 +59,7 @@ check("regression suite assertion", 216, R, RM, "ci/ci-report.md");
 console.log("\n── Dấu vết số liệu cũ ───────────────────────────────────────────────────");
 forbid("assertion cũ", "329 assertion", R, RM);
 forbid("passed cũ", "240 assertion xanh", R, RM);
-forbid("API-02 cũ", "81 assertion", R);
+forbid("API-02 cũ", "81 assertion", R, RM);
 forbid("file lượt chạy cũ", "20260822-2217", R, RM, "ci/ci-report.md");
 
 console.log("\n── File được tài liệu trỏ tới có tồn tại không ───────────────────────────");
