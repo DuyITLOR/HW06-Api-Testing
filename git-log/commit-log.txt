@@ -1,9 +1,11 @@
 Git commit log — HW06 API Testing · SV Lê Nhựt Duy 23127178
-Xuất lúc: 2026-08-22 22:09:47 +0700
+Xuất lúc: 2026-08-22 22:20:29 +0700
 Repo: https://github.com/DuyITLOR/HW06-Api-Testing.git
-Số commit: 34
+Số commit: 36
 
 ═══ Ngắn gọn ══════════════════════════════════════════════════════════
+9f596f7 2026-08-22 test: local run as the submitted evidence, with the console screenshot section 11 names
+36c0e4a 2026-08-22 docs: refresh the commit log
 4a110e1 2026-08-22 docs: evidence screenshots, updated numbers, and the student review checklist
 4e2f302 2026-08-22 ci(demo): remove the intentional failing assertion
 e388146 2026-08-22 ci(demo): deliberately fail one assertion to produce the red sample run (section 6)
@@ -40,6 +42,31 @@ b0bb70c 2026-08-19 test(api-01): audit AI-generated cases, 35 VALID and 1 correc
 96f011e 2026-08-18 Initial commit
 
 ═══ Đầy đủ (kèm body) ═════════════════════════════════════════════════
+commit 9f596f77e1dbea20d12466f88662be4b36c2782d
+Author: DuyITLOR <153221271+DuyITLOR@users.noreply.github.com>
+Date:   Sat Aug 22 22:20:26 2026 +0700
+
+test: local run as the submitted evidence, with the console screenshot section 11 names
+
+Port 3000 was freed (the other project's kind cluster was stopped with the student's approval), so the
+submitted reports are now a local run against localhost:3000 rather than CI artefacts: 29/30/30 and the
+regression suite 216/0, identical to the runner. Seven runs across two operating systems now agree.
+
+--reporter-htmlextra-logs puts the pre-request script's console.log into the report, so section 11's
+'console screenshot from your pre-request script' is satisfied by an artefact of the run itself:
+console-x-student-id.png shows CONSOLE LOGS printing
+[HW06] X-Student-Id =23127178|POST/api/login|2026-08-22T15:17:35.271Z.
+The flag is now the default in both the local runner and the workflow, so the evidence regenerates with
+every run instead of depending on a one-off capture.
+
+---
+commit 36c0e4aa1ff6dd15c6d136ba86b9fec404fe26f3
+Author: DuyITLOR <153221271+DuyITLOR@users.noreply.github.com>
+Date:   Sat Aug 22 22:09:47 2026 +0700
+
+docs: refresh the commit log
+
+---
 commit 4a110e1ccfbabfe1e51b4e433505abb6b7826fe3
 Author: DuyITLOR <153221271+DuyITLOR@users.noreply.github.com>
 Date:   Sat Aug 22 22:08:37 2026 +0700
