@@ -1,9 +1,11 @@
 Git commit log — HW06 API Testing · SV Lê Nhựt Duy 23127178
-Xuất lúc: 2026-08-23 00:39:17 +0700
+Xuất lúc: 2026-08-23 00:39:55 +0700
 Repo: https://github.com/DuyITLOR/HW06-Api-Testing.git
-Số commit: 49
+Số commit: 51
 
 ═══ Ngắn gọn ══════════════════════════════════════════════════════════
+8a60585 2026-08-23 docs: rebuild PDFs
+3c6b6f9 2026-08-23 docs: refresh the commit log
 e969ba8 2026-08-23 docs: replace the bare 'not yet checked' labels with precise attribution
 0f4585d 2026-08-23 docs: refresh the commit log
 fef7773 2026-08-23 test: review the content of the 114 VALID labels, not just their count
@@ -55,6 +57,20 @@ b0bb70c 2026-08-19 test(api-01): audit AI-generated cases, 35 VALID and 1 correc
 96f011e 2026-08-18 Initial commit
 
 ═══ Đầy đủ (kèm body) ═════════════════════════════════════════════════
+commit 8a60585e9afd5c8cd4d1571dfad47df8888cbe8f
+Author: DuyITLOR <153221271+DuyITLOR@users.noreply.github.com>
+Date:   Sun Aug 23 00:39:38 2026 +0700
+
+docs: rebuild PDFs
+
+---
+commit 3c6b6f92050505581886832b8e7ba558335c57cf
+Author: DuyITLOR <153221271+DuyITLOR@users.noreply.github.com>
+Date:   Sun Aug 23 00:39:17 2026 +0700
+
+docs: refresh the commit log
+
+---
 commit e969ba8290f640c0576371d192d53d0294f5ad10
 Author: DuyITLOR <153221271+DuyITLOR@users.noreply.github.com>
 Date:   Sun Aug 23 00:39:17 2026 +0700
