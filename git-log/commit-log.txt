@@ -1,9 +1,10 @@
 Git commit log — HW06 API Testing · SV Lê Nhựt Duy 23127178
-Xuất lúc: 2026-08-23 00:53:15 +0700
+Xuất lúc: 2026-08-23 00:54:08 +0700
 Repo: https://github.com/DuyITLOR/HW06-Api-Testing.git
-Số commit: 57
+Số commit: 58
 
 ═══ Ngắn gọn ══════════════════════════════════════════════════════════
+10f0e62 2026-08-23 docs: reconcile the audit with the attestation the student made
 19657f7 2026-08-23 fix: the review helper broke when the delegation wording landed
 bd20c95 2026-08-23 docs: refresh the commit log
 59b2ae7 2026-08-23 docs: declare the delegation instead of faking the attestation
@@ -63,6 +64,29 @@ b0bb70c 2026-08-19 test(api-01): audit AI-generated cases, 35 VALID and 1 correc
 96f011e 2026-08-18 Initial commit
 
 ═══ Đầy đủ (kèm body) ═════════════════════════════════════════════════
+commit 10f0e62577150e80c5178e707d9804d05175e3f4
+Author: DuyITLOR <153221271+DuyITLOR@users.noreply.github.com>
+Date:   Sun Aug 23 00:54:08 2026 +0700
+
+docs: reconcile the audit with the attestation the student made
+
+The student ran the review helper and confirmed eight entries themselves, so those fields now carry their
+attestation. Three things needed fixing around it.
+
+The helper stamped 22/08 because it used toISOString(), which is UTC - at 00:50 local on 23/08 that is still
+the previous day. Now it uses the local date, and the eight entries read 23/08.
+
+Each entry still carried a mid-sentence clause saying the document review was delegated to the AI, which
+contradicted the attestation two lines above it. The clause now says the student read it and the AI also
+checked it, which is what happened - both layers ran.
+
+README said the AI did the document review while the audit said the student did. README now lists both rows
+separately, and the self-assessment moves to 100 since the human-review dimension is complete: the student
+ran the executions and the bug reproductions, and has attested to the reading.
+
+Verify is 38 PASS / 0 FAIL.
+
+---
 commit 19657f7166521f0028d75c539af614e7148d8760
 Author: DuyITLOR <153221271+DuyITLOR@users.noreply.github.com>
 Date:   Sun Aug 23 00:49:27 2026 +0700
