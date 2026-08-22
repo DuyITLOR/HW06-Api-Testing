@@ -16,7 +16,7 @@
 
 ## Bảng test case
 
-> Cột `Kết quả` điền **tự động** từ `reports/newman/*.json` (lượt `23127178_api-02-cart-add_20260822-221736.json`).
+> Cột `Kết quả` điền **tự động** từ `reports/newman/*.json` (lượt `23127178_api-02-cart-add_20260823-000951.json`).
 
 | TC ID | Kỹ thuật | Tham số & phân vùng | Request | Auth | Query / Body | Expected status | Expected body / schema | Căn cứ | Nguồn | Audit | Kết quả |
 |---|---|---|---|---|---|---|---|---|---|---|---|

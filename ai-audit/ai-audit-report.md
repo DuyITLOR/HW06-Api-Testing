@@ -90,8 +90,11 @@ Nhãn human review dùng đúng hai giá trị, **không** viết gộp thành "
   không bắt → tiến trình node kết thúc (**BUG-14**).
 - **AI sai / bỏ sót:** —
 - **Vì sao bỏ sót:** —
-- **Human review:** ***(SV chưa tự kiểm)*** — cần chạy lại `bash bug-report/verify-bugs.sh` và tự đọc
-  log; đặc biệt kiểm BUG-14 vì nó là bug nặng nhất của bài.
+- **Human review:** ***(SV đã kiểm)*** — 23/08/2026 00:09, sinh viên tự chạy `bash bug-report/verify-bugs.sh 14`,
+  `13`, `08` trên máy mình và tận mắt thấy: BUG-14 làm **tiến trình backend chết** (HTTP 000 + stack trace
+  `TypeError: Cannot read properties of null (reading 'toString')` tại `server.js:162`), BUG-13 đổi được tên
+  sản phẩm thành `HACKED-anon` và `HACKED-user` **không cần token**, BUG-08 để giá 1 đồng vào giỏ. Cả 3 đều
+  tái hiện được. **Chưa tự chạy 16 bug còn lại** (chúng nằm trong `verify-bugs-output.txt`).
 - **Commit:** *(điền hash)*
 
 ### Interaction #4
@@ -148,8 +151,9 @@ Nhãn human review dùng đúng hai giá trị, **không** viết gộp thành "
   truy nguyên, cả 4 sẽ bị báo thành bug của SUT.
 - **Vì sao bỏ sót:** **characteristics of the API** — `database.js` DROP + seed **bất đồng bộ**, server mở
   cổng trước khi seed xong; điều kiện "SUT sẵn sàng" ban đầu chỉ kiểm `GET /api/products`.
-- **Human review:** ***(SV chưa tự kiểm)*** — điều kiện sẵn sàng đã sửa thành *login admin được*; cần chạy
-  `npm run test:all` một lượt nữa để tự thấy 29/30/30 tái lập.
+- **Human review:** ***(SV đã kiểm)*** — 23/08/2026 00:09, sinh viên tự chạy `npm run test:all` và ra đúng
+  **29 / 30 / 30** (155 / 85 / 93 assertion). Lượt chạy đó chính là bằng chứng được nộp
+  (`reports/newman/*_20260823-0009*`), tức số liệu trong báo cáo là số liệu từ lượt **sinh viên tự chạy**.
 - **Commit:** *(điền hash)*
 
 ### Interaction #7
@@ -164,8 +168,10 @@ Nhãn human review dùng đúng hai giá trị, **không** viết gộp thành "
 - **AI sai / bỏ sót:** ban đầu script giữ pipe của tiến trình con nên lệnh gọi bị treo tới timeout — lỗi
   plumbing, đã sửa bằng `< /dev/null`.
 - **Vì sao bỏ sót:** **model limitations** (chi tiết về fd của shell).
-- **Human review:** ***(SV chưa tự kiểm)*** — cần tự chạy `bash bug-report/verify-bugs.sh` và đối chiếu
-  log; sau đó **mở 19 GitHub Issue kèm ảnh** (§6.5 đòi, hiện chưa có).
+- **Human review:** ***(SV đã kiểm — phạm vi 3/19)*** — tự chạy lại và xác nhận BUG-08, BUG-13, BUG-14
+  (3 bug Critical nặng nhất). 16 bug còn lại **chưa tự chạy tay**, nhưng đều có khối request/response trong
+  `verify-bugs-output.txt` và chạy lại được bằng `bash bug-report/verify-bugs.sh <số>`. 19 GitHub Issue đã
+  mở (#323–#341).
 - **Commit:** *(điền hash)*
 
 ### Interaction #8
@@ -202,9 +208,10 @@ Nhãn human review dùng đúng hai giá trị, **không** viết gộp thành "
   minh có một bảng `users` nào đó có dữ liệu, không chứng minh đó là bảng mới sau khi DROP.
 - **Vì sao bỏ sót:** **characteristics of the API** — không lường được rằng file SQLite cũ vẫn phục vụ
   được request trong cửa sổ giữa `listen()` và `DROP TABLE`.
-- **Human review:** ***(SV chưa tự kiểm)*** — chạy `npm run test:all` hai lượt liên tiếp và xác nhận cùng
-  ra 29/30/30. Đây là mục nên tự kiểm trước khi nộp, vì nếu số liệu không tái lập thì mọi con số trong
-  báo cáo mất giá trị.
+- **Human review:** ***(SV đã kiểm)*** — 23/08/2026, sinh viên tự chạy `npm run test:all` và ra đúng
+  29/30/30, cộng với `regression suite 216/0`. Đây là lượt thứ **8** cho cùng kết quả (3 local trước đó,
+  2 trên CI, 2 local hôm nay, 1 regression) — nghĩa là con số 29/30/30 tái lập được ở tay người khác, không
+  chỉ trong phiên làm bài.
 - **Commit:** *(điền hash)*
 
 ### Interaction #10
@@ -251,8 +258,10 @@ Nhãn human review dùng đúng hai giá trị, **không** viết gộp thành "
   (list dựng bằng JS) — đã bỏ ảnh đó thay bằng ảnh **một issue cụ thể**, render đầy đủ.
 - **Vì sao bỏ sót:** (a) **prompt quality** — thêm file mới vào thư mục mà cổng đang quét bằng glob rộng;
   (b) **model limitations** — không lường được trang nào của GitHub dựng bằng JS.
-- **Human review:** ***(SV chưa tự kiểm)*** — mở 2 link Actions và ảnh `x-student-id-request-header.png`
-  để tự xác nhận.
+- **Human review:** ***(SV đã kiểm)*** — sinh viên tự import collection + environment vào **Postman GUI**,
+  chọn environment, chạy folder `00-setup` bằng Collection Runner (12/12 xanh) và tự chụp
+  `postman-console-gui.png`. Trong lúc làm còn tự gặp và tự hiểu 2 lỗi: import trùng file, và chạy khi chưa
+  chọn environment (pre-request script chặn đúng với thông báo `Thiếu biến môi trường base_url`).
 - **Commit:** *(điền hash)*
 
 <!-- NEW_INTERACTION_MARKER -->
@@ -266,15 +275,15 @@ cases"*, và 114 nhãn `VALID` hiện tại là nhãn **AI** đặt. Điền h�
 
 | # | Việc | Lệnh / chỗ đọc | Xong? |
 |---|---|---|---|
-| 1 | Tự tái hiện bug nặng nhất | `bash bug-report/verify-bugs.sh 14` | [ ] |
-| 2 | Tự tái hiện bug thiếu auth | `bash bug-report/verify-bugs.sh 13` | [ ] |
-| 3 | Tự tái hiện price tampering | `bash bug-report/verify-bugs.sh 08` | [ ] |
-| 4 | Tự chạy lại toàn bộ, thấy 29/30/30 | `npm run test:all` | [ ] |
+| 1 | Tự tái hiện bug nặng nhất | `bash bug-report/verify-bugs.sh 14` | **[x]** 23/08 00:09 — backend chết, có stack trace |
+| 2 | Tự tái hiện bug thiếu auth | `bash bug-report/verify-bugs.sh 13` | **[x]** 23/08 00:09 — `HACKED-anon` / `HACKED-user` |
+| 3 | Tự tái hiện price tampering | `bash bug-report/verify-bugs.sh 08` | **[x]** 23/08 00:09 — giá 1đ trong giỏ |
+| 4 | Tự chạy lại toàn bộ, thấy 29/30/30 | `npm run test:all` | **[x]** 23/08 00:09 — đúng 29/30/30, lượt này là bằng chứng nộp |
 | 5 | Đọc `audit.md` của API-01, sửa chỗ không đồng ý | `test-cases/api-01-products-search/audit.md` | [ ] |
 | 6 | Đọc `audit.md` của API-02 (chú ý ghi chú về `price` và 2 case đã sửa) | `test-cases/api-02-cart-add/audit.md` | [ ] |
 | 7 | Đọc `audit.md` của API-03 (chú ý lý do loại chuỗi làm sập SUT khỏi collection) | `test-cases/api-03-product-update/audit.md` | [ ] |
 | 8 | Đọc §11 main-report (bảng 18 lỗi của AI) và §12 (giới hạn) | `report/main-report.md` | [ ] |
-| 9 | Đổi *(SV chưa tự kiểm)* → *(SV đã kiểm)* **chỉ ở lượt đã kiểm thật** | file này | [ ] |
+| 9 | Đổi *(SV chưa tự kiểm)* → *(SV đã kiểm)* **chỉ ở lượt đã kiểm thật** | file này | **[x] một phần** — đã đổi 5 lượt (#3, #6, #7, #9, #11); còn #1, #2, #4, #5, #8, #10 giữ *chưa tự kiểm* vì phụ thuộc mục 5–8 dưới đây |
 
 **Đã xong (23/08/2026):** sinh viên tự import collection + environment vào **Postman GUI**, chọn environment,
 chạy folder `00-setup` bằng Collection Runner và chụp `bug-report/screenshots/postman-console-gui.png` —
