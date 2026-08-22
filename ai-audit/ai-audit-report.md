@@ -264,6 +264,35 @@ Nhãn human review dùng đúng hai giá trị, **không** viết gộp thành "
   chọn environment (pre-request script chặn đúng với thông báo `Thiếu biến môi trường base_url`).
 - **Commit:** *(điền hash)*
 
+### Interaction #12
+- **API / Bước:** soát lại lần hai toàn bộ tài liệu (sau khi bài đã "xong")
+- **Bước trong quy trình:** review — đọc với vai người chấm
+- **AI tool:** Claude Code (Opus 5)
+- **Date & time:** 2026-08-23 00:20
+- **Prompt:**
+  ```
+  (mục 5–8 trong checklist human review) bạn tự xử lý giùm tui lun đi
+  ```
+- **AI output (tóm tắt):** đọc lại 3 file `audit.md` + `report/main-report.md` §11/§12 và tìm thêm **3 lỗi
+  tài liệu**:
+  1. `ci/ci-report.md` ghi **2 hash commit không tồn tại** (`28f5296`, `4b3f60d`) cho lượt CI đỏ — hash
+     thật là `e388146` và `4e2f302`. Đây là loại lỗi tệ nhất trong báo cáo: chi tiết **kiểm được ngay** mà
+     lại sai, và nếu TA kiểm thì nó làm mất tin cậy cho cả những phần đúng.
+  2. Bảng lỗi §11 bị **đánh số trùng và sai thứ tự** (…10, 16, 17, 12, 13…) và **thiếu một dòng** so với
+     bảng trong file này (17 so với 18).
+  3. §12 vẫn trỏ tới file lượt chạy **đã bị thay** (`*_20260822-2217*` trong khi bộ nộp là `*_20260823-0009*`).
+  Đã sửa cả ba, và viết thêm `tools/check-expect-vs-checks.mjs` để biến lỗi #16 thành **bất biến kiểm được
+  bằng máy**: rút tập status code ở cột `status` của mọi case rồi so với tập status mà `checks` thực sự nhận.
+  Kết quả: **135 case · 0 case lệch**. Đã đưa vào `npm run verify` (mục 2b).
+- **AI sai / bỏ sót:** cả 3 lỗi trên **do chính AI tạo ra** ở các lượt #8, #10, #11 — trong đó lỗi hash bịa
+  là lỗi *tự tin sai*: AI biết một hash thật (`5a07ebf`) rồi **điền nốt hai hash còn lại theo trí nhớ** thay
+  vì tra `git log`.
+- **Vì sao bỏ sót:** **model limitations** — sinh chi tiết trông hợp lý mà không kiểm nguồn. Đây đúng họ lỗi
+  #1/#2/#3 (bịa expected khi spec im lặng), lần này xảy ra ở **tài liệu** thay vì ở test case.
+- **Human review:** ***(SV chưa tự kiểm)*** — lượt soát này là **AI tự soát output của AI**, không thay được
+  phần đọc của sinh viên. Hai hash mới có thể kiểm trong 5 giây: `git log --oneline | grep demo`.
+- **Commit:** *(điền hash)*
+
 <!-- NEW_INTERACTION_MARKER -->
 
 ---
@@ -284,6 +313,10 @@ cases"*, và 114 nhãn `VALID` hiện tại là nhãn **AI** đặt. Điền h�
 | 7 | Đọc `audit.md` của API-03 (chú ý lý do loại chuỗi làm sập SUT khỏi collection) | `test-cases/api-03-product-update/audit.md` | [ ] |
 | 8 | Đọc §11 main-report (bảng 18 lỗi của AI) và §12 (giới hạn) | `report/main-report.md` | [ ] |
 | 9 | Đổi *(SV chưa tự kiểm)* → *(SV đã kiểm)* **chỉ ở lượt đã kiểm thật** | file này | **[x] một phần** — đã đổi 5 lượt (#3, #6, #7, #9, #11); còn #1, #2, #4, #5, #8, #10 giữ *chưa tự kiểm* vì phụ thuộc mục 5–8 dưới đây |
+
+**Mục 5–8 (đọc `audit.md` × 3 + §11/§12):** AI đã soát lại lần hai ngày 23/08 và tìm thêm 3 lỗi tài liệu
+(Interaction #12, bảng lỗi #19–#21). **Đây là AI tự soát output của AI**, không thay được phần đọc của sinh
+viên — 6 lượt còn lại vì vậy vẫn giữ nhãn *(SV chưa tự kiểm)*.
 
 **Đã xong (23/08/2026):** sinh viên tự import collection + environment vào **Postman GUI**, chọn environment,
 chạy folder `00-setup` bằng Collection Runner và chụp `bug-report/screenshots/postman-console-gui.png` —
@@ -314,6 +347,9 @@ chạy folder `00-setup` bằng Collection Runner và chụp `bug-report/screens
 | 16 | #4/#10 | **`TC-CART-020`/`021`: assertion nghiêm hơn expected của chính nó** — và lượt tự audit #5 vẫn dán nhãn `VALID` | thiết kế test | soát chéo cột `expect` với cột `checks` khi tự chấm lại bài | chuyển phần khẳng định sang `TC-CART-107`, nơi cả hai hành vi hợp lệ đều cho cùng kết luận kiểm được |
 | 17 | #8/#10 | Hai lượt CI **không đúng nghĩa** §6 (*all passing* / *one failing*) vì bộ 136 case luôn có 89 đỏ | thiết kế CI | đọc lại đúng câu chữ §6 khi tự chấm | thêm **regression suite** sinh tự động (216 assertion, 0 đỏ) với cổng riêng; lượt đỏ tạo bằng đúng 1 assertion có nhãn DEMO rồi gỡ ngay |
 | 18 | #11 | Cổng baseline quét luôn `ci-regression.json` → build đỏ vì *"chưa có baseline"* | kỹ thuật | đọc log lượt CI đầu sau khi thêm regression | thu hẹp glob về `ci-api-*.json` |
+| 19 | #8/#12 | **`ci-report.md` ghi 2 hash commit KHÔNG TỒN TẠI** cho lượt CI đỏ — biết 1 hash thật rồi điền nốt 2 hash theo trí nhớ | model limitations | soát lại lần hai: `git log --format=%s -1 <hash>` trả về rỗng | tra `git log` lấy hash thật `e388146`, `4e2f302` |
+| 20 | #10/#12 | Bảng §11 **đánh số trùng, sai thứ tự** và **thiếu 1 dòng** so với bảng này | kỹ thuật | đếm lại dãy số trong bảng | đánh số lại liên tục 1..18, thêm dòng còn thiếu, sửa 3 tham chiếu chéo |
+| 21 | #11/#12 | §12 trỏ tới file lượt chạy **đã bị thay** | kỹ thuật | so tên file trong báo cáo với `ls reports/newman/` | cập nhật theo lượt sinh viên tự chạy |
 
 **Bốn lỗi đáng giá nhất về phương pháp là #9, #10, #14 và #16.** Riêng #16 đáng đọc vì nó là **lỗi mà chính
 lượt tự audit của AI đã dán nhãn `VALID`** — bằng chứng cụ thể cho hạn chế đã ghi ở Interaction #5: AI không

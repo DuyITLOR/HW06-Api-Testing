@@ -18,7 +18,7 @@
 | Kết quả | **244 assertion xanh · 89 đỏ** — mọi assertion đỏ đều map tới một bug đã tái hiện được |
 | Bug | **19 bug, 19/19 tái hiện được** — 5 Critical, 5 High, 7 Medium, 2 Low · Issues [#323–#341](https://github.com/DuyITLOR/group05_eshop/issues/323) |
 | Bug đáng chú ý nhất | **BUG-14**: khách **không đăng nhập** làm **sập cả backend** bằng 2 request — chuỗi 3 lỗi |
-| Lỗi của AI đã bắt và sửa | **18** — 5 lỗi thiết kế test case (gồm 2 case assertion nghiêm hơn expected), 5 lỗi kỹ thuật, 4 lỗi bỏ sót phân vùng, 2 lỗi số liệu, 2 lỗi quy trình |
+| Lỗi của AI đã bắt và sửa | **18** (bảng đầy đủ ở §11) — 5 lỗi thiết kế test case (gồm 2 case assertion nghiêm hơn expected), 5 lỗi kỹ thuật, 4 lỗi bỏ sót phân vùng, 2 lỗi số liệu, 2 lỗi quy trình |
 | Giả thuyết đã **loại** sau khi kiểm | **4** (ghi lại ở [bug-report §Bug đã loại](../bug-report/bug-report.md)) |
 
 ## Mục lục
@@ -296,11 +296,13 @@ không `pkill` theo tên — máy có thể đang chạy backend của bài khá
 | 2 local | 29/155 | 30/81 | 30/93 |
 | 3 local | 29/155 | 30/81 | 30/93 |
 | 4 CI (runner Ubuntu) | 29/155 | 30/85\* | 30/93 |
-| 5 CI **(bộ nộp)** | 29/155 | 30/85\* | 30/93 |
+| 5 CI (lượt XANH §9) | 29/155 | 30/85\* | 30/93 |
+| 6–7 local (sau khi sửa TC-020/021) | 29/155 | 30/85 | 30/93 |
+| 8 local **(bộ nộp — sinh viên tự chạy 23/08 00:09)** | 29/155 | 30/85 | 30/93 |
 
 \* API-02 có 85 assertion thay vì 81 sau khi sửa TC-CART-020/021 (§11 lỗi #16) — số **đỏ** không đổi.
 
-Số đỏ giống nhau tuyệt đối qua **5 lượt trên 2 hệ điều hành**. Điều này **không** có sẵn: lượt kiểm tái lập đầu tiên cho API-02 ra **34** thay vì 30,
+Số đỏ giống nhau tuyệt đối qua **8 lượt trên 2 hệ điều hành**, trong đó lượt cuối do **sinh viên tự chạy**. Điều này **không** có sẵn: lượt kiểm tái lập đầu tiên cho API-02 ra **34** thay vì 30,
 và truy nguyên ra một lỗi môi trường sâu hơn lỗi #10 — xem §11 lỗi #12. Chỉ giữ file của lượt mới nhất
 trong `reports/newman/` để bộ nộp không phình; hai lượt trước đã xoá sau khi ghi lại số liệu ở bảng này.
 
@@ -410,16 +412,17 @@ Postman — 136 case, 329 assertion, từ **một** nguồn định nghĩa.
 | 8 | Chỉ kiểm endpoint được giao, không soát **route lân cận cùng nhóm quyền** | bỏ sót (prompt) | Đọc `server.js` quanh dòng 179 thấy `POST`/`DELETE` cũng thiếu middleware | Thêm TC-PRODUPD-107/108 → mở rộng **BUG-13** |
 | 9 | Sinh mã JS có **lỗi cú pháp**: giá trị chuỗi lồng trong tên `pm.test` không escape dấu `"` | kỹ thuật | Lượt Newman đầu: 2 case đỏ với `missing ) after argument list` — **không phải** bug SUT | Sửa hàm `fieldEq` trong generator (escape `"` → `'`) rồi sinh lại |
 | 10 | Chạy seed **trước khi SUT seed xong DB** → user2 bị xoá cùng bảng `users` | kỹ thuật | Lượt đầu: SETUP-03 của API-02 đỏ 401 — đỏ **vì môi trường**, không vì bug | Điều kiện "SUT sẵn sàng" đổi thành *login admin được*, không chỉ *cổng đã mở* |
-| 16 | **TC-CART-020 và TC-CART-021: assertion nghiêm hơn expected của chính nó** — cột expected ghi *"từ chối, **hoặc** lấy giá/tên từ catalog"* nhưng assertion chỉ nhận `400/422`. Nếu SUT chọn hành vi thứ hai thì test đỏ oan → sẽ bị báo thành bug của SUT | thiết kế test | soát chéo cột `expect` với `checks` khi tự chấm lại bài | **Không nới assertion cho qua**: chuyển phần khẳng định sang `TC-CART-107`, nơi cả hai hành vi hợp lệ đều dẫn tới cùng một kết luận kiểm được (giỏ không được chứa dòng thiếu giá / không tên). Bug vẫn bị bắt, bằng case không tranh cãi được về expected |
-| 17 | Cổng baseline quét luôn `ci-regression.json` → build đỏ vì *"chưa có baseline"* trong khi cả hai cổng thật đều xanh | kỹ thuật | đọc log lượt CI đầu sau khi thêm regression suite | thu hẹp glob về `ci-api-*.json`; regression có cổng riêng |
-| 12 | **Bản sửa cho lỗi #10 vẫn chưa đủ**: lấy "login admin được" làm mốc SUT sẵn sàng — nhưng mốc đó cũng sai | kỹ thuật | Chạy lại toàn bộ để kiểm tái lập: API-02 ra **34** thay vì 30. Tái hiện thủ công **3/3 lần**: `POST /api/register` trả `200 {"id":3}` rồi user **biến mất** | Mốc sẵn sàng đổi thành **ghi rồi kiểm chứng bản ghi còn sống** (thử tối đa 12 lần); seed thất bại thì **chặn** lượt chạy thay vì cảnh báo |
-| 13 | Xuất Excel **đếm đúp** case AI (250 thay vì 136) | prompt quality | Số không khớp `summary.md` | Bỏ `generated.md` khỏi sheet gộp khi đã có `audit.md` |
-| 14 | `verify-all.sh` đếm **dòng** thay vì **TC ID duy nhất** → mỗi API phồng thêm bằng số dòng bảng "vì sao AI bỏ sót" (50 thay vì 43) | kỹ thuật | Số không khớp `summary.md` và `excel/` | Đếm `sort -u` trên TC ID |
-| 15 | Script giữ pipe của tiến trình con → lệnh gọi treo tới timeout | model limitations | `verify-bugs.sh` bị timeout 2 phút | Thêm `< /dev/null` khi khởi động SUT |
-| 16 | Ghi 2 file vào repo HW05 do shell giữ cwd giữa các lệnh | quy trình | Đối chiếu `git status` của HW05 | Chuyển file về HW06, hoàn nguyên HW05, ghi vào AI audit |
+| 11 | **TC-CART-020 và TC-CART-021: assertion nghiêm hơn expected của chính nó** — cột expected ghi *"từ chối, **hoặc** lấy giá/tên từ catalog"* nhưng assertion chỉ nhận `400/422`. Nếu SUT chọn hành vi thứ hai thì test đỏ oan → sẽ bị báo thành bug của SUT | thiết kế test | soát chéo cột `expect` với `checks` khi tự chấm lại bài | **Không nới assertion cho qua**: chuyển phần khẳng định sang `TC-CART-107`, nơi cả hai hành vi hợp lệ đều dẫn tới cùng một kết luận kiểm được (giỏ không được chứa dòng thiếu giá / không tên). Bug vẫn bị bắt, bằng case không tranh cãi được về expected |
+| 12 | Cổng baseline quét luôn `ci-regression.json` → build đỏ vì *"chưa có baseline"* trong khi cả hai cổng thật đều xanh | kỹ thuật | đọc log lượt CI đầu sau khi thêm regression suite | thu hẹp glob về `ci-api-*.json`; regression có cổng riêng |
+| 13 | **Bản sửa cho lỗi #10 vẫn chưa đủ**: lấy "login admin được" làm mốc SUT sẵn sàng — nhưng mốc đó cũng sai | kỹ thuật | Chạy lại toàn bộ để kiểm tái lập: API-02 ra **34** thay vì 30. Tái hiện thủ công **3/3 lần**: `POST /api/register` trả `200 {"id":3}` rồi user **biến mất** | Mốc sẵn sàng đổi thành **ghi rồi kiểm chứng bản ghi còn sống** (thử tối đa 12 lần); seed thất bại thì **chặn** lượt chạy thay vì cảnh báo |
+| 14 | Xuất Excel **đếm đúp** case AI (250 thay vì 136) | prompt quality | Số không khớp `summary.md` | Bỏ `generated.md` khỏi sheet gộp khi đã có `audit.md` |
+| 15 | `verify-all.sh` đếm **dòng** thay vì **TC ID duy nhất** → mỗi API phồng thêm bằng số dòng bảng "vì sao AI bỏ sót" (50 thay vì 43) | kỹ thuật | Số không khớp `summary.md` và `excel/` | Đếm `sort -u` trên TC ID |
+| 16 | Script giữ pipe của tiến trình con → lệnh gọi treo tới timeout | model limitations | `verify-bugs.sh` bị timeout 2 phút | Thêm `< /dev/null` khi khởi động SUT |
+| 17 | Ghi 2 file vào repo HW05 do shell giữ cwd giữa các lệnh | quy trình | Đối chiếu `git status` của HW05 | Chuyển file về HW06, hoàn nguyên HW05, ghi vào AI audit |
+| 18 | **Hai lượt CI không đúng nghĩa §6** (*"all test cases passing"* / *"one test case failing"*) — bộ 136 case luôn có 89 đỏ nên lượt "xanh" vẫn đầy assertion đỏ | thiết kế CI | Đọc lại đúng câu chữ §6 khi tự chấm bài theo bảng §15 | Thêm **regression suite** sinh tự động (216 assertion, 0 đỏ) với cổng riêng; lượt đỏ tạo bằng đúng 1 assertion có nhãn DEMO rồi gỡ ngay ở commit sau |
 
-**Lỗi #9, #10 và #12 là ba lỗi đáng giá nhất về mặt phương pháp:** cả ba đều làm test case đỏ, và nếu không
-truy nguyên thì sẽ được **báo thành bug của SUT**. Riêng chuỗi #10 → #12 đáng đọc kỹ, vì nó là một **bản sửa
+**Ba lỗi đáng giá nhất về mặt phương pháp — #9 (mã JS sinh sai), #10 (mốc sẵn sàng sai) và #13 (bản sửa cho #10 vẫn sai):** cả ba đều làm test case đỏ, và nếu không
+truy nguyên thì sẽ được **báo thành bug của SUT**. Riêng chuỗi #10 → #13 đáng đọc kỹ, vì nó là một **bản sửa
 sai được sửa lại**:
 
 - Lần đầu: user2 mất → chẩn đoán "SUT chưa seed xong" → sửa mốc sẵn sàng thành *login admin được*. Lượt
@@ -438,6 +441,17 @@ khi lượt chạy tái lập được**. Nếu bài này dừng ở lần sửa
 một câu kết luận sai về nguyên nhân.
 
 Mỗi assertion đỏ phải trả lời được: *đỏ vì SUT sai, vì test tôi viết sai, hay vì môi trường?*
+
+**Lượt soát lần hai (23/08/2026), sau khi bài đã "xong":** đọc lại toàn bộ với vai người chấm và tìm thêm
+**3 lỗi tài liệu** mà không lượt nào trước đó thấy: (a) `ci/ci-report.md` ghi **2 hash commit không tồn
+tại** cho lượt CI đỏ — loại lỗi tệ nhất trong một báo cáo vì nó là chi tiết *kiểm được ngay* và sai;
+(b) bảng §11 bị **đánh số trùng** (…10, 16, 17, 12, 13…) và **thiếu một dòng** so với bảng trong AI audit;
+(c) §12 vẫn trỏ tới file lượt chạy **đã bị thay**. Đã sửa cả ba.
+
+Từ đó rút ra một phép kiểm mới, biến lỗi #11 thành **bất biến kiểm được bằng máy** thay vì trông vào mắt
+người: [`tools/check-expect-vs-checks.mjs`](../tools/check-expect-vs-checks.mjs) rút tập status code nêu ở
+cột `status` của **mọi** case rồi so với tập status mà `checks` thực sự chấp nhận. Kết quả hiện tại:
+**135 case có assert status · 0 case lệch**. Phép kiểm này đã vào `npm run verify`.
 
 **Cách làm để trả lời được câu đó:** viết `bug-report/verify-bugs.sh` — tái hiện từng bug bằng `curl` độc
 lập với Postman. 19/19 bug tái hiện được; 4 giả thuyết **không** tái hiện được đã bị loại khỏi báo cáo.
@@ -470,6 +484,7 @@ Ghi rõ vì một báo cáo không nêu giới hạn thì không kiểm chứng 
    trong báo cáo Newman của lượt nộp (`--reporter-htmlextra-logs`); `x-student-id-request-header.png` —
    bảng REQUEST HEADERS cho thấy header **như đã gửi**. Ba ảnh này cũng phủ luôn yêu cầu hostname
    `localhost` của §11.
-9. **Lượt chạy được nộp là lượt local** (`reports/newman/*_20260822-2217*.json`, `localhost:3000`), và
-   cùng số đỏ 29/30/30 với lượt CI `runs/32580345226` trên Ubuntu. Tổng cộng **7 lượt trên 2 hệ điều hành**
-   cho cùng kết quả — nhưng bài **không** khẳng định gì về môi trường khác hai môi trường đó.
+9. **Lượt chạy được nộp là lượt do chính sinh viên tự chạy** (`reports/newman/*_20260823-0009*.json` +
+   `*_regression_20260823-001211*`, trên `localhost:3000`), và cùng số đỏ 29/30/30 với lượt CI
+   `runs/32580345226` trên Ubuntu. Tổng cộng **8 lượt trên 2 hệ điều hành** cho cùng kết quả — nhưng bài
+   **không** khẳng định gì về môi trường ngoài hai môi trường đó.

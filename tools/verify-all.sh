@@ -53,6 +53,13 @@ for s in "${SLUGS[@]}"; do
   else f "$s — chỉ $n_ext case tự thêm, §6.3 đòi ≥5"; fi
 done
 
+sect "2b. Assertion có nghiêm hơn expected đã ghi không? (lỗi #11)"
+if node tools/check-expect-vs-checks.mjs >/tmp/hw06-evc.log 2>&1; then
+  p "$(tail -1 /tmp/hw06-evc.log | sed 's/^ *//')"
+else
+  f "có case mà assertion nhận ít status hơn cột `status` đã ghi → sẽ đỏ OAN. Chi tiết: node tools/check-expect-vs-checks.mjs"
+fi
+
 sect "3. Audit đã dán nhãn hết chưa (§6.2)"
 for s in "${SLUGS[@]}"; do
   file="test-cases/$s/audit.md"
