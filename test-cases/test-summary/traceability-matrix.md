@@ -22,6 +22,17 @@ Cột cuối trống là một **lỗ hổng phủ**, không phải ô chưa k�
 | **State transition** | Đề §6.1 | cả 3 API | 18 case (`20-state-*`) | [BUG-09](https://github.com/DuyITLOR/group05_eshop/issues/331), 11, 17 và **[BUG-14](https://github.com/DuyITLOR/group05_eshop/issues/336)** (chuỗi 3 lỗi) |
 | `X-Student-Id` trên **mọi** request (§6.4) | Đề §6.4, §11 | cả 3 API | pre-request cấp collection — 171/171 request | – (kiểm bằng `verify-all.sh` mục 1) |
 
+## Lỗ hổng trong chính danh sách yêu cầu
+
+**SEC-01…SEC-07 không có mục nào về toàn vẹn giá / tiền.** BUG-08 (price tampering — client tự đặt giá,
+Critical) vì vậy không map được vào bất kỳ SEC nào; nó chỉ dựa vào FR-07 + FR-08. Hai case bắt được nó
+(`TC-CART-101`, `TC-CART-102`) được ghi nhãn `Security (ngoài SEC-01…07)` thay vì gán bừa vào một SEC gần
+đúng. Phát hiện này đến từ `tools/check-cases.mjs` — script đòi mọi case nhóm Security phải trỏ được vào
+một SEC-0x, và hai case này không trỏ được.
+
+Đề nghị cho SUT: thêm một mục SEC về *"giá và tổng tiền phải được server tính từ dữ liệu server, không
+nhận từ client"*.
+
 ## Ô cần đọc kỹ
 
 - **SEC-04**: không có bug ở tầng API **không** nghĩa là SUT an toàn với XSS. `POST`/`PUT /api/products` nhận

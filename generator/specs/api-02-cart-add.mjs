@@ -270,14 +270,16 @@ export default {
       checks: [["status", 401], ["schemaError"]] },
 
     // ── 90-sv-extended ───────────────────────────────────────────────────────
-    { id: `${P}-101`, folder: "90-sv-extended", tech: "Security", part: "**price tampering**: gửi giá 1 đồng cho sản phẩm 111.000",
+    { id: `${P}-101`, folder: "90-sv-extended", tech: "Security (ngoài SEC-01…07)", part: "**price tampering**: gửi giá 1 đồng cho sản phẩm 111.000",
       ...add({ id: "{{product_id}}", name: "HW06-Cart-Fixture", price: 1, quantity: 1 }), status: "400/422",
-      expect: "từ chối; nếu nhận thì TC-102 phải chứng minh giá bị ghi đè", basis: "FR-07/FR-08 — client không được quyết định giá", src: "SV", audit: "VALID",
+      expect: "từ chối; nếu nhận thì TC-102 phải chứng minh giá bị ghi đè",
+      basis: "FR-07/FR-08 — client không được quyết định giá. **Không thuộc SEC-01…07**: danh sách SEC của SUT không có mục nào về toàn vẹn giá/tiền — đó là một lỗ hổng của chính danh sách yêu cầu, ghi lại ở traceability", src: "SV", audit: "VALID",
       checks: [["statusIn", "400,422"]] },
 
-    { id: `${P}-102`, folder: "90-sv-extended", tech: "Security", part: "**hệ quả** của price tampering: giỏ không được chứa giá 1 đồng",
+    { id: `${P}-102`, folder: "90-sv-extended", tech: "Security (ngoài SEC-01…07)", part: "**hệ quả** của price tampering: giỏ không được chứa giá 1 đồng",
       method: "GET", path: "/api/cart", auth: "user", status: 200,
-      expect: `không dòng nào của \`product_id\` có \`price ≠ ${PRICE}\``, basis: "FR-08 — kiểm **tác động**, không chỉ status code", src: "SV", audit: "VALID",
+      expect: `không dòng nào của \`product_id\` có \`price ≠ ${PRICE}\``,
+      basis: "FR-08 — kiểm **tác động**, không chỉ status code. Cùng lý do với TC-101: nằm ngoài SEC-01…07", src: "SV", audit: "VALID",
       checks: [["status", 200],
         ["raw", `pm.test("không có dòng nào bị sửa giá", () => {
   const pid = Number(pm.environment.get("product_id"));

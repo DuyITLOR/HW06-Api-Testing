@@ -1689,7 +1689,7 @@
               "script": {
                 "type": "text/javascript",
                 "exec": [
-                  "// TC-CART-101 · Security · **price tampering**: gửi giá 1 đồng cho sản phẩm 111.000",
+                  "// TC-CART-101 · Security (ngoài SEC-01…07) · **price tampering**: gửi giá 1 đồng cho sản phẩm 111.000",
                   "pm.test(\"status thuộc [400,422]\", () => pm.expect([400,422]).to.include(pm.response.code));"
                 ]
               }
@@ -1727,7 +1727,7 @@
               "script": {
                 "type": "text/javascript",
                 "exec": [
-                  "// TC-CART-102 · Security · **hệ quả** của price tampering: giỏ không được chứa giá 1 đồng",
+                  "// TC-CART-102 · Security (ngoài SEC-01…07) · **hệ quả** của price tampering: giỏ không được chứa giá 1 đồng",
                   "pm.test(\"status = 200\", () => pm.response.to.have.status(200));",
                   "pm.test(\"không có dòng nào bị sửa giá\", () => {",
                   "  const pid = Number(pm.environment.get(\"product_id\"));",

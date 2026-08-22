@@ -293,6 +293,34 @@ Nhãn human review dùng đúng hai giá trị, **không** viết gộp thành "
   phần đọc của sinh viên. Hai hash mới có thể kiểm trong 5 giây: `git log --oneline | grep demo`.
 - **Commit:** *(điền hash)*
 
+### Interaction #13
+- **API / Bước:** soát lần ba — soát **nội dung** 114 nhãn `VALID`, không chỉ số lượng
+- **Bước trong quy trình:** review
+- **AI tool:** Claude Code (Opus 5)
+- **Date & time:** 2026-08-23 00:35
+- **Prompt:**
+  ```
+  bạn tự review cho tui lun đi
+  ```
+- **AI output (tóm tắt):** viết `tools/check-cases.mjs` — 7 bất biến về **nội dung** test case: ID không
+  trùng · cột `Căn cứ` phải trỏ nguồn kiểm được · nhãn audit hợp lệ và INVALID/INCOMPLETE phải có lý do ·
+  case Security phải trỏ được một SEC-0x · mọi case có assertion · mỗi case SV có dòng "vì sao AI bỏ sót"
+  đúng 3 nhóm §6.3 · mọi case trong bảng phải có trong collection.
+  Lượt chạy đầu tìm ra **2 vấn đề**: `TC-CART-101` và `TC-CART-102` dán nhãn `Security` nhưng căn cứ chỉ
+  trỏ FR-07/FR-08 — vì **SEC-01…07 của SUT không có mục nào về toàn vẹn giá/tiền**.
+- **AI sai / bỏ sót:** gán nhãn `Security` cho hai case mà **không** đối chiếu được với danh sách SEC —
+  tức dùng chữ "security" theo nghĩa thông thường trong khi §6.1 gắn nó với **SEC-01…SEC-07 cụ thể**.
+- **Vì sao bỏ sót:** **prompt quality** — prompt viết *"security (SEC-01–SEC-07, e.g. SQL injection, IDOR,
+  role escalation)"*, và AI đọc phần ví dụ rồi tự mở rộng sang các lỗi "kiểu bảo mật" khác.
+- **Cách sửa — không phải đổi nhãn cho script im lặng:** ghi rõ trong spec là hai case đó **nằm ngoài
+  SEC-01…07**, và ghi vào traceability rằng đây là **lỗ hổng của chính danh sách yêu cầu** (BUG-08 mức
+  Critical mà không map được vào SEC nào), kèm đề nghị thêm một mục SEC về toàn vẹn giá. Script được sửa để
+  chấp nhận ngoại lệ **đã khai báo**, không phải để bỏ qua.
+- **Human review:** ***(SV chưa tự kiểm)*** — đây là lượt thứ ba AI tự soát output của AI. Ba lượt soát tìm
+  được: lần 1 → 0 (chỉ chạy test), lần 2 → 3 lỗi tài liệu, lần 3 → 2 lỗi nội dung. Con số giảm dần nhưng
+  **chưa về 0 lần nào**, nên phần đọc của sinh viên vẫn còn giá trị thật.
+- **Commit:** *(điền hash)*
+
 <!-- NEW_INTERACTION_MARKER -->
 
 ---
@@ -355,6 +383,8 @@ chạy folder `00-setup` bằng Collection Runner và chụp `bug-report/screens
 | 19 | #8/#12 | **`ci-report.md` ghi 2 hash commit KHÔNG TỒN TẠI** cho lượt CI đỏ — biết 1 hash thật rồi điền nốt 2 hash theo trí nhớ | model limitations | soát lại lần hai: `git log --format=%s -1 <hash>` trả về rỗng | tra `git log` lấy hash thật `e388146`, `4e2f302` |
 | 20 | #10/#12 | Bảng §11 **đánh số trùng, sai thứ tự** và **thiếu 1 dòng** so với bảng này | kỹ thuật | đếm lại dãy số trong bảng | đánh số lại liên tục 1..18, thêm dòng còn thiếu, sửa 3 tham chiếu chéo |
 | 21 | #11/#12 | §12 trỏ tới file lượt chạy **đã bị thay** | kỹ thuật | so tên file trong báo cáo với `ls reports/newman/` | cập nhật theo lượt sinh viên tự chạy |
+| 22 | #8/#12 | README + main-report còn ghi **329 assertion** (số thật 333) ở 3 chỗ | kỹ thuật | `tools/check-claims.mjs` — soát mọi con số công bố so với raw JSON | sửa 3 chỗ; phép kiểm vào `npm run verify` mục 5b |
+| 23 | #5/#13 | `TC-CART-101/102` dán nhãn **Security** nhưng không trỏ được SEC-0x nào — dùng chữ "security" theo nghĩa thông thường thay vì theo SEC-01…07 | prompt quality | `tools/check-cases.mjs` — bất biến "case Security phải trỏ một SEC-0x" | ghi rõ *"ngoài SEC-01…07"* + ghi **lỗ hổng của danh sách SEC** vào traceability, kèm đề nghị thêm mục SEC về toàn vẹn giá |
 
 **Bốn lỗi đáng giá nhất về phương pháp là #9, #10, #14 và #16.** Riêng #16 đáng đọc vì nó là **lỗi mà chính
 lượt tự audit của AI đã dán nhãn `VALID`** — bằng chứng cụ thể cho hạn chế đã ghi ở Interaction #5: AI không

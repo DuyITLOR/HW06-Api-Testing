@@ -18,8 +18,12 @@ const check = (what, actual, ...files) => {
   if (missing.length) { console.log(`  [LECH] ${what} = ${actual} — không thấy trong: ${missing.join(", ")}`); bad++; }
   else { console.log(`  [OK]   ${what} = ${actual}`); ok++; }
 };
+// Bỏ qua dòng đang **kể lại** một số liệu cũ (bảng lỗi §11 ghi "… 329 assertion (số thật 333)").
+// Không có ngoại lệ này thì checker tự báo đỏ vì chính phần tài liệu hoá lỗi — đúng họ lỗi #11:
+// phép kiểm nghiêm hơn ý định. Marker: dòng có "(số thật" hoặc "số thật là".
+const isHistory = (line) => /\(số thật|số thật là/.test(line);
 const forbid = (what, wrong, ...files) => {
-  const hit = files.filter((f) => read(f).includes(String(wrong)));
+  const hit = files.filter((f) => read(f).split("\n").some((L) => L.includes(String(wrong)) && !isHistory(L)));
   if (hit.length) { console.log(`  [LECH] ${what}: còn dấu vết cũ "${wrong}" trong ${hit.join(", ")}`); bad++; }
   else { console.log(`  [OK]   ${what}: không còn "${wrong}"`); ok++; }
 };

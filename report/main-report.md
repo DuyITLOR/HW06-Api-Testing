@@ -18,7 +18,7 @@
 | Kết quả | **244 assertion xanh · 89 đỏ** — mọi assertion đỏ đều map tới một bug đã tái hiện được |
 | Bug | **19 bug, 19/19 tái hiện được** — 5 Critical, 5 High, 7 Medium, 2 Low · Issues [#323–#341](https://github.com/DuyITLOR/group05_eshop/issues/323) |
 | Bug đáng chú ý nhất | **BUG-14**: khách **không đăng nhập** làm **sập cả backend** bằng 2 request — chuỗi 3 lỗi |
-| Lỗi của AI đã bắt và sửa | **18** (bảng đầy đủ ở §11) — 5 lỗi thiết kế test case (gồm 2 case assertion nghiêm hơn expected), 5 lỗi kỹ thuật, 4 lỗi bỏ sót phân vùng, 2 lỗi số liệu, 2 lỗi quy trình |
+| Lỗi của AI đã bắt và sửa | **23** (bảng đầy đủ ở §11) — 5 lỗi thiết kế test case (gồm 2 case assertion nghiêm hơn expected), 5 lỗi kỹ thuật, 4 lỗi bỏ sót phân vùng, 2 lỗi số liệu, 2 lỗi quy trình |
 | Giả thuyết đã **loại** sau khi kiểm | **4** (ghi lại ở [bug-report §Bug đã loại](../bug-report/bug-report.md)) |
 
 ## Mục lục
@@ -419,7 +419,12 @@ Postman — 136 case, 333 assertion, từ **một** nguồn định nghĩa.
 | 15 | `verify-all.sh` đếm **dòng** thay vì **TC ID duy nhất** → mỗi API phồng thêm bằng số dòng bảng "vì sao AI bỏ sót" (50 thay vì 43) | kỹ thuật | Số không khớp `summary.md` và `excel/` | Đếm `sort -u` trên TC ID |
 | 16 | Script giữ pipe của tiến trình con → lệnh gọi treo tới timeout | model limitations | `verify-bugs.sh` bị timeout 2 phút | Thêm `< /dev/null` khi khởi động SUT |
 | 17 | Ghi 2 file vào repo HW05 do shell giữ cwd giữa các lệnh | quy trình | Đối chiếu `git status` của HW05 | Chuyển file về HW06, hoàn nguyên HW05, ghi vào AI audit |
-| 18 | **Hai lượt CI không đúng nghĩa §6** (*"all test cases passing"* / *"one test case failing"*) — bộ 136 case luôn có 89 đỏ nên lượt "xanh" vẫn đầy assertion đỏ | thiết kế CI | Đọc lại đúng câu chữ §6 khi tự chấm bài theo bảng §15 | Thêm **regression suite** sinh tự động (216 assertion, 0 đỏ) với cổng riêng; lượt đỏ tạo bằng đúng 1 assertion có nhãn DEMO rồi gỡ ngay ở commit sau |
+| 18 | README + main-report còn ghi **329 assertion** (số thật 333) ở 3 chỗ | kỹ thuật | `tools/check-claims.mjs` soát mọi con số công bố so với raw JSON | sửa 3 chỗ; phép kiểm vào `npm run verify` mục 5b |
+| 19 | `ci-report.md` ghi **2 hash commit KHÔNG TỒN TẠI** — biết 1 hash thật rồi điền nốt 2 hash theo trí nhớ | model limitations | soát lần hai: `git log --format=%s -1 <hash>` trả rỗng | tra `git log` lấy hash thật; `check-claims.mjs` giờ kiểm hash bằng `git cat-file` |
+| 20 | Bảng §11 **đánh số trùng, sai thứ tự, thiếu 1 dòng** so với bảng trong AI audit | kỹ thuật | đếm lại dãy số | đánh số lại liên tục, thêm dòng thiếu, sửa 3 tham chiếu chéo |
+| 21 | §12 trỏ tới file lượt chạy **đã bị thay** | kỹ thuật | so tên file với `ls reports/newman/` | cập nhật theo lượt sinh viên tự chạy |
+| 22 | `TC-CART-101/102` dán nhãn **Security** nhưng không trỏ được SEC-0x nào — dùng "security" theo nghĩa thông thường thay vì theo SEC-01…07 | prompt quality | `tools/check-cases.mjs` — bất biến "case Security phải trỏ một SEC-0x" | ghi rõ *"ngoài SEC-01…07"* + ghi **lỗ hổng của danh sách SEC** vào traceability |
+| 23 | **Hai lượt CI không đúng nghĩa §6** (*"all test cases passing"* / *"one test case failing"*) — bộ 136 case luôn có 89 đỏ nên lượt "xanh" vẫn đầy assertion đỏ | thiết kế CI | Đọc lại đúng câu chữ §6 khi tự chấm bài theo bảng §15 | Thêm **regression suite** sinh tự động (216 assertion, 0 đỏ) với cổng riêng; lượt đỏ tạo bằng đúng 1 assertion có nhãn DEMO rồi gỡ ngay ở commit sau |
 
 **Ba lỗi đáng giá nhất về mặt phương pháp — #9 (mã JS sinh sai), #10 (mốc sẵn sàng sai) và #13 (bản sửa cho #10 vẫn sai):** cả ba đều làm test case đỏ, và nếu không
 truy nguyên thì sẽ được **báo thành bug của SUT**. Riêng chuỗi #10 → #13 đáng đọc kỹ, vì nó là một **bản sửa
@@ -442,7 +447,21 @@ một câu kết luận sai về nguyên nhân.
 
 Mỗi assertion đỏ phải trả lời được: *đỏ vì SUT sai, vì test tôi viết sai, hay vì môi trường?*
 
-**Lượt soát lần hai (23/08/2026), sau khi bài đã "xong":** đọc lại toàn bộ với vai người chấm và tìm thêm
+**Ba lượt soát sau khi bài đã "xong" — và số lỗi tìm được chưa lần nào về 0:**
+
+| Lượt | Soát gì | Tìm được |
+|---|---|---|
+| 1 | chạy lại toàn bộ, kiểm tái lập | 1 (lỗi #10 → #13: mốc sẵn sàng vẫn sai) |
+| 2 | đọc tài liệu với vai người chấm | **3** (#19 hash bịa · #20 bảng đánh số trùng · #21 trỏ file cũ) |
+| 3 | soát **nội dung** 114 nhãn `VALID` | **2** (#22 nhãn Security không trỏ được SEC · #18 số 329 còn sót) |
+
+Mỗi lượt sinh ra một phép kiểm bằng máy để lỗi đó không quay lại âm thầm:
+[`check-expect-vs-checks.mjs`](../tools/check-expect-vs-checks.mjs) (135 case · 0 lệch) ·
+[`check-claims.mjs`](../tools/check-claims.mjs) (18 khớp · 0 lệch — gồm kiểm hash commit bằng `git cat-file`) ·
+[`check-cases.mjs`](../tools/check-cases.mjs) (136 case · 7 bất biến nội dung). Cả ba nằm trong `npm run verify`
+(**37 PASS · 0 FAIL**).
+
+**Lượt soát lần hai (23/08/2026):** đọc lại toàn bộ với vai người chấm và tìm thêm
 **3 lỗi tài liệu** mà không lượt nào trước đó thấy: (a) `ci/ci-report.md` ghi **2 hash commit không tồn
 tại** cho lượt CI đỏ — loại lỗi tệ nhất trong một báo cáo vì nó là chi tiết *kiểm được ngay* và sai;
 (b) bảng §11 bị **đánh số trùng** (…10, 16, 17, 12, 13…) và **thiếu một dòng** so với bảng trong AI audit;

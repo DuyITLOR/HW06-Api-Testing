@@ -60,6 +60,13 @@ else
   f "có case mà assertion nhận ít status hơn cột `status` đã ghi → sẽ đỏ OAN. Chi tiết: node tools/check-expect-vs-checks.mjs"
 fi
 
+sect "2c. Nội dung test case: căn cứ · nhãn · lý do AI bỏ sót · khớp collection"
+if node tools/check-cases.mjs >/tmp/hw06-cases.log 2>&1; then
+  p "$(tail -1 /tmp/hw06-cases.log | sed 's/^ *//')"
+else
+  f "có vấn đề nội dung test case. Chi tiết: node tools/check-cases.mjs"
+fi
+
 sect "3. Audit đã dán nhãn hết chưa (§6.2)"
 for s in "${SLUGS[@]}"; do
   file="test-cases/$s/audit.md"
