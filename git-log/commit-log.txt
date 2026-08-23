@@ -1,92 +1,870 @@
 Git commit log — HW06 API Testing · SV Lê Nhựt Duy 23127178
-Xuất lúc: 2026-08-23 23:58:37 +0700
+Xuất lúc: 2026-08-24 00:18:03 +0700
 Repo: https://github.com/DuyITLOR/HW06-Api-Testing.git
-Số commit: 81
+Số commit: 82
 
-═══ Ngắn gọn ══════════════════════════════════════════════════════════
-867cacd 2026-08-23 docs: bỏ icon trang trí khỏi tài liệu nộp, thay bằng chữ
-cf7e2b8 2026-08-23 chore: --no-zip so the submission folder can be built without archiving it
-27b38ae 2026-08-23 docs: refresh the commit log
-df01f70 2026-08-23 fix: stop the PDF build from dirtying the repo on every run
-e687729 2026-08-23 docs: refresh the commit log
-44ce458 2026-08-23 docs: clear the nine residual inconsistencies a re-read found
-8406ec4 2026-08-23 docs: link the Lucidchart document as evidence the student built the diagram
-52cce6a 2026-08-23 docs: refresh the commit log
-1743e6c 2026-08-23 docs: the diagram is in, drawn by the student on Lucidchart
-ddec465 2026-08-23 docs: drawing sheet so the student can draw the diagram themselves
-f7d1880 2026-08-23 docs: refresh the commit log
-9a2cf46 2026-08-23 fix: three findings were not bugs - downgraded, including the public issues
-61ff69a 2026-08-23 docs: refresh the commit log
-f75ae87 2026-08-23 docs: stop treating a group-chat screenshot as a missing requirement
-f75cd03 2026-08-23 docs: refresh the commit log
-a2275e1 2026-08-23 docs: open issues for the six bugs the student's cases found
-360da74 2026-08-23 docs: refresh the commit log
-95f2d32 2026-08-23 test: 21 cases the student chose, and they found six new bugs
-3d81fd9 2026-08-23 docs: refresh the commit log
-a48f670 2026-08-23 test: skeleton and validator for the student's own cases, plus stale-package guard
-9b34e78 2026-08-23 docs: refresh the commit log
-b1724dc 2026-08-23 fix: correct the misattribution and remove the section 11 violation
-6a4f5a6 2026-08-23 docs: refresh the commit log
-10f0e62 2026-08-23 docs: reconcile the audit with the attestation the student made
-19657f7 2026-08-23 fix: the review helper broke when the delegation wording landed
-bd20c95 2026-08-23 docs: refresh the commit log
-59b2ae7 2026-08-23 docs: declare the delegation instead of faking the attestation
-b9ae670 2026-08-23 docs: refresh the commit log
-f25c59b 2026-08-23 fix: make the commit-log invariant satisfiable
-dfb3e35 2026-08-23 docs: refresh the commit log after the PDF rebuild
-8a60585 2026-08-23 docs: rebuild PDFs
-3c6b6f9 2026-08-23 docs: refresh the commit log
-e969ba8 2026-08-23 docs: replace the bare 'not yet checked' labels with precise attribution
-0f4585d 2026-08-23 docs: refresh the commit log
-fef7773 2026-08-23 test: review the content of the 114 VALID labels, not just their count
-6a1b53a 2026-08-23 fix: make the review helper forgiving about input, strict about intent
-755c7b3 2026-08-23 docs: refresh the commit log
-eb71e4e 2026-08-23 test: script the two error classes the manual review pass caught
-cdbc7ba 2026-08-23 docs: refresh the commit log
-5eaf4de 2026-08-23 docs: second review pass finds three documentation defects, one serious
-f453d83 2026-08-23 docs: refresh the commit log
-bc2f428 2026-08-23 docs: record the student's own verification run as the submitted evidence
-d7d50ce 2026-08-23 docs: refresh the commit log
-142d6f3 2026-08-23 docs: add the Postman GUI console screenshot the student captured
-5341183 2026-08-22 docs: refresh the commit log
-9f596f7 2026-08-22 test: local run as the submitted evidence, with the console screenshot section 11 names
-36c0e4a 2026-08-22 docs: refresh the commit log
-4a110e1 2026-08-22 docs: evidence screenshots, updated numbers, and the student review checklist
-4e2f302 2026-08-22 ci(demo): remove the intentional failing assertion
-e388146 2026-08-22 ci(demo): deliberately fail one assertion to produce the red sample run (section 6)
-5a07ebf 2026-08-22 ci: scope the baseline gate to the bug-hunting collections only
-1245b56 2026-08-22 ci: add a regression suite with a zero-failure gate
-bfeb29d 2026-08-19 docs: refresh the commit log
-b018905 2026-08-19 docs: open 19 GitHub issues and link them back into every document
-ff582d0 2026-08-19 docs: add the generator diagram and real Newman report screenshots
-e53e4ae 2026-08-19 docs: refresh the commit log
-1321895 2026-08-19 test: make runs reproducible - verify a write survives before trusting the SUT
-36ea764 2026-08-19 docs: export the git commit log required by section 12
-ee6be07 2026-08-19 chore: placeholder for evidence screenshots
-34dcbcd 2026-08-19 docs: update README with measured results and the five remaining manual items
-275848a 2026-08-19 docs: export the PDF copies section 14 requires
-80965eb 2026-08-19 docs: main report, AI audit with 13 logged AI errors, and generator design
-4a9f551 2026-08-19 docs: traceability matrix and generated Excel workbook
-df986df 2026-08-19 docs: report 19 bugs, all 19 reproduced with real requests
-897b97e 2026-08-19 ci: gate on a signed-off failure baseline instead of zero failures
-146aa7c 2026-08-19 test: execute all three collections, 240 assertions pass and 89 fail
-230dbbe 2026-08-19 test: three Postman collections generated from the case definitions
-08a76dc 2026-08-19 test(api-03): 39 generated + audit + 8 student cases for PUT /api/products/:id
-cad2fc4 2026-08-19 test(api-02): 39 generated + audit + 7 student cases for POST /api/cart
-7bd7ed1 2026-08-19 test(api-01): add 7 cases the AI missed, with the reason it missed each
-b0bb70c 2026-08-19 test(api-01): audit AI-generated cases, 35 VALID and 1 corrected
-29ef95c 2026-08-19 test(api-01): generate 36 test cases for GET /api/products
-8a244d9 2026-08-19 test: probe the SUT for real behaviour before designing expected values
-3560f04 2026-08-19 chore: agent skills, CI workflow, and data-driven CSV fixtures
-5e65e9e 2026-08-19 chore: postman environment, X-Student-Id pre-request script, packaging tools
-66cc53f 2026-08-19 chore: repo skeleton for HW06 API testing
-31f851b 2026-08-19 test: newman runner, auto-generated summary, baseline CI gate
-1d85f12 2026-08-19 test: environment preflight and data-driven fixtures
-107033b 2026-08-19 docs: pick three APIs, one per pool, with anti-duplication evidence
-72ae9b1 2026-08-19 chore: repo skeleton for HW06 API testing
-96f011e 2026-08-18 Initial commit
+═══ Graph + thống kê file ═════════════════════════════════════════════
+* fa38eeb | 2026-08-23 | DuyITLOR | chore: cập nhật commit-log sau lượt bỏ icon| 
+|  git-log/commit-log.txt | 23 ++++++++++++++---------
+|  1 file changed, 14 insertions(+), 9 deletions(-)
+
+* 867cacd | 2026-08-23 | DuyITLOR | docs: bỏ icon trang trí khỏi tài liệu nộp, thay bằng chữ| 
+|  README.md              |   4 ++--
+|  ci/ci-report.md        |   4 ++--
+|  ci/ci-report.pdf       | Bin 215216 -> 206584 bytes
+|  git-log/commit-log.txt |  41 +++++++++++++++++++++++++++++++++++++++--
+|  tools/check-claims.mjs |  13 +++++++++++++
+|  tools/package.sh       |   2 +-
+|  tools/preflight.mjs    |   2 +-
+|  7 files changed, 58 insertions(+), 8 deletions(-)
+
+* cf7e2b8 | 2026-08-23 | DuyITLOR | chore: --no-zip so the submission folder can be built without archiving it| 
+|  tools/package.sh | 17 ++++++++++++++++-
+|  1 file changed, 16 insertions(+), 1 deletion(-)
+
+* 27b38ae | 2026-08-23 | DuyITLOR | docs: refresh the commit log| 
+|  git-log/commit-log.txt | 28 ++++++++++++++++++++++++++--
+|  1 file changed, 26 insertions(+), 2 deletions(-)
+
+* df01f70 | 2026-08-23 | DuyITLOR | fix: stop the PDF build from dirtying the repo on every run| 
+|  README.md           | 2 +-
+|  tools/build-pdfs.sh | 9 +++++++++
+|  2 files changed, 10 insertions(+), 1 deletion(-)
+
+* e687729 | 2026-08-23 | DuyITLOR | docs: refresh the commit log| 
+|  git-log/commit-log.txt | 52 ++++++++++++++++++++++++++++++++++++++++++++++--
+|  1 file changed, 50 insertions(+), 2 deletions(-)
+
+* 44ce458 | 2026-08-23 | DuyITLOR | docs: clear the nine residual inconsistencies a re-read found| 
+|  README.md                                      |  24 ++++++++++-------------
+|  ai-audit/ai-audit-report.md                    |  18 ++++++++---------
+|  ai-audit/ai-audit-report.pdf                   | Bin 871356 -> 875248 bytes
+|  ai-audit/ai-critique.pdf                       | Bin 51875 -> 51875 bytes
+|  bug-report/bug-report.pdf                      | Bin 508325 -> 508325 bytes
+|  bug-report/issues/BUG-01.md                    |   2 +-
+|  bug-report/issues/BUG-02.md                    |   2 +-
+|  bug-report/issues/BUG-03.md                    |   2 +-
+|  bug-report/issues/BUG-04.md                    |   2 +-
+|  bug-report/issues/BUG-05.md                    |   2 +-
+|  bug-report/issues/BUG-06.md                    |   2 +-
+|  bug-report/issues/BUG-07.md                    |   2 +-
+|  bug-report/issues/BUG-08.md                    |   2 +-
+|  bug-report/issues/BUG-09.md                    |   2 +-
+|  bug-report/issues/BUG-10.md                    |   2 +-
+|  bug-report/issues/BUG-11.md                    |   2 +-
+|  bug-report/issues/BUG-12.md                    |   2 +-
+|  bug-report/issues/BUG-13.md                    |   2 +-
+|  bug-report/issues/BUG-14.md                    |   2 +-
+|  bug-report/issues/BUG-15.md                    |   2 +-
+|  bug-report/issues/BUG-16.md                    |   2 +-
+|  bug-report/issues/BUG-17.md                    |   2 +-
+|  bug-report/issues/BUG-18.md                    |   2 +-
+|  bug-report/issues/BUG-19.md                    |   2 +-
+|  bug-report/issues/BUG-20.md                    |   2 +-
+|  bug-report/issues/BUG-21.md                    |   2 +-
+|  bug-report/issues/BUG-22.md                    |   2 +-
+|  bug-report/issues/BUG-23.md                    |   2 +-
+|  bug-report/issues/BUG-24.md                    |   2 +-
+|  bug-report/issues/BUG-25.md                    |   2 +-
+|  ci/ci-report.md                                |   6 +++---
+|  ci/ci-report.pdf                               | Bin 215314 -> 215216 bytes
+|  generator/design.md                            |   2 +-
+|  generator/design.pdf                           | Bin 835336 -> 834511 bytes
+|  postman/README.md                              |   2 +-
+|  report/main-report.md                          |  22 +++++++++++----------
+|  report/main-report.pdf                         | Bin 796830 -> 799840 bytes
+|  test-cases/api-01-products-search/generated.md |   2 +-
+|  test-cases/api-01-products-search/own.md       |   4 ++--
+|  test-cases/api-02-cart-add/generated.md        |   2 +-
+|  test-cases/api-02-cart-add/own.md              |   4 ++--
+|  test-cases/api-03-product-update/generated.md  |   2 +-
+|  test-cases/test-summary/summary.md             |   1 -
+|  test-cases/test-summary/traceability-matrix.md |   2 +-
+|  tools/check-claims.mjs                         |  17 +++++++++++++++-
+|  tools/make-issues.py                           |   2 +-
+|  tools/summarize-newman.mjs                     |   3 ++-
+|  tools/verify-all.sh                            |   4 +++-
+|  48 files changed, 91 insertions(+), 76 deletions(-)
+
+* 8406ec4 | 2026-08-23 | DuyITLOR | docs: link the Lucidchart document as evidence the student built the diagram| 
+|  README.md                          |   2 +-
+|  ai-audit/ai-audit-report.pdf       | Bin 871356 -> 871356 bytes
+|  ai-audit/ai-critique.pdf           | Bin 51875 -> 51875 bytes
+|  bug-report/bug-report.pdf          | Bin 508325 -> 508325 bytes
+|  ci/ci-report.pdf                   | Bin 215314 -> 215314 bytes
+|  generator/design.md                |   5 ++++-
+|  generator/design.pdf               | Bin 824475 -> 835336 bytes
+|  generator/diagram/README.md        |  15 +++++++++++++++
+|  git-log/commit-log.txt             |  12 ++++++++++--
+|  report/main-report.pdf             | Bin 796830 -> 796830 bytes
+|  test-cases/test-summary/summary.md |   2 +-
+|  11 files changed, 31 insertions(+), 5 deletions(-)
+
+* 52cce6a | 2026-08-23 | DuyITLOR | docs: refresh the commit log| 
+|  git-log/commit-log.txt | 27 +++++++++++++++++++++++++--
+|  1 file changed, 25 insertions(+), 2 deletions(-)
+
+* 1743e6c | 2026-08-23 | DuyITLOR | docs: the diagram is in, drawn by the student on Lucidchart| 
+|  README.md                                      |   7 ++--
+|  ai-audit/ai-audit-report.md                    |  27 ++++++++++++
+|  ai-audit/ai-audit-report.pdf                   | Bin 850567 -> 871356 bytes
+|  ai-audit/ai-critique.pdf                       | Bin 51875 -> 51875 bytes
+|  bug-report/bug-report.pdf                      | Bin 508325 -> 508325 bytes
+|  ci/ci-report.pdf                               | Bin 215314 -> 215314 bytes
+|  generator/design.md                            |  17 ++++----
+|  generator/design.pdf                           | Bin 205077 -> 824475 bytes
+|  generator/diagram/README.md                    |  51 ++++++++++++-----------
+|  generator/diagram/generator-flow-selfdrawn.png | Bin 0 -> 833382 bytes
+|  git-log/commit-log.txt                         |  29 ++++++++++++-
+|  report/main-report.pdf                         | Bin 796830 -> 796830 bytes
+|  test-cases/test-summary/summary.md             |   2 +-
+|  13 files changed, 95 insertions(+), 38 deletions(-)
+
+* ddec465 | 2026-08-23 | DuyITLOR | docs: drawing sheet so the student can draw the diagram themselves| 
+|  generator/diagram/DRAWING-SHEET.md | 76 ++++++++++++++++++++++++++++++++++++
+|  test-cases/test-summary/summary.md |  2 +-
+|  2 files changed, 77 insertions(+), 1 deletion(-)
+
+* f7d1880 | 2026-08-23 | DuyITLOR | docs: refresh the commit log| 
+|  git-log/commit-log.txt | 44 ++++++++++++++++++++++++++++++++++++++++++--
+|  1 file changed, 42 insertions(+), 2 deletions(-)
+
+* 9a2cf46 | 2026-08-23 | DuyITLOR | fix: three findings were not bugs - downgraded, including the public issues| 
+|  README.md                                         |    14 +-
+|  ai-audit/ai-audit-report.md                       |    33 +-
+|  ai-audit/ai-audit-report.pdf                      |   Bin 811746 -> 850567 bytes
+|  ai-audit/ai-critique.pdf                          |   Bin 51875 -> 51875 bytes
+|  bug-report/bug-report.md                          |    39 +-
+|  bug-report/bug-report.pdf                         |   Bin 485585 -> 508325 bytes
+|  ci/ci-report.pdf                                  |   Bin 215314 -> 215314 bytes
+|  ci/expected-failures.json                         |     8 +-
+|  excel/23127178_HW06_TestCases.xlsx                |   Bin 31653 -> 32465 bytes
+|  generator/design.pdf                              |   Bin 205077 -> 205077 bytes
+|  generator/specs/api-01-products-search.mjs        |    37 +-
+|  generator/specs/api-02-cart-add.mjs               |    29 +-
+|  ...api-01-products-search.postman_collection.json |    26 +-
+|  ...127178_api-02-cart-add.postman_collection.json |    15 +-
+|  .../23127178_regression.postman_collection.json   |   112 +
+|  report/main-report.md                             |    25 +-
+|  report/main-report.pdf                            |   Bin 784965 -> 796830 bytes
+|  ...8_api-01-products-search_20260823-175059.html} |  3632 +-
+|  ...8_api-01-products-search_20260823-175059.json} |  4992 ++-
+|  ...23127178_api-02-cart-add_20260823-175102.html} |  3736 +--
+|  ...23127178_api-02-cart-add_20260823-175102.json} |  6132 ++--
+|  ...78_api-03-product-update_20260823-175105.html} |  3676 +-
+|  ...78_api-03-product-update_20260823-175105.json} |  4520 +--
+|  ...l => 23127178_regression_20260823-175415.html} |  8112 +++--
+|  ...n => 23127178_regression_20260823-175415.json} | 31379 ++++++++++++------
+|  test-cases/api-01-products-search/own.md          |     8 +-
+|  test-cases/api-02-cart-add/own.md                 |     8 +-
+|  test-cases/test-summary/summary.md                |    20 +-
+|  28 files changed, 38145 insertions(+), 28408 deletions(-)
+
+* 61ff69a | 2026-08-23 | DuyITLOR | docs: refresh the commit log| 
+|  git-log/commit-log.txt | 35 +++++++++++++++++++++++++++++++++--
+|  1 file changed, 33 insertions(+), 2 deletions(-)
+
+* f75ae87 | 2026-08-23 | DuyITLOR | docs: stop treating a group-chat screenshot as a missing requirement| 
+|  README.md                          |   2 +-
+|  TASKS.md                           |   5 +++--
+|  ai-audit/ai-audit-report.pdf       | Bin 811746 -> 811746 bytes
+|  ai-audit/ai-critique.pdf           | Bin 51875 -> 51875 bytes
+|  bug-report/bug-report.pdf          | Bin 485585 -> 485585 bytes
+|  ci/ci-report.pdf                   | Bin 215314 -> 215314 bytes
+|  docs/api-selection.md              |  20 ++++++++++++--------
+|  generator/design.pdf               | Bin 205077 -> 205077 bytes
+|  report/main-report.md              |   5 +++--
+|  report/main-report.pdf             | Bin 784605 -> 784965 bytes
+|  test-cases/test-summary/summary.md |   2 +-
+|  tools/verify-all.sh                |   2 +-
+|  12 files changed, 21 insertions(+), 15 deletions(-)
+
+* f75cd03 | 2026-08-23 | DuyITLOR | docs: refresh the commit log| 
+|  git-log/commit-log.txt | 32 ++++++++++++++++++++++++++++++--
+|  1 file changed, 30 insertions(+), 2 deletions(-)
+
+* a2275e1 | 2026-08-23 | DuyITLOR | docs: open issues for the six bugs the student's cases found| 
+|  README.md                          |   2 +-
+|  ai-audit/ai-audit-report.pdf       | Bin 811746 -> 811746 bytes
+|  ai-audit/ai-critique.pdf           | Bin 51875 -> 51875 bytes
+|  bug-report/bug-report.md           |  16 ++---
+|  bug-report/bug-report.pdf          | Bin 479985 -> 485585 bytes
+|  bug-report/issues/BUG-20.md        |  41 ++++++++++++
+|  bug-report/issues/BUG-21.md        |  53 +++++++++++++++
+|  bug-report/issues/BUG-22.md        |  40 +++++++++++
+|  bug-report/issues/BUG-23.md        |  48 +++++++++++++
+|  bug-report/issues/BUG-24.md        |  41 ++++++++++++
+|  bug-report/issues/BUG-25.md        |  48 +++++++++++++
+|  bug-report/issues/created.txt      |   6 ++
+|  ci/ci-report.pdf                   | Bin 215314 -> 215314 bytes
+|  generator/design.pdf               | Bin 205077 -> 205077 bytes
+|  report/main-report.md              |   4 +-
+|  report/main-report.pdf             | Bin 783225 -> 784605 bytes
+|  test-cases/test-summary/summary.md |   2 +-
+|  tools/make-issues.py               | 126 +++++++++++++++++++++++++++++++++++
+|  18 files changed, 415 insertions(+), 12 deletions(-)
+
+* 360da74 | 2026-08-23 | DuyITLOR | docs: refresh the commit log| 
+|  git-log/commit-log.txt | 44 ++++++++++++++++++++++++++++++++++++++++++--
+|  1 file changed, 42 insertions(+), 2 deletions(-)
+
+* 95f2d32 | 2026-08-23 | DuyITLOR | test: 21 cases the student chose, and they found six new bugs| 
+|  README.md                                         |    39 +-
+|  ai-audit/ai-audit-report.md                       |    33 +
+|  ai-audit/ai-audit-report.pdf                      |   Bin 780754 -> 811746 bytes
+|  ai-audit/ai-critique.pdf                          |   Bin 51875 -> 51875 bytes
+|  bug-report/bug-report.md                          |    20 +-
+|  bug-report/bug-report.pdf                         |   Bin 435972 -> 479985 bytes
+|  ci/ci-report.pdf                                  |   Bin 215314 -> 215314 bytes
+|  ci/expected-failures.json                         |    16 +-
+|  excel/23127178_HW06_TestCases.xlsx                |   Bin 28263 -> 31653 bytes
+|  generator/design.pdf                              |   Bin 205077 -> 205077 bytes
+|  generator/specs/api-01-products-search.mjs        |    51 +
+|  generator/specs/api-02-cart-add.mjs               |    78 +-
+|  generator/specs/api-03-product-update.mjs         |    64 +
+|  ...api-01-products-search.postman_collection.json |   120 +
+|  ...127178_api-02-cart-add.postman_collection.json |   298 +-
+|  ..._api-03-product-update.postman_collection.json |   217 +
+|  .../23127178_regression.postman_collection.json   |   499 +-
+|  report/main-report.md                             |    27 +-
+|  report/main-report.pdf                            |   Bin 776974 -> 783225 bytes
+|  ...8_api-01-products-search_20260823-172706.html} |  4921 +--
+|  ...8_api-01-products-search_20260823-172706.json} | 13119 ++++++--
+|  ...23127178_api-02-cart-add_20260823-172710.html} |  6018 ++--
+|  ...23127178_api-02-cart-add_20260823-172710.json} | 21481 +++++++++----
+|  ...78_api-03-product-update_20260823-172713.html} |  5492 ++--
+|  ...78_api-03-product-update_20260823-172713.json} | 12588 +++++---
+|  ...l => 23127178_regression_20260823-172819.html} | 11335 ++++---
+|  ...n => 23127178_regression_20260823-172819.json} | 28967 ++++++++++++------
+|  test-cases/api-01-products-search/generated.md    |     2 +-
+|  test-cases/api-01-products-search/own.md          |    56 +-
+|  test-cases/api-02-cart-add/generated.md           |     2 +-
+|  test-cases/api-02-cart-add/own.md                 |    64 +-
+|  test-cases/api-03-product-update/generated.md     |     2 +-
+|  test-cases/api-03-product-update/own.md           |    60 +-
+|  test-cases/test-summary/summary.md                |    28 +-
+|  test-cases/test-summary/traceability-matrix.md    |     4 +-
+|  tools/check-cases.mjs                             |    16 +-
+|  tools/check-claims.mjs                            |     2 +-
+|  tools/check-submission.mjs                        |     4 +-
+|  tools/gen-artifacts.mjs                           |    20 +-
+|  tools/tc2xlsx.py                                  |     2 +-
+|  40 files changed, 73261 insertions(+), 32384 deletions(-)
+
+* 3d81fd9 | 2026-08-23 | DuyITLOR | docs: refresh the commit log| 
+|  git-log/commit-log.txt | 40 ++++++++++++++++++++++++++++++++++++++--
+|  1 file changed, 38 insertions(+), 2 deletions(-)
+
+* a48f670 | 2026-08-23 | DuyITLOR | test: skeleton and validator for the student's own cases, plus stale-package guard| 
+|  ai-audit/ai-audit-report.pdf             | Bin 780754 -> 780754 bytes
+|  ai-audit/ai-critique.pdf                 | Bin 51875 -> 51875 bytes
+|  bug-report/bug-report.pdf                | Bin 435972 -> 435972 bytes
+|  ci/ci-report.pdf                         | Bin 215314 -> 215314 bytes
+|  generator/design.pdf                     | Bin 205077 -> 205077 bytes
+|  package.json                             |   2 +
+|  report/main-report.pdf                   | Bin 776974 -> 776974 bytes
+|  test-cases/api-01-products-search/own.md |  53 ++++++++++++-------
+|  test-cases/api-02-cart-add/own.md        |  53 ++++++++++++-------
+|  test-cases/api-03-product-update/own.md  |  53 ++++++++++++-------
+|  test-cases/test-summary/summary.md       |   2 +-
+|  tools/check-own.mjs                      |  35 +++++++++++++
+|  tools/package.sh                         |  14 +++++
+|  tools/prep-own.mjs                       |  79 +++++++++++++++++++++++++++++
+|  tools/verify-all.sh                      |   2 +-
+|  15 files changed, 240 insertions(+), 53 deletions(-)
+
+* 9b34e78 | 2026-08-23 | DuyITLOR | docs: refresh the commit log| 
+|  git-log/commit-log.txt | 46 ++++++++++++++++++++++++++++++++++++++++++++--
+|  1 file changed, 44 insertions(+), 2 deletions(-)
+
+* b1724dc | 2026-08-23 | DuyITLOR | fix: correct the misattribution and remove the section 11 violation| 
+|  README.md                                         |  29 ++++++++----
+|  ai-audit/ai-audit-report.md                       |  36 +++++++++++++-
+|  ai-audit/ai-audit-report.pdf                      | Bin 739140 -> 780754 bytes
+|  ai-audit/ai-critique.pdf                          | Bin 51875 -> 51875 bytes
+|  bug-report/bug-report.pdf                         | Bin 435972 -> 435972 bytes
+|  ci/ci-report.pdf                                  | Bin 215314 -> 215314 bytes
+|  docs/api-selection.md                             |  13 ++++--
+|  generator/design.md                               |  16 +++----
+|  generator/design.pdf                              | Bin 440036 -> 205077 bytes
+|  generator/diagram/README.md                       |  49 +++++++++++++-------
+|  ...flow.png => reference-layout-AI-KHONG-NOP.png} | Bin
+|  ...flow.svg => reference-layout-AI-KHONG-NOP.svg} |   0
+|  generator/specs/api-01-products-search.mjs        |  14 +++---
+|  generator/specs/api-02-cart-add.mjs               |  14 +++---
+|  generator/specs/api-03-product-update.mjs         |  16 +++----
+|  package.json                                      |   1 +
+|  report/main-report.md                             |  24 ++++++++--
+|  report/main-report.pdf                            | Bin 739865 -> 776974 bytes
+|  test-cases/api-01-products-search/extended.md     |  27 +++++++----
+|  test-cases/api-01-products-search/own.md          |  30 ++++++++++++
+|  test-cases/api-02-cart-add/extended.md            |  27 +++++++----
+|  test-cases/api-02-cart-add/own.md                 |  30 ++++++++++++
+|  test-cases/api-03-product-update/extended.md      |  29 +++++++-----
+|  test-cases/api-03-product-update/own.md           |  30 ++++++++++++
+|  test-cases/test-summary/summary.md                |   2 +-
+|  tools/check-cases.mjs                             |   5 +-
+|  tools/check-submission.mjs                        |  18 +++++--
+|  tools/coverage-gaps.mjs                           |  39 ++++++++++++++++
+|  tools/gen-artifacts.mjs                           |  14 ++++--
+|  tools/package.sh                                  |   4 +-
+|  tools/verify-all.sh                               |   8 +++-
+|  31 files changed, 365 insertions(+), 110 deletions(-)
+
+* 6a4f5a6 | 2026-08-23 | DuyITLOR | docs: refresh the commit log| 
+|  git-log/commit-log.txt | 28 ++++++++++++++++++++++++++--
+|  1 file changed, 26 insertions(+), 2 deletions(-)
+
+* 10f0e62 | 2026-08-23 | DuyITLOR | docs: reconcile the audit with the attestation the student made| 
+|  README.md                          |  29 +++++++++++++++--------------
+|  ai-audit/ai-audit-report.md        |  33 ++++++++++++++++-----------------
+|  ai-audit/ai-audit-report.pdf       | Bin 738659 -> 739140 bytes
+|  ai-audit/ai-critique.pdf           | Bin 51875 -> 51875 bytes
+|  bug-report/bug-report.pdf          | Bin 435972 -> 435972 bytes
+|  ci/ci-report.pdf                   | Bin 215314 -> 215314 bytes
+|  generator/design.pdf               | Bin 440036 -> 440036 bytes
+|  git-log/commit-log.txt             |  32 ++++++++++++++++++++++++++++++--
+|  report/main-report.pdf             | Bin 739865 -> 739865 bytes
+|  test-cases/test-summary/summary.md |   2 +-
+|  tools/mark-reviewed.mjs            |   4 +++-
+|  11 files changed, 65 insertions(+), 35 deletions(-)
+
+* 19657f7 | 2026-08-23 | DuyITLOR | fix: the review helper broke when the delegation wording landed| 
+|  tools/mark-reviewed.mjs | 21 ++++++++++++++++++---
+|  1 file changed, 18 insertions(+), 3 deletions(-)
+
+* bd20c95 | 2026-08-23 | DuyITLOR | docs: refresh the commit log| 
+|  git-log/commit-log.txt | 38 ++++++++++++++++++++++++++++++++++++--
+|  1 file changed, 36 insertions(+), 2 deletions(-)
+
+* 59b2ae7 | 2026-08-23 | DuyITLOR | docs: declare the delegation instead of faking the attestation| 
+|  README.md                                  |  39 ++++++++++++++++--------
+|  ai-audit/ai-audit-report.md                |  44 ++++++++++++++++++---------
+|  ai-audit/ai-audit-report.pdf               | Bin 663201 -> 738659 bytes
+|  ai-audit/ai-critique.pdf                   | Bin 51875 -> 51875 bytes
+|  bug-report/bug-report.pdf                  | Bin 435972 -> 435972 bytes
+|  ci/ci-report.pdf                           | Bin 215314 -> 215314 bytes
+|  generator/design.pdf                       | Bin 440036 -> 440036 bytes
+|  generator/specs/api-01-products-search.mjs |   7 +++--
+|  generator/specs/api-02-cart-add.mjs        |   2 +-
+|  report/main-report.pdf                     | Bin 739865 -> 739865 bytes
+|  test-cases/api-01-products-search/audit.md |   7 +++--
+|  test-cases/api-02-cart-add/audit.md        |   2 +-
+|  test-cases/test-summary/summary.md         |   2 +-
+|  tools/check-cases.mjs                      |  19 ++++++++++++
+|  tools/check-claims.mjs                     |   2 +-
+|  15 files changed, 90 insertions(+), 34 deletions(-)
+
+* b9ae670 | 2026-08-23 | DuyITLOR | docs: refresh the commit log| 
+|  git-log/commit-log.txt | 25 +++++++++++++++++++++++--
+|  1 file changed, 23 insertions(+), 2 deletions(-)
+
+* f25c59b | 2026-08-23 | DuyITLOR | fix: make the commit-log invariant satisfiable| 
+|  test-cases/test-summary/summary.md |  2 +-
+|  tools/check-submission.mjs         | 11 ++++++++---
+|  2 files changed, 9 insertions(+), 4 deletions(-)
+
+* dfb3e35 | 2026-08-23 | DuyITLOR | docs: refresh the commit log after the PDF rebuild| 
+|  git-log/commit-log.txt             | 20 ++++++++++++++++++--
+|  test-cases/test-summary/summary.md |  2 +-
+|  2 files changed, 19 insertions(+), 3 deletions(-)
+
+* 8a60585 | 2026-08-23 | DuyITLOR | docs: rebuild PDFs| 
+|  ai-audit/ai-audit-report.pdf | Bin 663201 -> 663201 bytes
+|  ai-audit/ai-critique.pdf     | Bin 51875 -> 51875 bytes
+|  bug-report/bug-report.pdf    | Bin 435972 -> 435972 bytes
+|  ci/ci-report.pdf             | Bin 215314 -> 215314 bytes
+|  generator/design.pdf         | Bin 440036 -> 440036 bytes
+|  report/main-report.pdf       | Bin 739865 -> 739865 bytes
+|  6 files changed, 0 insertions(+), 0 deletions(-)
+
+* 3c6b6f9 | 2026-08-23 | DuyITLOR | docs: refresh the commit log| 
+|  git-log/commit-log.txt | 34 ++++++++++++++++++++++++++++++++--
+|  1 file changed, 32 insertions(+), 2 deletions(-)
+
+* e969ba8 | 2026-08-23 | DuyITLOR | docs: replace the bare 'not yet checked' labels with precise attribution| 
+|  ai-audit/ai-audit-report.md  |  64 +++++++++++--------------
+|  ai-audit/ai-audit-report.pdf | Bin 614407 -> 663201 bytes
+|  ai-audit/ai-critique.pdf     | Bin 51875 -> 51875 bytes
+|  bug-report/bug-report.pdf    | Bin 435972 -> 435972 bytes
+|  ci/ci-report.md              |   2 +-
+|  ci/ci-report.pdf             | Bin 215216 -> 215314 bytes
+|  generator/design.pdf         | Bin 440036 -> 440036 bytes
+|  package.json                 |   1 +
+|  report/main-report.pdf       | Bin 739865 -> 739865 bytes
+|  tools/check-submission.mjs   | 106 +++++++++++++++++++++++++++++++++++++++++
+|  tools/mark-reviewed.mjs      |   7 +--
+|  tools/verify-all.sh          |   7 +++
+|  12 files changed, 148 insertions(+), 39 deletions(-)
+
+* 0f4585d | 2026-08-23 | DuyITLOR | docs: refresh the commit log| 
+|  git-log/commit-log.txt | 55 ++++++++++++++++++++++++++++++++++++++++++++++--
+|  1 file changed, 53 insertions(+), 2 deletions(-)
+
+* fef7773 | 2026-08-23 | DuyITLOR | test: review the content of the 114 VALID labels, not just their count| 
+|  ai-audit/ai-audit-report.md                       |  30 +++++++++
+|  ai-audit/ai-audit-report.pdf                      | Bin 578632 -> 614407 bytes
+|  ai-audit/ai-critique.pdf                          | Bin 51875 -> 51875 bytes
+|  bug-report/bug-report.pdf                         | Bin 435972 -> 435972 bytes
+|  ci/ci-report.pdf                                  | Bin 215216 -> 215216 bytes
+|  generator/design.pdf                              | Bin 440036 -> 440036 bytes
+|  generator/specs/api-02-cart-add.mjs               |  10 +--
+|  package.json                                      |   1 +
+|  ...127178_api-02-cart-add.postman_collection.json |   4 +-
+|  report/main-report.md                             |  25 ++++++-
+|  report/main-report.pdf                            | Bin 703907 -> 739865 bytes
+|  test-cases/api-02-cart-add/extended.md            |   4 +-
+|  test-cases/test-summary/summary.md                |   2 +-
+|  test-cases/test-summary/traceability-matrix.md    |  11 +++
+|  tools/check-cases.mjs                             |  71 ++++++++++++++++++++
+|  tools/check-claims.mjs                            |   6 +-
+|  tools/verify-all.sh                               |   7 ++
+|  17 files changed, 158 insertions(+), 13 deletions(-)
+
+* 6a1b53a | 2026-08-23 | DuyITLOR | fix: make the review helper forgiving about input, strict about intent| 
+|  tools/mark-reviewed.mjs | 26 +++++++++++++++++++++++---
+|  1 file changed, 23 insertions(+), 3 deletions(-)
+
+* 755c7b3 | 2026-08-23 | DuyITLOR | docs: refresh the commit log| 
+|  git-log/commit-log.txt | 36 ++++++++++++++++++++++++++++++++++--
+|  1 file changed, 34 insertions(+), 2 deletions(-)
+
+* eb71e4e | 2026-08-23 | DuyITLOR | test: script the two error classes the manual review pass caught| 
+|  README.md                          |  15 ++++++-
+|  ai-audit/ai-audit-report.md        |   9 +++-
+|  ai-audit/ai-audit-report.pdf       | Bin 574583 -> 578632 bytes
+|  ai-audit/ai-critique.pdf           | Bin 51875 -> 51875 bytes
+|  bug-report/bug-report.pdf          | Bin 435972 -> 435972 bytes
+|  ci/ci-report.pdf                   | Bin 215216 -> 215216 bytes
+|  generator/design.pdf               | Bin 440036 -> 440036 bytes
+|  package.json                       |   3 ++
+|  report/main-report.md              |   4 +-
+|  report/main-report.pdf             | Bin 703853 -> 703907 bytes
+|  test-cases/test-summary/summary.md |   2 +-
+|  tools/check-claims.mjs             |  78 ++++++++++++++++++++++++++++++++++
+|  tools/mark-reviewed.mjs            |  79 +++++++++++++++++++++++++++++++++++
+|  tools/verify-all.sh                |   7 ++++
+|  14 files changed, 191 insertions(+), 6 deletions(-)
+
+* cdbc7ba | 2026-08-23 | DuyITLOR | docs: refresh the commit log| 
+|  git-log/commit-log.txt | 40 ++++++++++++++++++++++++++++++++++++++--
+|  1 file changed, 38 insertions(+), 2 deletions(-)
+
+* 5eaf4de | 2026-08-23 | DuyITLOR | docs: second review pass finds three documentation defects, one serious| 
+|  ai-audit/ai-audit-report.md        |  36 +++++++++++++++++++++++++++
+|  ai-audit/ai-audit-report.pdf       | Bin 526290 -> 574583 bytes
+|  ai-audit/ai-critique.pdf           | Bin 51875 -> 51875 bytes
+|  bug-report/bug-report.pdf          | Bin 435972 -> 435972 bytes
+|  ci/ci-report.md                    |   4 +--
+|  ci/ci-report.pdf                   | Bin 215338 -> 215216 bytes
+|  generator/design.pdf               | Bin 440036 -> 440036 bytes
+|  report/main-report.md              |  47 +++++++++++++++++++++++------------
+|  report/main-report.pdf             | Bin 683830 -> 703853 bytes
+|  test-cases/test-summary/summary.md |   2 +-
+|  tools/check-expect-vs-checks.mjs   |  42 +++++++++++++++++++++++++++++++
+|  tools/verify-all.sh                |   7 ++++++
+|  12 files changed, 119 insertions(+), 19 deletions(-)
+
+* f453d83 | 2026-08-23 | DuyITLOR | docs: refresh the commit log| 
+|  git-log/commit-log.txt | 30 ++++++++++++++++++++++++++++--
+|  1 file changed, 28 insertions(+), 2 deletions(-)
+
+* bc2f428 | 2026-08-23 | DuyITLOR | docs: record the student's own verification run as the submitted evidence| 
+|  ai-audit/ai-audit-report.md                       |    41 +-
+|  ai-audit/ai-audit-report.pdf                      |   Bin 506635 -> 526290 bytes
+|  ai-audit/ai-critique.pdf                          |   Bin 51875 -> 51875 bytes
+|  bug-report/bug-report.pdf                         |   Bin 435972 -> 435972 bytes
+|  ci/ci-report.pdf                                  |   Bin 215338 -> 215338 bytes
+|  excel/23127178_HW06_TestCases.xlsx                |   Bin 28263 -> 28263 bytes
+|  generator/design.pdf                              |   Bin 440036 -> 440036 bytes
+|  report/main-report.pdf                            |   Bin 683830 -> 683830 bytes
+|  ...8_api-01-products-search_20260823-000949.html} |  3198 +-
+|  ...8_api-01-products-search_20260823-000949.json} |  4142 +-
+|  ...23127178_api-02-cart-add_20260823-000951.html} |  3228 +-
+|  ...23127178_api-02-cart-add_20260823-000951.json} | 47337 +++++-------------
+|  ...78_api-03-product-update_20260823-000954.html} |  3244 +-
+|  ...78_api-03-product-update_20260823-000954.json} |  4050 +-
+|  ...l => 23127178_regression_20260823-001211.html} |  5102 +-
+|  ...n => 23127178_regression_20260823-001211.json} | 12336 ++---
+|  test-cases/api-01-products-search/generated.md    |     2 +-
+|  test-cases/api-02-cart-add/generated.md           |     2 +-
+|  test-cases/api-03-product-update/generated.md     |     2 +-
+|  test-cases/test-summary/summary.md                |    32 +-
+|  20 files changed, 27310 insertions(+), 55406 deletions(-)
+
+* d7d50ce | 2026-08-23 | DuyITLOR | docs: refresh the commit log| 
+|  git-log/commit-log.txt | 31 +++++++++++++++++++++++++++++--
+|  1 file changed, 29 insertions(+), 2 deletions(-)
+
+* 142d6f3 | 2026-08-23 | DuyITLOR | docs: add the Postman GUI console screenshot the student captured| 
+|  README.md                                      |   7 ++++---
+|  ai-audit/ai-audit-report.md                    |   5 +++++
+|  ai-audit/ai-audit-report.pdf                   | Bin 501898 -> 506635 bytes
+|  ai-audit/ai-critique.pdf                       | Bin 51875 -> 51875 bytes
+|  bug-report/bug-report.pdf                      | Bin 435972 -> 435972 bytes
+|  bug-report/screenshots/postman-console-gui.png | Bin 0 -> 393025 bytes
+|  ci/ci-report.pdf                               | Bin 215338 -> 215338 bytes
+|  generator/design.pdf                           | Bin 440036 -> 440036 bytes
+|  report/main-report.md                          |  20 ++++++++++++--------
+|  report/main-report.pdf                         | Bin 677064 -> 683830 bytes
+|  test-cases/test-summary/summary.md             |   2 +-
+|  11 files changed, 22 insertions(+), 12 deletions(-)
+
+* 5341183 | 2026-08-22 | DuyITLOR | docs: refresh the commit log| 
+|  git-log/commit-log.txt | 31 +++++++++++++++++++++++++++++--
+|  1 file changed, 29 insertions(+), 2 deletions(-)
+
+* 9f596f7 | 2026-08-22 | DuyITLOR | test: local run as the submitted evidence, with the console screenshot section 11 names| 
+|  .github/workflows/api-tests.yml                   |     2 +
+|  README.md                                         |     4 +
+|  ai-audit/ai-audit-report.pdf                      |   Bin 501898 -> 501898 bytes
+|  ai-audit/ai-critique.pdf                          |   Bin 51875 -> 51875 bytes
+|  bug-report/bug-report.pdf                         |   Bin 435972 -> 435972 bytes
+|  bug-report/screenshots/console-x-student-id.png   |   Bin 0 -> 74781 bytes
+|  .../screenshots/newman-api-01-products-search.png |   Bin 172713 -> 170021 bytes
+|  bug-report/screenshots/newman-api-02-cart-add.png |   Bin 164019 -> 163957 bytes
+|  .../screenshots/newman-api-03-product-update.png  |   Bin 172724 -> 169904 bytes
+|  .../screenshots/newman-failed-assertions.png      |   Bin 143506 -> 142323 bytes
+|  bug-report/screenshots/newman-regression.png      |   Bin 0 -> 143986 bytes
+|  .../screenshots/x-student-id-request-header.png   |   Bin 89211 -> 92140 bytes
+|  ci/ci-report.pdf                                  |   Bin 215338 -> 215338 bytes
+|  excel/23127178_HW06_TestCases.xlsx                |   Bin 28261 -> 28263 bytes
+|  generator/design.pdf                              |   Bin 440036 -> 440036 bytes
+|  report/main-report.md                             |    22 +-
+|  report/main-report.pdf                            |   Bin 671654 -> 677064 bytes
+|  ...8_api-01-products-search_20260822-221734.html} |  4686 +-
+|  ...8_api-01-products-search_20260822-221734.json} |  5370 +-
+|  ...23127178_api-02-cart-add_20260822-221736.html} |  4561 +-
+|  ...23127178_api-02-cart-add_20260822-221736.json} | 51508 ++++++++++++------
+|  ...78_api-03-product-update_20260822-221740.html} |  4726 +-
+|  ...78_api-03-product-update_20260822-221740.json} |  5140 +-
+|  ...l => 23127178_regression_20260822-221742.html} |  7296 ++-
+|  ...n => 23127178_regression_20260822-221742.json} | 41384 +++++++++-----
+|  test-cases/api-01-products-search/generated.md    |     2 +-
+|  test-cases/api-02-cart-add/generated.md           |     2 +-
+|  test-cases/api-03-product-update/generated.md     |     2 +-
+|  test-cases/test-summary/summary.md                |    32 +-
+|  tools/run-newman.sh                               |     6 +-
+|  30 files changed, 82572 insertions(+), 42171 deletions(-)
+
+* 36c0e4a | 2026-08-22 | DuyITLOR | docs: refresh the commit log| 
+|  git-log/commit-log.txt | 105 ++++++++++++++++++++++++++++++++++++++++++++++-
+|  1 file changed, 103 insertions(+), 2 deletions(-)
+
+* 4a110e1 | 2026-08-22 | DuyITLOR | docs: evidence screenshots, updated numbers, and the student review checklist| 
+|  README.md                                         |    54 +-
+|  TASKS.md                                          |     6 +-
+|  ai-audit/ai-audit-report.md                       |    75 +-
+|  ai-audit/ai-audit-report.pdf                      |   Bin 407784 -> 501898 bytes
+|  ai-audit/ai-critique.pdf                          |   Bin 51875 -> 51875 bytes
+|  bug-report/bug-report.pdf                         |   Bin 435972 -> 435972 bytes
+|  bug-report/screenshots/ci-do.png                  |   Bin 0 -> 122329 bytes
+|  bug-report/screenshots/ci-xanh.png                |   Bin 0 -> 116827 bytes
+|  bug-report/screenshots/issue-336-bug14-dos.png    |   Bin 0 -> 390185 bytes
+|  .../screenshots/newman-failed-assertions.png      |   Bin 0 -> 143506 bytes
+|  .../screenshots/x-student-id-request-header.png   |   Bin 0 -> 89211 bytes
+|  ci/ci-report.md                                   |    47 +-
+|  ci/ci-report.pdf                                  |   Bin 212357 -> 215338 bytes
+|  excel/23127178_HW06_TestCases.xlsx                |   Bin 27792 -> 28261 bytes
+|  generator/design.pdf                              |   Bin 440036 -> 440036 bytes
+|  postman/README.md                                 |    10 +-
+|  report/main-report.md                             |    49 +-
+|  report/main-report.pdf                            |   Bin 638336 -> 671654 bytes
+|  ...78_api-01-products-search_ci-32580345226.html} |  3356 +-
+|  ...78_api-01-products-search_ci-32580345226.json} |  4054 +-
+|  ... 23127178_api-02-cart-add_ci-32580345226.html} |  3502 +-
+|  ... 23127178_api-02-cart-add_ci-32580345226.json} | 85741 ++++--------------
+|  ...178_api-03-product-update_ci-32580345226.html} |  3448 +-
+|  ...178_api-03-product-update_ci-32580345226.json} |  3840 +-
+|  .../23127178_regression_ci-32580345226.html       | 24708 +++++
+|  .../23127178_regression_ci-32580345226.json       | 54508 +++++++++++
+|  test-cases/api-01-products-search/generated.md    |     2 +-
+|  test-cases/api-02-cart-add/audit.md               |     4 +-
+|  test-cases/api-02-cart-add/extended.md            |     2 +-
+|  test-cases/api-02-cart-add/generated.md           |     6 +-
+|  test-cases/api-03-product-update/generated.md     |     2 +-
+|  test-cases/test-summary/summary.md                |    32 +-
+|  tools/package.sh                                  |    11 +-
+|  tools/verify-all.sh                               |     4 +-
+|  34 files changed, 105474 insertions(+), 77987 deletions(-)
+
+* 4e2f302 | 2026-08-22 | DuyITLOR | ci(demo): remove the intentional failing assertion| 
+|  .../collections/23127178_regression.postman_collection.json  | 10 ++--------
+|  1 file changed, 2 insertions(+), 8 deletions(-)
+
+* e388146 | 2026-08-22 | DuyITLOR | ci(demo): deliberately fail one assertion to produce the red sample run (section 6)| 
+|  .../collections/23127178_regression.postman_collection.json  | 10 ++++++++--
+|  1 file changed, 8 insertions(+), 2 deletions(-)
+
+* 5a07ebf | 2026-08-22 | DuyITLOR | ci: scope the baseline gate to the bug-hunting collections only| 
+|  .github/workflows/api-tests.yml | 6 ++++--
+|  1 file changed, 4 insertions(+), 2 deletions(-)
+
+* 1245b56 | 2026-08-22 | DuyITLOR | ci: add a regression suite with a zero-failure gate| 
+|  .github/workflows/api-tests.yml                   |   30 +-
+|  generator/specs/api-02-cart-add.mjs               |   33 +-
+|  ...127178_api-02-cart-add.postman_collection.json |   18 +-
+|  .../23127178_regression.postman_collection.json   | 2981 +++++++++++++++++++
+|  test-cases/api-02-cart-add/audit.md               |   15 +-
+|  test-cases/api-02-cart-add/extended.md            |    2 +-
+|  test-cases/api-02-cart-add/generated.md           |    4 +-
+|  tools/gen-regression.mjs                          |  101 +
+|  8 files changed, 3161 insertions(+), 23 deletions(-)
+
+* bfeb29d | 2026-08-19 | DuyITLOR | docs: refresh the commit log| 
+|  git-log/commit-log.txt | 50 ++++++++++++++++++++++++++++++++++++++++++++++--
+|  1 file changed, 48 insertions(+), 2 deletions(-)
+
+* b018905 | 2026-08-19 | DuyITLOR | docs: open 19 GitHub issues and link them back into every document| 
+|  README.md                                      |  30 +-
+|  ai-audit/ai-audit-report.md                    |   3 +-
+|  ai-audit/ai-audit-report.pdf                   | Bin 406396 -> 407784 bytes
+|  ai-audit/ai-critique.pdf                       | Bin 51875 -> 51875 bytes
+|  bug-report/bug-report.md                       |  41 +--
+|  bug-report/bug-report.pdf                      | Bin 418792 -> 435972 bytes
+|  bug-report/create-github-issues.sh             |  60 ++++
+|  bug-report/issues/BUG-01.md                    |  46 +++
+|  bug-report/issues/BUG-02.md                    |  35 +++
+|  bug-report/issues/BUG-03.md                    |  36 +++
+|  bug-report/issues/BUG-04.md                    |  34 +++
+|  bug-report/issues/BUG-05.md                    |  38 +++
+|  bug-report/issues/BUG-06.md                    |  36 +++
+|  bug-report/issues/BUG-07.md                    |  42 +++
+|  bug-report/issues/BUG-08.md                    |  42 +++
+|  bug-report/issues/BUG-09.md                    |  37 +++
+|  bug-report/issues/BUG-10.md                    |  36 +++
+|  bug-report/issues/BUG-11.md                    |  35 +++
+|  bug-report/issues/BUG-12.md                    |  35 +++
+|  bug-report/issues/BUG-13.md                    |  47 ++++
+|  bug-report/issues/BUG-14.md                    |  55 ++++
+|  bug-report/issues/BUG-15.md                    |  38 +++
+|  bug-report/issues/BUG-16.md                    |  41 +++
+|  bug-report/issues/BUG-17.md                    |  36 +++
+|  bug-report/issues/BUG-18.md                    |  35 +++
+|  bug-report/issues/BUG-19.md                    |  39 +++
+|  bug-report/issues/created.txt                  |  19 ++
+|  ci/ci-report.pdf                               | Bin 212357 -> 212357 bytes
+|  generator/design.pdf                           | Bin 440036 -> 440036 bytes
+|  report/main-report.md                          |  13 +-
+|  report/main-report.pdf                         | Bin 632044 -> 638336 bytes
+|  test-cases/test-summary/summary.md             |   2 +-
+|  test-cases/test-summary/traceability-matrix.md |  26 +-
+|  tools/make-issues.py                           | 341 +++++++++++++++++++++++
+|  34 files changed, 1224 insertions(+), 54 deletions(-)
+
+* ff582d0 | 2026-08-19 | DuyITLOR | docs: add the generator diagram and real Newman report screenshots| 
+|  ai-audit/ai-audit-report.pdf                      | Bin 406396 -> 406396 bytes
+|  ai-audit/ai-critique.pdf                          | Bin 51875 -> 51875 bytes
+|  bug-report/bug-report.pdf                         | Bin 418792 -> 418792 bytes
+|  .../screenshots/newman-api-01-products-search.png | Bin 0 -> 172713 bytes
+|  bug-report/screenshots/newman-api-02-cart-add.png | Bin 0 -> 164019 bytes
+|  .../screenshots/newman-api-03-product-update.png  | Bin 0 -> 172724 bytes
+|  ci/ci-report.md                                   |  57 +++++++--
+|  ci/ci-report.pdf                                  | Bin 176537 -> 212357 bytes
+|  generator/design.md                               |  21 +++-
+|  generator/design.pdf                              | Bin 187829 -> 440036 bytes
+|  generator/diagram/README.md                       |  24 ++--
+|  generator/diagram/generator-flow.png              | Bin 0 -> 291373 bytes
+|  generator/diagram/generator-flow.svg              | 128 ++++++++++++++++++++
+|  report/main-report.pdf                            | Bin 632044 -> 632044 bytes
+|  test-cases/test-summary/summary.md                |   2 +-
+|  15 files changed, 204 insertions(+), 28 deletions(-)
+
+* e53e4ae | 2026-08-19 | DuyITLOR | docs: refresh the commit log| 
+|  git-log/commit-log.txt | 42 ++++++++++++++++++++++++++++++++++++++++--
+|  1 file changed, 40 insertions(+), 2 deletions(-)
+
+* 1321895 | 2026-08-19 | DuyITLOR | test: make runs reproducible - verify a write survives before trusting the SUT| 
+|  TASKS.md                                          |     4 +-
+|  ai-audit/ai-audit-report.md                       |    30 +-
+|  ai-audit/ai-audit-report.pdf                      |   Bin 370659 -> 406396 bytes
+|  ai-audit/ai-critique.pdf                          |   Bin 51875 -> 51875 bytes
+|  bug-report/bug-report.pdf                         |   Bin 418792 -> 418792 bytes
+|  ci/ci-report.pdf                                  |   Bin 176537 -> 176537 bytes
+|  excel/23127178_HW06_TestCases.xlsx                |   Bin 27793 -> 27792 bytes
+|  generator/design.pdf                              |   Bin 187829 -> 187829 bytes
+|  report/main-report.md                             |    44 +-
+|  report/main-report.pdf                            |   Bin 591178 -> 632044 bytes
+|  ...8_api-01-products-search_20260819-005039.html} |  3182 +-
+|  ...8_api-01-products-search_20260819-005039.json} |  3894 +-
+|  ...23127178_api-02-cart-add_20260819-005042.html} |  3200 +-
+|  ...23127178_api-02-cart-add_20260819-005042.json} | 49686 ++++++++++++------
+|  ...78_api-03-product-update_20260819-005047.html} |  3326 +-
+|  ...78_api-03-product-update_20260819-005047.json} |  3802 +-
+|  test-cases/api-01-products-search/generated.md    |     2 +-
+|  test-cases/api-02-cart-add/generated.md           |     2 +-
+|  test-cases/api-03-product-update/generated.md     |     2 +-
+|  test-cases/test-summary/summary.md                |    26 +-
+|  tools/run-newman.sh                               |    10 +-
+|  tools/seed-api-data.mjs                           |    32 +-
+|  22 files changed, 43023 insertions(+), 24219 deletions(-)
+
+* 36ea764 | 2026-08-19 | DuyITLOR | docs: export the git commit log required by section 12| 
+|  git-log/commit-log.txt | 399 +++++++++++++++++++++++++++++++++++++++++++++++
+|  1 file changed, 399 insertions(+)
+
+* ee6be07 | 2026-08-19 | DuyITLOR | chore: placeholder for evidence screenshots| 
+|  bug-report/screenshots/.gitkeep | 0
+|  1 file changed, 0 insertions(+), 0 deletions(-)
+
+* 34dcbcd | 2026-08-19 | DuyITLOR | docs: update README with measured results and the five remaining manual items| 
+|  README.md                         | 185 +++++++++++++++++++++-
+|  TASKS.md                          | 111 +++++++++++++
+|  docs/2026.HW06.API Testing_En.pdf | Bin 0 -> 455391 bytes
+|  docs/PLAYBOOK.md                  | 150 ++++++++++++++++++
+|  tools/commit-plan.sh              | 307 ++++++++++++++++++++++++++++++++++++
+|  tools/package.sh                  | 112 +++++++++++++
+|  tools/verify-all.sh               | 124 +++++++++++++++
+|  7 files changed, 988 insertions(+), 1 deletion(-)
+
+* 275848a | 2026-08-19 | DuyITLOR | docs: export the PDF copies section 14 requires| 
+|  bug-report/bug-report.pdf | Bin 0 -> 418792 bytes
+|  ci/ci-report.pdf          | Bin 0 -> 176537 bytes
+|  generator/design.pdf      | Bin 0 -> 187829 bytes
+|  3 files changed, 0 insertions(+), 0 deletions(-)
+
+* 80965eb | 2026-08-19 | DuyITLOR | docs: main report, AI audit with 13 logged AI errors, and generator design| 
+|  ai-audit/ai-audit-report.md  | 213 +++++++++++++++++++++
+|  ai-audit/ai-audit-report.pdf | Bin 0 -> 370659 bytes
+|  ai-audit/ai-critique.md      |  26 +++
+|  ai-audit/ai-critique.pdf     | Bin 0 -> 51875 bytes
+|  ai-audit/design-log.md       |  13 ++
+|  generator/design.md          |  86 +++++++++
+|  generator/diagram/.gitkeep   |   0
+|  generator/diagram/README.md  |  14 ++
+|  generator/pseudocode.py      |  90 +++++++++
+|  report/main-report.md        | 413 +++++++++++++++++++++++++++++++++++++++++
+|  report/main-report.pdf       | Bin 0 -> 591178 bytes
+|  11 files changed, 855 insertions(+)
+
+* 4a9f551 | 2026-08-19 | DuyITLOR | docs: traceability matrix and generated Excel workbook| 
+|  excel/.gitkeep                                 |   0
+|  excel/23127178_HW06_TestCases.xlsx             | Bin 0 -> 27793 bytes
+|  test-cases/test-summary/traceability-matrix.md |  30 +++++++++++++++++++++++
+|  3 files changed, 30 insertions(+)
+
+* df986df | 2026-08-19 | DuyITLOR | docs: report 19 bugs, all 19 reproduced with real requests| 
+|  bug-report/bug-report.md          | 261 ++++++++++++++++++++++++++++++++++++
+|  bug-report/verify-bugs-output.txt | 124 +++++++++++++++++
+|  2 files changed, 385 insertions(+)
+
+* 897b97e | 2026-08-19 | DuyITLOR | ci: gate on a signed-off failure baseline instead of zero failures| 
+|  ci/ci-report.md | 71 +++++++++++++++++++++++++++++++++++++++++++++++++++++++
+|  1 file changed, 71 insertions(+)
+
+* 146aa7c | 2026-08-19 | DuyITLOR | test: execute all three collections, 240 assertions pass and 89 fail| 
+|  reports/newman/.gitkeep                           |     0
+|  ...78_api-01-products-search_20260819-002443.html | 15932 ++++
+|  ...78_api-01-products-search_20260819-002443.json | 50556 +++++++++++
+|  .../23127178_api-02-cart-add_20260819-002446.html | 15657 ++++
+|  .../23127178_api-02-cart-add_20260819-002446.json | 81566 ++++++++++++++++++
+|  ...178_api-03-product-update_20260819-002449.html | 16297 ++++
+|  ...178_api-03-product-update_20260819-002449.json | 35687 ++++++++
+|  test-cases/test-summary/summary.md                |   125 +
+|  8 files changed, 215820 insertions(+)
+
+* 230dbbe | 2026-08-19 | DuyITLOR | test: three Postman collections generated from the case definitions| 
+|  postman/collections/.gitkeep                      |    0
+|  ...api-01-products-search.postman_collection.json | 1493 ++++++++++++++
+|  ...127178_api-02-cart-add.postman_collection.json | 1938 +++++++++++++++++++
+|  ..._api-03-product-update.postman_collection.json | 1905 ++++++++++++++++++
+|  4 files changed, 5336 insertions(+)
+
+* 08a76dc | 2026-08-19 | DuyITLOR | test(api-03): 39 generated + audit + 8 student cases for PUT /api/products/:id| 
+|  generator/specs/api-03-product-update.mjs     | 365 ++++++++++++++++++++++++
+|  test-cases/api-03-product-update/audit.md     |  71 +++++
+|  test-cases/api-03-product-update/extended.md  |  27 ++
+|  test-cases/api-03-product-update/generated.md |  61 ++++
+|  4 files changed, 524 insertions(+)
+
+* cad2fc4 | 2026-08-19 | DuyITLOR | test(api-02): 39 generated + audit + 7 student cases for POST /api/cart| 
+|  generator/specs/api-02-cart-add.mjs     | 351 ++++++++++++++++++++++++++++++
+|  test-cases/api-02-cart-add/audit.md     |  71 ++++++
+|  test-cases/api-02-cart-add/extended.md  |  25 +++
+|  test-cases/api-02-cart-add/generated.md |  61 ++++++
+|  4 files changed, 508 insertions(+)
+
+* 7bd7ed1 | 2026-08-19 | DuyITLOR | test(api-01): add 7 cases the AI missed, with the reason it missed each| 
+|  test-cases/api-01-products-search/extended.md | 25 +++++++++++++++++++++++++
+|  1 file changed, 25 insertions(+)
+
+* b0bb70c | 2026-08-19 | DuyITLOR | test(api-01): audit AI-generated cases, 35 VALID and 1 corrected| 
+|  test-cases/api-01-products-search/audit.md | 63 ++++++++++++++++++++++++++++
+|  1 file changed, 63 insertions(+)
+
+* 29ef95c | 2026-08-19 | DuyITLOR | test(api-01): generate 36 test cases for GET /api/products| 
+|  generator/specs/api-01-products-search.mjs     | 314 +++++++++++++++++++++++
+|  test-cases/api-01-products-search/generated.md |  58 +++++
+|  2 files changed, 372 insertions(+)
+
+* 8a244d9 | 2026-08-19 | DuyITLOR | test: probe the SUT for real behaviour before designing expected values| 
+|  bug-report/verify-bugs.sh | 239 ++++++++++++++++++++++++++++++++++++++++++++
+|  tools/gen-artifacts.mjs   | 239 ++++++++++++++++++++++++++++++++++++++++++++
+|  2 files changed, 478 insertions(+)
+
+* 3560f04 | 2026-08-19 | DuyITLOR | chore: agent skills, CI workflow, and data-driven CSV fixtures| 
+|  .claude/README.md                       |  16 ++++
+|  .claude/skills/ai-audit-logger/SKILL.md |  67 +++++++++++++
+|  .claude/skills/api-test-audit/SKILL.md  |  55 +++++++++++
+|  .claude/skills/api-test-design/SKILL.md |  91 ++++++++++++++++++
+|  .claude/skills/postman-newman/SKILL.md  |  90 ++++++++++++++++++
+|  .github/workflows/api-tests.yml         | 152 ++++++++++++++++++++++++++++++
+|  git-log/.gitkeep                        |   0
+|  postman/data/.gitkeep                   |   0
+|  postman/data/cart-quantity.csv          |   8 ++
+|  postman/data/product-update-fields.csv  |   7 ++
+|  postman/data/search-terms.csv           |  10 ++
+|  11 files changed, 496 insertions(+)
+
+* 5e65e9e | 2026-08-19 | DuyITLOR | chore: postman environment, X-Student-Id pre-request script, packaging tools| 
+|  postman/README.md                                 |  66 +++++++++
+|  .../HW06-local.postman_environment.json           |  28 ++++
+|  postman/prerequest-collection.js                  |  26 ++++
+|  tools/build-pdfs.sh                               |  31 ++++
+|  tools/md2pdf.py                                   |  73 ++++++++++
+|  tools/tc2xlsx.py                                  | 150 ++++++++++++++++++++
+|  6 files changed, 374 insertions(+)
+
+* 66cc53f | 2026-08-19 | DuyITLOR | chore: repo skeleton for HW06 API testing| 
+|  .gitignore | 3 +++
+|  1 file changed, 3 insertions(+)
+
+* 31f851b | 2026-08-19 | DuyITLOR | test: newman runner, auto-generated summary, baseline CI gate| 
+|  ci/expected-failures.json  |  19 ++++++
+|  tools/ci-gate.mjs          |  68 ++++++++++++++++++++
+|  tools/run-newman.sh        | 146 +++++++++++++++++++++++++++++++++++++++++++
+|  tools/summarize-newman.mjs |  99 +++++++++++++++++++++++++++++
+|  4 files changed, 332 insertions(+)
+
+* 1d85f12 | 2026-08-19 | DuyITLOR | test: environment preflight and data-driven fixtures| 
+|  tools/preflight.mjs     | 105 +++++++++++++++++++++++++++++++++++
+|  tools/seed-api-data.mjs | 138 ++++++++++++++++++++++++++++++++++++++++++++++
+|  2 files changed, 243 insertions(+)
+
+* 107033b | 2026-08-19 | DuyITLOR | docs: pick three APIs, one per pool, with anti-duplication evidence| 
+|  docs/api-selection.md | 91 +++++++++++++++++++++++++++++++++++++++++++++++++
+|  1 file changed, 91 insertions(+)
+
+* 72ae9b1 | 2026-08-19 | DuyITLOR | chore: repo skeleton for HW06 API testing| 
+|  .gitignore   | 44 ++++++++++++++++++++++++++++++++++++++++++++
+|  package.json | 24 ++++++++++++++++++++++++
+|  2 files changed, 68 insertions(+)
+
+* 96f011e | 2026-08-18 | Lê Nhựt Duy | Initial commit  
+   README.md | 1 +
+   1 file changed, 1 insertion(+)
+
 
 ═══ Đầy đủ (kèm body) ═════════════════════════════════════════════════
+commit fa38eebf5fd24b5dddc326192aafa9f96c929e4a
+Author: DuyITLOR <153221271+DuyITLOR@users.noreply.github.com>
+Date:   Sun Aug 23 23:58:41 2026 +0700
+
+chore: cập nhật commit-log sau lượt bỏ icon
+
+Co-Authored-By: Claude Opus 5 (1M context) <noreply@anthropic.com>
+
+---
 commit 867cacdabd95ec0d76dd26d5a3986c51d566a2d9
 Author: DuyITLOR <153221271+DuyITLOR@users.noreply.github.com>
 Date:   Sun Aug 23 23:57:52 2026 +0700

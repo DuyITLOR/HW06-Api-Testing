@@ -274,8 +274,11 @@ mkdir -p git-log
   echo "Repo: $(git remote get-url origin 2>/dev/null || echo 'chưa có remote')"
   echo "Số commit: $(git rev-list --count HEAD 2>/dev/null || echo 0)"
   echo ""
-  echo "═══ Ngắn gọn ══════════════════════════════════════════════════════════"
-  git log --pretty=format:'%h %ad %s' --date=short
+  # Dạng graph + --stat: giống commit-log của HW02, và là dạng đọc được nhiều nhất —
+  # mỗi commit đi kèm ĐÚNG danh sách file nó sửa cùng số dòng +/-, nên người chấm thấy
+  # ngay commit nào tạo ra artefact nào mà không cần mở repo.
+  echo "═══ Graph + thống kê file ═════════════════════════════════════════════"
+  git log --graph --all --stat --date=short --pretty=format:'%h | %ad | %an | %s'
   echo ""
   echo ""
   echo "═══ Đầy đủ (kèm body) ═════════════════════════════════════════════════"
