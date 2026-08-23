@@ -157,7 +157,7 @@ tools/                10 script — xem §6 dưới
 | `ci-gate.mjs` | cổng CI: `--strict` (0 đỏ) cho regression suite · so baseline cho 3 collection bug-hunting |
 | `gen-regression.mjs` | sinh regression suite = tập con case đang xanh (giữ nguyên expected) · `--break` tạo lượt CI đỏ mẫu |
 | `tc2xlsx.py` | bảng test case Markdown → Excel (§14) |
-| `md2pdf.py` · `build-pdfs.sh` | xuất PDF cho tài liệu §14 |
+| `md2pdf.py` · `build-pdfs.sh` | xuất PDF cho tài liệu §14 — chỉ xuất khi `.md` mới hơn `.pdf` (`--force` để xuất hết) |
 | `verify-all.sh` | tính lại bất biến, in cả danh sách **không tự kiểm được** |
 | `check-claims.mjs` | soát **mọi con số công bố** trong 7 tài liệu so với raw JSON + kiểm link nội bộ + kiểm hash commit có thật |
 | `check-expect-vs-checks.mjs` | bắt lỗi **assertion nghiêm hơn expected** trên toàn bộ 157 case (lỗi #11) |

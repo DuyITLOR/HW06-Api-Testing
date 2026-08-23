@@ -24,8 +24,17 @@ if [ -z "$PYTHON" ]; then
   exit 1
 fi
 
+# Chỉ xuất lại PDF khi .md MỚI HƠN .pdf. Chrome nhét timestamp vào file PDF nên xuất lại vô điều kiện
+# làm `git status` bẩn sau mỗi lần chạy — cùng loại vấn đề với summary.md. Dùng --force để xuất hết.
+FORCE=0
+[ "${1:-}" = "--force" ] && FORCE=1
+
 for md in "${DOCS[@]}"; do
   if [ ! -f "$md" ]; then echo "  [BO QUA] $md (chưa có)"; continue; fi
   pdf="${md%.md}.pdf"
+  if [ "$FORCE" = "0" ] && [ -f "$pdf" ] && [ "$pdf" -nt "$md" ]; then
+    echo "  [BO QUA] $pdf đã mới hơn nguồn"
+    continue
+  fi
   "$PYTHON" tools/md2pdf.py "$md" "$pdf" && echo "  [OK]   $pdf"
 done
