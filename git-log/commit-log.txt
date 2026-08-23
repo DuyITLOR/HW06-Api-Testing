@@ -1,9 +1,11 @@
 Git commit log — HW06 API Testing · SV Lê Nhựt Duy 23127178
-Xuất lúc: 2026-08-23 23:48:12 +0700
+Xuất lúc: 2026-08-23 23:49:32 +0700
 Repo: https://github.com/DuyITLOR/HW06-Api-Testing.git
-Số commit: 76
+Số commit: 78
 
 ═══ Ngắn gọn ══════════════════════════════════════════════════════════
+df01f70 2026-08-23 fix: stop the PDF build from dirtying the repo on every run
+e687729 2026-08-23 docs: refresh the commit log
 44ce458 2026-08-23 docs: clear the nine residual inconsistencies a re-read found
 8406ec4 2026-08-23 docs: link the Lucidchart document as evidence the student built the diagram
 52cce6a 2026-08-23 docs: refresh the commit log
@@ -82,6 +84,28 @@ b0bb70c 2026-08-19 test(api-01): audit AI-generated cases, 35 VALID and 1 correc
 96f011e 2026-08-18 Initial commit
 
 ═══ Đầy đủ (kèm body) ═════════════════════════════════════════════════
+commit df01f709ea15a244aab80363bda4c6931961da73
+Author: DuyITLOR <153221271+DuyITLOR@users.noreply.github.com>
+Date:   Sun Aug 23 23:49:32 2026 +0700
+
+fix: stop the PDF build from dirtying the repo on every run
+
+Chrome stamps a timestamp into each PDF, so exporting unconditionally left five modified binaries after
+every 'npm run pdf' - the same nuisance summary.md had. build-pdfs.sh now skips any PDF already newer than
+its .md source, with --force to rebuild everything.
+
+Running verify, summary and pdf back to back now leaves the working tree clean, which is the point: a dirty
+tree after a read-only check trains you to ignore git status, and that is how a real uncommitted change gets
+missed at packaging time.
+
+---
+commit e687729e13f62a8e750873964c1b70d924107501
+Author: DuyITLOR <153221271+DuyITLOR@users.noreply.github.com>
+Date:   Sun Aug 23 23:48:12 2026 +0700
+
+docs: refresh the commit log
+
+---
 commit 44ce4589a351223afc3263407ffa0d0cd509b5d4
 Author: DuyITLOR <153221271+DuyITLOR@users.noreply.github.com>
 Date:   Sun Aug 23 23:48:12 2026 +0700
