@@ -154,7 +154,7 @@ echo "  Không tự động kiểm được (phải làm tay):"
 echo "    · Ảnh Postman Console thật sự hiện header X-Student-Id (§11)"
 echo "    · Hostname trong output Newman là localhost/127.0.0.1 (§11)"
 echo "    · Sơ đồ generator do chính mình vẽ (§11)"
-echo "    · Bộ 3 API không trùng thành viên nhóm (§5) — đối chiếu ảnh chat"
+echo "    · Bộ 3 API không trùng thành viên nhóm (§5) — hỏi lại nhóm; đề không đòi nộp ảnh chat"
 echo "    · Repo công khai + video demo xem được bằng link ẩn danh (§14)"
 echo ""
 [ "$FAIL" -gt 0 ] && exit 1 || exit 0

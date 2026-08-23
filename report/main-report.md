@@ -507,8 +507,9 @@ Ghi rõ vì một báo cáo không nêu giới hạn thì không kiểm chứng 
 8. **Sơ đồ generator chưa có bản nộp.** §11 đòi *self-drawn*; bản do AI dựng đã bị **loại khỏi bộ nộp**
    (`tools/package.sh` không copy) và giữ lại trong repo tên `reference-layout-AI-KHONG-NOP.png`. Bản trước
    nộp kèm hình AI **có khai rõ xuất xứ** — khai đúng nhưng vẫn vi phạm ràng buộc, nên đã gỡ.
-9. **§5 chỉ có lời khai, chưa có vật chứng.** Bảng 4 bộ API của thành viên khác lập từ ảnh chat nhóm, nhưng
-   ảnh **chưa lưu vào repo** — xem `docs/api-selection.md`.
+9. **§5 không có vật chứng lưu trong repo, và đề không đòi.** §5 yêu cầu *selection không trùng* — một
+   ràng buộc phải thoả, không phải bằng chứng phải nộp; §11/§14 không nêu ảnh chat. Bảng đối chiếu 4 bộ API
+   của thành viên khác ở `docs/api-selection.md` là lời khai của sinh viên, kiểm được bằng cách hỏi nhóm.
 10. **Ảnh trong 19 GitHub Issue là ảnh báo cáo Newman**, không phải ảnh từng bước tái hiện. Mỗi issue có
    lệnh `curl` chạy lại được và trỏ tới log `verify-bugs-output.txt`.
 11. **Bằng chứng `X-Student-Id` (§11) gồm ba ảnh, ba nguồn độc lập:**

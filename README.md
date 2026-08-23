@@ -86,7 +86,7 @@ Bug theo mức: **5 Critical · 5 High · 7 Medium · 2 Low** — [bug-report.md
 |---|---|---|
 | ~~−9~~ **0** | **§6.3 đã đạt**: 21 case trong `own.md` (5·9·7) do **sinh viên chọn phạm vi**, AI chấp bút — và chúng tìm ra **6 bug mới** mà bộ test AI bỏ sót | ✅ xong |
 | **−6** | **Sơ đồ generator chưa có bản tự vẽ** — §11 cấm hình AI, bản AI đã bị loại khỏi bộ nộp | vẽ theo `generator/diagram/README.md` (~30 phút) |
-| **−0** | §5 thiếu ảnh chat nhóm — chưa trừ vì bảng đối chiếu vẫn đúng, nhưng là rủi ro | lưu 4 ảnh vào `bug-report/screenshots/` (2 phút) |
+
 
 Còn 1 mục (sơ đồ) → làm xong là **100**. Nộp nguyên trạng → **94**.
 

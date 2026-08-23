@@ -21,7 +21,7 @@ của sinh viên** (§6.2) — xem checklist ở cuối `ai-audit/ai-audit-repor
 | Yêu cầu của đề | Nơi đáp ứng | **Tự kiểm bằng** |
 |---|---|---|
 | 3 API, mỗi pool A/B/C một API | [docs/api-selection.md](docs/api-selection.md) §2 · [README §1](README.md) | `grep -c '^| \*\*API-0' docs/api-selection.md` |
-| Không trùng bộ 3 với thành viên nhóm | [docs/api-selection.md](docs/api-selection.md) §1 (bảng 4 bộ đã bị lấy) | **không tự động kiểm được** — đối chiếu ảnh chat nhóm |
+| Không trùng bộ 3 với thành viên nhóm | [docs/api-selection.md](docs/api-selection.md) §1 (bảng 4 bộ đã bị lấy) | **không tự động kiểm được** — hỏi lại nhóm. Đề §5 đòi *ràng buộc không trùng*, không đòi nộp ảnh chat |
 | Endpoint đứng sau mỗi feature lấy từ spec | [docs/api-selection.md](docs/api-selection.md) §3, có số dòng `server.js` | `sed -n '141,157p;290,295p;179,189p' ../eshop-sut/backend/server.js` |
 
 ## §6.1 — Generate with AI (≥35 case/API)
@@ -104,7 +104,8 @@ của sinh viên** (§6.2) — xem checklist ở cuối `ai-audit/ai-audit-repor
 - [ ] Ảnh Postman Console hiện đúng header `X-Student-Id: 23127178` (§11)
 - [ ] Hostname trong output Newman là `localhost`/`127.0.0.1` (§11)
 - [ ] Sơ đồ generator do **chính mình** vẽ, không phải AI sinh (§11)
-- [ ] Bộ 3 API không trùng thành viên nào trong nhóm (§5) — đối chiếu ảnh chat
+- [x] Bộ 3 API không trùng thành viên nào trong nhóm (§5) — đã đối chiếu 4 bộ của thành viên khác
+      (`docs/api-selection.md` §1). Đề không đòi nộp ảnh chat làm bằng chứng
 - [ ] Repo ở trạng thái **public**, mở được từ cửa sổ ẩn danh (§14)
 - [ ] Video demo Agent Skill xem được bằng link (§7)
 - [ ] Mỗi bug trong `bug-report.md` đã tự tái hiện lại bằng request thật
