@@ -16,7 +16,7 @@
 | Test case | **157** — 114 do AI sinh (lượt 1) + 22 do AI sinh (lượt 2, `AI-2`) + **21 do sinh viên chọn** (`SV`, §6.3) |
 | Đã thực thi | **192 request · 368 assertion** trên SUT thật ở `localhost:3000` · thêm **regression suite 241 assertion, 0 đỏ** |
 | Kết quả | **271 assertion xanh · 97 đỏ** — mọi assertion đỏ đều map tới một bug |
-| Bug | **25 bug** — 19 từ bộ AI (Issues [#323–#341](https://github.com/DuyITLOR/group05_eshop/issues/323)) + **6 do case sinh viên chọn tìm ra** (BUG-20…25) · 5 Critical, 7 High, 11 Medium, 2 Low |
+| Bug | **25 bug** — 19 từ bộ AI (Issues [#323–#341](https://github.com/DuyITLOR/group05_eshop/issues/323)) + **6 do case sinh viên chọn** (Issues [#402](https://github.com/DuyITLOR/group05_eshop/issues/402)–[#407](https://github.com/DuyITLOR/group05_eshop/issues/407)) · 5 Critical, 7 High, 11 Medium, 2 Low |
 | Bug đáng chú ý nhất | **BUG-14**: khách **không đăng nhập** làm **sập cả backend** bằng 2 request — chuỗi 3 lỗi |
 | Lỗi của AI đã bắt và sửa | **25** (bảng đầy đủ ở §11) — 5 lỗi thiết kế test case (gồm 2 case assertion nghiêm hơn expected), 5 lỗi kỹ thuật, 4 lỗi bỏ sót phân vùng, 2 lỗi số liệu, 2 lỗi quy trình |
 | Giả thuyết đã **loại** sau khi kiểm | **4** (ghi lại ở [bug-report §Bug đã loại](../bug-report/bug-report.md)) |
@@ -320,7 +320,7 @@ trong `reports/newman/` để bộ nộp không phình; hai lượt trước đ�
 <a id="7-bug"></a>
 ## 7. Bug (§6.5)
 
-**19 bug, 19/19 tái hiện được bằng request thật, 19/19 đã mở GitHub Issue** — [#323](https://github.com/DuyITLOR/group05_eshop/issues/323)–[#341](https://github.com/DuyITLOR/group05_eshop/issues/341)
+**25 bug, tất cả tái hiện được bằng request thật, 25/25 đã mở GitHub Issue** — [#323](https://github.com/DuyITLOR/group05_eshop/issues/323)–[#341](https://github.com/DuyITLOR/group05_eshop/issues/341)
 trên `DuyITLOR/group05_eshop`, mỗi issue đủ 8 trường của template và có ảnh báo cáo Newman nhúng sẵn.
 Bản đầy đủ: [`bug-report/bug-report.md`](../bug-report/bug-report.md) · log tái hiện:
 [`bug-report/verify-bugs-output.txt`](../bug-report/verify-bugs-output.txt).

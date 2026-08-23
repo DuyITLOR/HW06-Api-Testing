@@ -299,6 +299,132 @@ curl localhost:3000/api/users/me -H "Authorization: Bearer $TOKEN"
 (`:20-30` insert thẳng, `:32-51` so sánh trực tiếp) → vi phạm SEC-01 ở **cả hai mặt**: lưu trữ và phơi bày.
 
 **Ngoài phạm vi 3 API của bài** — báo vì đề yêu cầu *report any genuine bugs you find*."""),
+ dict(id="20", api="01", mod="products/search", sev="Medium", pri="P2", req="FR-05",
+  title="GET /api/products không có giới hạn số dòng — ?limit và ?page bị bỏ qua",
+  tc="TC-PRODLIST-201, TC-PRODLIST-202 (case do sinh viên chọn, §6.3)",
+  steps="""```bash
+curl -s 'http://localhost:3000/api/products'          | python3 -c 'import json,sys;print(len(json.load(sys.stdin)),"dong")'
+curl -s 'http://localhost:3000/api/products?limit=1'  | python3 -c 'import json,sys;print(len(json.load(sys.stdin)),"dong")'
+curl -s 'http://localhost:3000/api/products?page=2'   | python3 -c 'import json,sys;print(len(json.load(sys.stdin)),"dong")'
+# ca ba deu tra CUNG so dong = toan bo bang
+```""",
+  exp="Hoặc honor `limit`/`page`, hoặc trả **400** cho tham số không hỗ trợ — không được im lặng trả toàn bộ bảng.",
+  act="""`server.js:141-157` chỉ đọc `req.query.search`; mọi tham số khác bị bỏ qua và truy vấn luôn là
+`SELECT * FROM products`. DB thật của SUT ở bài HW05 có **~900.000 sản phẩm** — một request kéo hết bảng là
+vấn đề thật về hiệu năng và bộ nhớ, không phải giả định.
+
+FR-05 gọi đây là *product listing*; spec §3.1 **im lặng** về phân trang, nên issue báo ở mức: API cần một cơ
+chế giới hạn, hoặc phải từ chối tham số nó không hỗ trợ."""),
+
+ dict(id="21", api="02", mod="cart", sev="High", pri="P1", req="FR-08 · FR-07",
+  title="Giỏ hàng giữ giá cũ sau khi admin đổi giá sản phẩm",
+  tc="TC-CART-201 → 202 → 203 (case do sinh viên chọn, §6.3)",
+  steps="""```bash
+TOKEN=$(curl -s -X POST localhost:3000/api/login -H 'Content-Type: application/json' \\
+  -d '{"email":"test@eshop.com","password":"Test1234!"}' | python3 -c 'import json,sys;print(json.load(sys.stdin)["token"])')
+
+# 1. san pham gia 111000 -> them vao gio
+curl -X POST localhost:3000/api/cart -H "Authorization: Bearer $TOKEN" -H 'Content-Type: application/json' \\
+  -d '{"id":7,"name":"HW06-Cart-Fixture","price":111000,"quantity":1}'
+
+# 2. admin doi gia san pham do len 222000
+curl -X PUT localhost:3000/api/products/7 -H 'Content-Type: application/json' \\
+  -d '{"name":"HW06-Cart-Fixture","price":222000,"description":"doi gia","imageUrl":"","category_id":1}'
+
+# 3. doc lai gio
+curl -s localhost:3000/api/cart -H "Authorization: Bearer $TOKEN"
+# -> van "price":111000
+```""",
+  exp="Giỏ phải phản ánh giá hiện tại của catalog (222000), hoặc báo cho người dùng biết giá đã thay đổi.",
+  act="""`server.js:290-295` lưu **bản chụp** `req.body` vào giỏ, không tham chiếu bảng `products`. Giá trong giỏ
+đứng yên kể từ lúc thêm.
+
+Hệ quả nghiệp vụ: FR-08 tính tiền đơn hàng từ giỏ, nên khách để hàng trong giỏ rồi quay lại sau khi shop tăng
+giá sẽ **trả giá cũ**; ngược lại nếu shop giảm giá thì khách bị tính cao hơn giá đang niêm yết.
+
+Bug này do **case sinh viên chọn** tìm ra: nó nằm trên trục *thời gian* (giá đổi **sau khi** hàng đã vào giỏ),
+không nằm trên trục phân hoạch tham số — 136 case sinh từ đặc tả không có case nào loại này."""),
+
+ dict(id="22", api="02", mod="cart", sev="Medium", pri="P2", req="SEC-04",
+  title="Payload <script> được lưu nguyên văn vào giỏ hàng",
+  tc="TC-CART-204 → 205 (case do sinh viên chọn, §6.3)",
+  steps="""```bash
+curl -X POST localhost:3000/api/cart -H "Authorization: Bearer $TOKEN" -H 'Content-Type: application/json' \\
+  -d '{"id":7,"name":"<script>alert(1)</script>","price":222000,"quantity":1}'
+curl -s localhost:3000/api/cart -H "Authorization: Bearer $TOKEN"
+# -> [... {"name":"<script>alert(1)</script>", ...} ...]
+```""",
+  exp="Từ chối, hoặc escape trước khi lưu — SEC-04 đòi dữ liệu người dùng phải được escape đúng cách.",
+  act="""`push(req.body)` lưu nguyên object. Thẻ script nằm trong state phía server và được trả lại cho mọi client
+đọc giỏ. Frontend nào render tên sản phẩm bằng `innerHTML` (SEC-04 cấm đích danh) là chạy script ngay.
+
+Kết luận giới hạn trong phạm vi API: payload **được lưu và trả lại nguyên văn**; việc nó thực thi hay không
+phụ thuộc tầng UI — ngoài phạm vi bài kiểm thử API."""),
+
+ dict(id="23", api="02", mod="cart / users", sev="High", pri="P1", req="SEC-02",
+  title="Token của người dùng đã bị xoá vẫn mở được giỏ hàng",
+  tc="TC-CART-208 → 209 (case do sinh viên chọn, §6.3)",
+  steps="""```bash
+# 1. user2 dang nhap, lay token va id
+U2=$(curl -s -X POST localhost:3000/api/login -H 'Content-Type: application/json' \\
+  -d '{"email":"hw06.user2@eshop.com","password":"User2pass!"}')
+TOKEN2=$(echo "$U2" | python3 -c 'import json,sys;print(json.load(sys.stdin)["token"])')
+ID2=$(echo "$U2"   | python3 -c 'import json,sys;print(json.load(sys.stdin)["user"]["id"])')
+
+# 2. admin xoa user2
+curl -X DELETE "localhost:3000/api/admin/users/$ID2" -H "Authorization: Bearer $ADMIN_TOKEN"
+
+# 3. dung token CU cua user da bi xoa
+curl -i localhost:3000/api/cart -H "Authorization: Bearer $TOKEN2"
+# -> 200 OK, van mo duoc gio
+```""",
+  exp="**401/403** — SEC-02 đòi JWT **hợp lệ**; token trỏ tới người dùng không còn tồn tại thì không còn hợp lệ.",
+  act="""`server.js:104-110`: `authenticateToken` chỉ `jwt.verify` chữ ký rồi gán `req.user`, **không** đối chiếu
+bảng `users`. Token của người dùng đã bị xoá vẫn đi qua mọi endpoint bảo mật — mà token ở SUT này được
+`jwt.sign` **không có `expiresIn`** (`server.js:51`), tức **không bao giờ hết hạn**.
+
+Hệ quả: xoá tài khoản không thu hồi được quyền truy cập."""),
+
+ dict(id="24", api="03", mod="products/admin", sev="Medium", pri="P2", req="SEC-04 · spec §3.3",
+  title="imageUrl chứa javascript: URL được lưu nguyên văn",
+  tc="TC-PRODUPD-201 → 202 (case do sinh viên chọn, §6.3)",
+  steps="""```bash
+curl -X PUT localhost:3000/api/products/7 -H 'Content-Type: application/json' \\
+  -d '{"name":"HW06-JsUrl","price":200000,"description":"d","imageUrl":"javascript:alert(1)","category_id":1}'
+curl -s localhost:3000/api/products/7
+# -> "imageUrl":"javascript:alert(1)"
+```""",
+  exp="Từ chối giá trị không phải URL http/https — spec §3.3 nêu `imageUrl` dạng `http://...`.",
+  act="""Không validate `imageUrl`. Giá trị này đi thẳng vào thuộc tính `src`/`href` của frontend, nơi
+`javascript:` **chạy được mà không cần thẻ `<script>`** — một đường XSS khác với BUG-22 và không bị chặn bởi
+cùng một bản sửa.
+
+Bộ test do AI sinh có case XSS cho `name` nhưng **không** có cho `imageUrl`: AI gắn XSS với *trường văn bản
+hiển thị*, bỏ qua trường URL."""),
+
+ dict(id="25", api="03", mod="products/admin", sev="Medium", pri="P2", req="FR-14 · spec §3.4",
+  title="category_id trỏ tới danh mục đã bị xoá vẫn được chấp nhận",
+  tc="TC-PRODUPD-203 → 206 (case do sinh viên chọn, §6.3)",
+  steps="""```bash
+# 1. tao danh muc tam roi xoa no
+CID=$(curl -s -X POST localhost:3000/api/categories -H "Authorization: Bearer $ADMIN_TOKEN" \\
+  -H 'Content-Type: application/json' -d '{"name":"HW06-Temp-Category"}' \\
+  | python3 -c 'import json,sys;print(json.load(sys.stdin)["id"])')
+curl -X DELETE "localhost:3000/api/categories/$CID" -H "Authorization: Bearer $ADMIN_TOKEN"
+
+# 2. gan san pham vao danh muc vua xoa
+curl -X PUT localhost:3000/api/products/7 -H 'Content-Type: application/json' \\
+  -d "{\"name\":\"HW06-Orphan\",\"price\":200000,\"description\":\"d\",\"imageUrl\":\"\",\"category_id\":$CID}"
+# -> 200 {"message":"Product updated"}
+curl -s localhost:3000/api/products/7
+```""",
+  exp="**400** — khoá ngoại phải trỏ tới danh mục đang tồn tại (FR-14).",
+  act="""SQLite ở SUT này **không bật** `PRAGMA foreign_keys`, và tầng API cũng không kiểm. Sản phẩm thành *mồ côi
+danh mục*: trang danh mục không liệt kê nó, nhưng nó vẫn xuất hiện ở danh sách sản phẩm với một `category_id`
+vô nghĩa.
+
+Bộ test AI đã kiểm `category_id = 999999` (id **chưa từng** tồn tại). Trường hợp khó hơn — id **từng tồn tại
+rồi bị xoá** — cần nghĩ theo trục thời gian của dữ liệu."""),
 ]
 
 TPL = """## Found by Test Case

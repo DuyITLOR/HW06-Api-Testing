@@ -17,3 +17,9 @@ BUG-16 https://github.com/DuyITLOR/group05_eshop/issues/338
 BUG-17 https://github.com/DuyITLOR/group05_eshop/issues/339
 BUG-18 https://github.com/DuyITLOR/group05_eshop/issues/340
 BUG-19 https://github.com/DuyITLOR/group05_eshop/issues/341
+BUG-20 https://github.com/DuyITLOR/group05_eshop/issues/402
+BUG-21 https://github.com/DuyITLOR/group05_eshop/issues/403
+BUG-22 https://github.com/DuyITLOR/group05_eshop/issues/404
+BUG-23 https://github.com/DuyITLOR/group05_eshop/issues/405
+BUG-24 https://github.com/DuyITLOR/group05_eshop/issues/406
+BUG-25 https://github.com/DuyITLOR/group05_eshop/issues/407

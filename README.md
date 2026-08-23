@@ -33,7 +33,7 @@
 | **AI Audit + Critique** | [ai-audit/](ai-audit/) |
 | **Bằng chứng §11** | [postman-console-gui.png](bug-report/screenshots/postman-console-gui.png) — **Postman Console** in 12 dòng `[HW06] X-Student-Id = "23127178"` kèm request tới `localhost:3000` trả 200 · thêm [console-x-student-id.png](bug-report/screenshots/console-x-student-id.png) và [x-student-id-request-header.png](bug-report/screenshots/x-student-id-request-header.png) |
 | **Log tái hiện 19 bug** | [bug-report/verify-bugs-output.txt](bug-report/verify-bugs-output.txt) — chạy lại: `bash bug-report/verify-bugs.sh` |
-| **GitHub Issues** | [#323](https://github.com/DuyITLOR/group05_eshop/issues/323)–[#341](https://github.com/DuyITLOR/group05_eshop/issues/341) — 19/19 bug, mỗi issue có ảnh nhúng sẵn |
+| **GitHub Issues** | [#323–#341](https://github.com/DuyITLOR/group05_eshop/issues/323) (19 bug bộ AI) · [#402–#407](https://github.com/DuyITLOR/group05_eshop/issues/402) (6 bug do case sinh viên chọn) — **25/25**, mỗi issue có ảnh nhúng |
 | **2 lượt CI mẫu (§6)** | [XANH 216/0](https://github.com/DuyITLOR/HW06-Api-Testing/actions/runs/32580345226) · [ĐỎ 1/217](https://github.com/DuyITLOR/HW06-Api-Testing/actions/runs/32580407707) |
 | **Video demo Agent Skill** | *(chưa có — §7 khuyến khích, không bắt buộc)* |
 
