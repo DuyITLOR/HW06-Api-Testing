@@ -1,9 +1,11 @@
 Git commit log — HW06 API Testing · SV Lê Nhựt Duy 23127178
-Xuất lúc: 2026-08-23 00:54:08 +0700
+Xuất lúc: 2026-08-23 17:07:38 +0700
 Repo: https://github.com/DuyITLOR/HW06-Api-Testing.git
-Số commit: 58
+Số commit: 60
 
 ═══ Ngắn gọn ══════════════════════════════════════════════════════════
+b1724dc 2026-08-23 fix: correct the misattribution and remove the section 11 violation
+6a4f5a6 2026-08-23 docs: refresh the commit log
 10f0e62 2026-08-23 docs: reconcile the audit with the attestation the student made
 19657f7 2026-08-23 fix: the review helper broke when the delegation wording landed
 bd20c95 2026-08-23 docs: refresh the commit log
@@ -64,6 +66,46 @@ b0bb70c 2026-08-19 test(api-01): audit AI-generated cases, 35 VALID and 1 correc
 96f011e 2026-08-18 Initial commit
 
 ═══ Đầy đủ (kèm body) ═════════════════════════════════════════════════
+commit b1724dc1d7ec0aaced67752c7e1c82822820b023
+Author: DuyITLOR <153221271+DuyITLOR@users.noreply.github.com>
+Date:   Sun Aug 23 17:07:38 2026 +0700
+
+fix: correct the misattribution and remove the section 11 violation
+
+A review of the submission raised five points. Three were right, one was factually wrong but caused by my
+own tooling, and one is a judgement about process.
+
+The worst was mine and is the same class of thing I refused to do elsewhere: 22 cases in extended.md were
+labelled Nguon = SV and called 'test case sinh vien tu them' when the AI generated them on a second pass.
+The audit even said so at Interaction #5. They are now labelled AI-2, extended.md opens with a warning that
+they do not satisfy section 6.3's 'of your own', check-cases.mjs rejects the SV label on anything the
+student did not write, and test-cases/*/own.md exists (empty, correctly) for cases the student writes.
+npm run gaps prints the uncovered cells so they can pick without being handed content.
+
+The reviewer reported issues #323, #328 and #341 as nonexistent. They are all OPEN and readable without
+authentication - but check-submission.mjs treated any gh failure as 'issue does not exist', so running it in
+a shell without gh auth produced three confident false negatives and cost marks. It now uses the public API
+and only treats HTTP 404 as missing; 000 and 403 report as 'could not check'.
+
+The AI-rendered diagram is out of the submission entirely. Section 11 forbids an AI-generated diagram, and
+declaring the provenance honestly does not make it compliant. It stays in the repo as
+reference-layout-AI-KHONG-NOP.png for the student to trace, and package.sh now requires
+generator-flow-selfdrawn.png.
+
+api-selection.md now states plainly that section 5 has an assertion but no artefact: the group-chat
+screenshots were never saved into the repo.
+
+Self-assessment corrected from 100 to 85 with the arithmetic shown, and verify now fails on the two open
+items rather than passing while they are missing (37 PASS, 4 FAIL).
+
+---
+commit 6a4f5a662aaa77896ff13ad55275842a1e0f6ff1
+Author: DuyITLOR <153221271+DuyITLOR@users.noreply.github.com>
+Date:   Sun Aug 23 00:54:08 2026 +0700
+
+docs: refresh the commit log
+
+---
 commit 10f0e62577150e80c5178e707d9804d05175e3f4
 Author: DuyITLOR <153221271+DuyITLOR@users.noreply.github.com>
 Date:   Sun Aug 23 00:54:08 2026 +0700
