@@ -101,5 +101,5 @@ if (Number(cols) >= 1) ok(`Collection: ${cols} file trong postman/collections/`)
 else warn("Chưa có collection nào trong postman/collections/ — bước §6.1 chưa làm");
 
 console.log("");
-if (fails > 0) { console.log(`  ⚠ ${fails} mục lỗi — sửa trước khi chạy Newman, đừng đọc số liệu từ lượt đỏ vì môi trường.\n`); process.exit(1); }
+if (fails > 0) { console.log(`  [LOI] ${fails} mục lỗi — sửa trước khi chạy Newman, đừng đọc số liệu từ lượt đỏ vì môi trường.\n`); process.exit(1); }
 console.log("  Môi trường sẵn sàng.\n");

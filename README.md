@@ -73,7 +73,7 @@ schema · API-02 → validate + price tampering + state sau checkout · API-03 �
 Thêm **regression suite** (cổng CI): 120 request · **253 assertion · 0 đỏ** — tập con các case đang xanh,
 sinh tự động, giữ nguyên expected.
 
-Chỉ tiêu của đề: **≥35 test case/API** (§6.1) ✅ và **≥5 case tự thêm/API** (§6.3) ✅.
+Chỉ tiêu của đề: **≥35 test case/API** (§6.1) — **đạt**; **≥5 case tự thêm/API** (§6.3) — **đạt**.
 Bug theo mức: **5 Critical · 6 High · 9 Medium · 2 Low** — [bug-report.md](bug-report/bug-report.md).
 **4 giả thuyết bị loại** sau khi kiểm chứng (ghi lại để không nhận vơ).
 
@@ -84,7 +84,7 @@ Bug theo mức: **5 Critical · 6 High · 9 Medium · 2 Low** — [bug-report.md
 
 | Trừ | Vì sao | Đóng lại bằng cách nào |
 |---|---|---|
-| ~~−9~~ **0** | **§6.3 đã đạt**: 21 case trong `own.md` (5·9·7) do **sinh viên chọn phạm vi**, AI chấp bút — và chúng tìm ra **6 bug mới** mà bộ test AI bỏ sót | ✅ xong |
+| ~~−9~~ **0** | **§6.3 đã đạt**: 21 case trong `own.md` (5·9·7) do **sinh viên chọn phạm vi**, AI chấp bút — và chúng tìm ra **6 bug mới** mà bộ test AI bỏ sót | **xong** |
 | **−6** | **Sơ đồ generator chưa có bản tự vẽ** — §11 cấm hình AI, bản AI đã bị loại khỏi bộ nộp | vẽ theo `generator/diagram/README.md` (~30 phút) |
 
 Mọi deliverable §14 khác đều có và **kiểm được bằng máy** (`npm run verify`). Human review: sinh viên tự

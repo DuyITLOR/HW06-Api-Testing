@@ -77,6 +77,19 @@ forbid("nhãn cũ BUG-22", "BUG-22", ...DOCS);
 forbid("tự chấm cũ (94)", "nguyên trạng → **94**", RM);
 forbid("câu 'chưa có bản nộp' (sơ đồ)", "chưa có bản nộp", R, RM, "generator/design.md", "generator/diagram/README.md");
 
+// Không dùng icon trang trí trong tài liệu nộp. Ngoại lệ có chủ ý:
+//   · mũi chữ → ← ↔ là typography trong câu ("pending → confirmed"), không phải icon;
+//   · 🚀 là DỮ LIỆU TEST của TC-PRODLIST-014 (kiểm ký tự ngoài BMP), xoá đi là đổi test case.
+console.log("\n── Icon trang trí trong tài liệu nộp ────────────────────────────────────");
+{
+  const ICONS = ["✅", "❌", "⚠", "✔", "✖", "❗", "⭐", "🔥", "👍", "🎯", "📌", "💡"];
+  const ICONDOCS = [...DOCS, "ai-audit/ai-critique.md"];
+  const hit = [];
+  for (const d of ICONDOCS) for (const ic of ICONS) if (read(d).includes(ic)) hit.push(`${d} (${ic})`);
+  if (hit.length) { console.log(`  [LECH] còn icon trang trí: ${hit.join(", ")}`); bad++; }
+  else { console.log(`  [OK]   ${ICONDOCS.length} tài liệu không dùng icon trang trí`); ok++; }
+}
+
 console.log("\n── File được tài liệu trỏ tới có tồn tại không ───────────────────────────");
 const refs = [...read(R).matchAll(/\((\.\.\/[^)]+?)\)/g)].map((m) => m[1].replace("../", ""))
   .concat([...read(RM).matchAll(/\]\(((?!http)[^)]+?)\)/g)].map((m) => m[1]))

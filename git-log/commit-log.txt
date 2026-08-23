@@ -1,9 +1,12 @@
 Git commit log — HW06 API Testing · SV Lê Nhựt Duy 23127178
-Xuất lúc: 2026-08-23 23:49:32 +0700
+Xuất lúc: 2026-08-23 23:57:18 +0700
 Repo: https://github.com/DuyITLOR/HW06-Api-Testing.git
-Số commit: 78
+Số commit: 81
 
 ═══ Ngắn gọn ══════════════════════════════════════════════════════════
+e65c664 2026-08-23 docs: bỏ icon trang trí (✅ ❌ ⚠) khỏi tài liệu nộp, thay bằng chữ
+cf7e2b8 2026-08-23 chore: --no-zip so the submission folder can be built without archiving it
+27b38ae 2026-08-23 docs: refresh the commit log
 df01f70 2026-08-23 fix: stop the PDF build from dirtying the repo on every run
 e687729 2026-08-23 docs: refresh the commit log
 44ce458 2026-08-23 docs: clear the nine residual inconsistencies a re-read found
@@ -84,6 +87,40 @@ b0bb70c 2026-08-19 test(api-01): audit AI-generated cases, 35 VALID and 1 correc
 96f011e 2026-08-18 Initial commit
 
 ═══ Đầy đủ (kèm body) ═════════════════════════════════════════════════
+commit e65c6640ece6b47f9e82fe18966dfda10ca76a5a
+Author: DuyITLOR <153221271+DuyITLOR@users.noreply.github.com>
+Date:   Sun Aug 23 23:57:18 2026 +0700
+
+docs: bỏ icon trang trí (✅ ❌ ⚠) khỏi tài liệu nộp, thay bằng chữ
+
+Đề không đòi, mà icon thì máy in/đọc PDF hay ra ô vuông. Giữ hai ngoại lệ có
+lý do: mũi chữ → là typography trong câu, và 🚀 là dữ liệu test thật của
+TC-PRODLIST-014 (kiểm ký tự ngoài BMP) — xoá là đổi test case.
+
+check-claims soát thêm 12 tài liệu để icon không quay lại.
+
+Co-Authored-By: Claude Opus 5 (1M context) <noreply@anthropic.com>
+
+---
+commit cf7e2b82e3337080245ee1b802af658009126abb
+Author: DuyITLOR <153221271+DuyITLOR@users.noreply.github.com>
+Date:   Sun Aug 23 23:52:05 2026 +0700
+
+chore: --no-zip so the submission folder can be built without archiving it
+
+The student zips it themselves from Finder, so package.sh now stops after assembling the folder when given
+--no-zip, and prints both ways to compress it. Everything else about the build is unchanged: it still wipes
+any older 23127178_HW06_AI_API_* leftovers first, still drops the AI-rendered diagram, and still warns when
+the score in the folder name disagrees with README's self-assessment.
+
+---
+commit 27b38ae768ed3cf9f5f5783253733a2fff2c140c
+Author: DuyITLOR <153221271+DuyITLOR@users.noreply.github.com>
+Date:   Sun Aug 23 23:49:32 2026 +0700
+
+docs: refresh the commit log
+
+---
 commit df01f709ea15a244aab80363bda4c6931961da73
 Author: DuyITLOR <153221271+DuyITLOR@users.noreply.github.com>
 Date:   Sun Aug 23 23:49:32 2026 +0700

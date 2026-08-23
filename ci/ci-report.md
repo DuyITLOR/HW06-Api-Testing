@@ -58,8 +58,8 @@ mẫu dưới đây chạy trên **regression suite**:
 
 | Lượt | Commit | Cổng regression | Cổng baseline (bộ chính) | Build | Link run | Ảnh |
 |---|---|---|---|---|---|---|
-| **Tất cả pass** | `5a07ebf` | **216 assertion, 0 đỏ** ✅ | 29/30/30 khớp baseline ✅ | ✅ **success** · 39s | [runs/32580345226](https://github.com/DuyITLOR/HW06-Api-Testing/actions/runs/32580345226) | `bug-report/screenshots/ci-xanh.png` |
-| **Đúng 1 test fail** | `e388146` | **1/217 đỏ** ❌ | (không tới bước này) | ❌ **failure** · 33s | [runs/32580407707](https://github.com/DuyITLOR/HW06-Api-Testing/actions/runs/32580407707) | `bug-report/screenshots/ci-do.png` |
+| **Tất cả pass** | `5a07ebf` | **216 assertion, 0 đỏ** (đạt) | 29/30/30 khớp baseline (đạt) | **success** · 39s | [runs/32580345226](https://github.com/DuyITLOR/HW06-Api-Testing/actions/runs/32580345226) | `bug-report/screenshots/ci-xanh.png` |
+| **Đúng 1 test fail** | `e388146` | **1/217 đỏ** (không đạt) | (không tới bước này) | **failure** · 33s | [runs/32580407707](https://github.com/DuyITLOR/HW06-Api-Testing/actions/runs/32580407707) | `bug-report/screenshots/ci-do.png` |
 
 Trích log lượt XANH:
 

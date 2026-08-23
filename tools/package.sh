@@ -95,7 +95,7 @@ else printf "  [OK]    Không còn dấu 'CHƯA …'\n"; fi
 
 echo ""
 if [ "$MISSING" -gt 0 ]; then
-  echo "  ⚠ Thiếu $MISSING mục. §17: thiếu tài liệu bắt buộc = 0 điểm."
+  echo "  [THIEU] Thiếu $MISSING mục. §17: thiếu tài liệu bắt buộc = 0 điểm."
   [ "$CHECK" = "1" ] && exit 1
   echo "  Vẫn đóng gói để xem trước, nhưng ĐỪNG nộp bản này."
   echo ""
