@@ -1,10 +1,10 @@
 Git commit log — HW06 API Testing · SV Lê Nhựt Duy 23127178
-Xuất lúc: 2026-08-23 23:57:18 +0700
+Xuất lúc: 2026-08-23 23:58:37 +0700
 Repo: https://github.com/DuyITLOR/HW06-Api-Testing.git
 Số commit: 81
 
 ═══ Ngắn gọn ══════════════════════════════════════════════════════════
-e65c664 2026-08-23 docs: bỏ icon trang trí (✅ ❌ ⚠) khỏi tài liệu nộp, thay bằng chữ
+867cacd 2026-08-23 docs: bỏ icon trang trí khỏi tài liệu nộp, thay bằng chữ
 cf7e2b8 2026-08-23 chore: --no-zip so the submission folder can be built without archiving it
 27b38ae 2026-08-23 docs: refresh the commit log
 df01f70 2026-08-23 fix: stop the PDF build from dirtying the repo on every run
@@ -87,17 +87,22 @@ b0bb70c 2026-08-19 test(api-01): audit AI-generated cases, 35 VALID and 1 correc
 96f011e 2026-08-18 Initial commit
 
 ═══ Đầy đủ (kèm body) ═════════════════════════════════════════════════
-commit e65c6640ece6b47f9e82fe18966dfda10ca76a5a
+commit 867cacdabd95ec0d76dd26d5a3986c51d566a2d9
 Author: DuyITLOR <153221271+DuyITLOR@users.noreply.github.com>
-Date:   Sun Aug 23 23:57:18 2026 +0700
+Date:   Sun Aug 23 23:57:52 2026 +0700
 
-docs: bỏ icon trang trí (✅ ❌ ⚠) khỏi tài liệu nộp, thay bằng chữ
+docs: bỏ icon trang trí khỏi tài liệu nộp, thay bằng chữ
 
-Đề không đòi, mà icon thì máy in/đọc PDF hay ra ô vuông. Giữ hai ngoại lệ có
-lý do: mũi chữ → là typography trong câu, và 🚀 là dữ liệu test thật của
-TC-PRODLIST-014 (kiểm ký tự ngoài BMP) — xoá là đổi test case.
+Ba ký tự dingbat (U+2705, U+274C, U+26A0) dùng làm dấu trạng thái trong README
+và ci-report nay ghi thẳng bằng chữ 'đạt / không đạt / xong'. Đề không đòi icon,
+mà font PDF hay ra ô vuông trắng.
 
-check-claims soát thêm 12 tài liệu để icon không quay lại.
+Giữ hai ngoại lệ có lý do:
+  - mũi chữ U+2192 là typography trong câu, không phải nhãn trạng thái;
+  - U+1F680 là DỮ LIỆU TEST thật của TC-PRODLIST-014 (kiểm ký tự ngoài BMP);
+    xoá nó là đổi test case, không phải đổi hình thức.
+
+check-claims soát thêm 12 tài liệu để icon không lặng lẽ quay lại.
 
 Co-Authored-By: Claude Opus 5 (1M context) <noreply@anthropic.com>
 
