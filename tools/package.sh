@@ -18,7 +18,11 @@ cd "$(dirname "${BASH_SOURCE[0]}")/.."
 
 GRADE="${1:-}"
 CHECK=0
-[ "${2:-}" = "--check" ] && CHECK=1
+NOZIP=0
+for a in "$@"; do
+  [ "$a" = "--check" ] && CHECK=1
+  [ "$a" = "--no-zip" ] && NOZIP=1   # chỉ dựng FOLDER, để sinh viên tự zip
+done
 if [ -z "$GRADE" ]; then echo "Dùng: bash tools/package.sh <điểm 0-100> [--check]"; exit 2; fi
 if ! [[ "$GRADE" =~ ^[0-9]{1,3}$ ]]; then echo "Điểm phải là số nguyên trong [000, 100]."; exit 2; fi
 GRADE_NUM=$((10#$GRADE))
@@ -122,6 +126,17 @@ find "$NAME" -name '.DS_Store' -delete 2>/dev/null
 # §11 cấm sơ đồ do AI sinh → loại khỏi bộ nộp, chỉ giữ trong repo làm bản tham chiếu.
 rm -f "$NAME"/generator/diagram/reference-layout-AI-KHONG-NOP.* 2>/dev/null
 rm -rf "$NAME/reports/newman/tmp" 2>/dev/null
+
+if [ "$NOZIP" = "1" ]; then
+  echo ""
+  echo "  Folder đã dựng (KHÔNG zip): $NAME/"
+  du -sh "$NAME"/* 2>/dev/null | sed 's/^/    /'
+  echo ""
+  echo "  Tự zip khi nộp: nhấp phải folder trong Finder → Compress, hoặc:"
+  echo "    zip -9qr $NAME.zip $NAME"
+  echo ""
+  exit 0
+fi
 
 zip -9qr "$NAME.zip" "$NAME"
 echo ""
