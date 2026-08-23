@@ -331,6 +331,70 @@ pm.test("có đúng một id lẻ và một id chẵn trong 2 fixture", () => {
       checks: [["statusIn", "401,403,404"]] },
   ],
 
+  // ── §6.3 — case DO SINH VIÊN CHỌN ────────────────────────────────────────
+  own: [
+    { id: `${P}-201`, folder: "91-sv-own", tech: "Security SEC-04", part: "`imageUrl` là **`javascript:` URL**",
+      ...put(FULL({ name: "HW06-JsUrl", imageUrl: "javascript:alert(1)" })), status: "200 / 400",
+      expect: "từ chối (400), hoặc nhận nhưng phải chặn ở tầng hiển thị — hệ quả kiểm ở TC-202",
+      basis: "SEC-04 · spec §3.3 nêu `imageUrl` là URL dạng `http://...`", src: "SV", audit: "VALID",
+      checks: [["statusIn", "200,400,422"]] },
+
+    { id: `${P}-202`, folder: "91-sv-own", tech: "Security SEC-04", part: "**hệ quả** TC-201: `imageUrl` có bị lưu nguyên `javascript:`",
+      method: "GET", path: "/api/products/{{product_id}}", auth: "none", status: 200,
+      expect: "`imageUrl` **không** bắt đầu bằng `javascript:` — một URL như vậy đi thẳng vào `src`/`href` của frontend là XSS",
+      basis: "SEC-04 · spec §3.3", src: "SV", audit: "VALID",
+      checks: [["status", 200],
+        ["raw", `pm.test("imageUrl không được là javascript: URL", () => {
+  pm.expect(String(pm.response.json().imageUrl || "").toLowerCase()).to.not.include("javascript:");
+});`]] },
+
+    { id: `${P}-203`, folder: "91-sv-own", tech: "State", part: "**category_id trỏ danh mục đã xoá** — bước 1: tạo danh mục tạm",
+      method: "POST", path: "/api/categories", auth: "admin", body: { name: "HW06-Temp-Category" }, status: 200,
+      expect: "200 + `{id}` — lưu `temp_category_id`", basis: "spec §3.4", src: "SV", audit: "VALID",
+      checks: [["status", 200], ["saveJson", "temp_category_id", "id"]] },
+
+    { id: `${P}-204`, folder: "91-sv-own", tech: "State", part: "bước 2: xoá danh mục vừa tạo",
+      method: "DELETE", path: "/api/categories/{{temp_category_id}}", auth: "admin", status: 200,
+      expect: "200 — danh mục không còn tồn tại", basis: "spec §3.4", src: "SV", audit: "VALID",
+      checks: [["statusIn", "200,204"]] },
+
+    { id: `${P}-205`, folder: "91-sv-own", tech: "Domain", part: "bước 3: PUT sản phẩm trỏ vào **danh mục đã xoá**",
+      ...put(FULL({ name: "HW06-Orphan-Category", category_id: "{{temp_category_id}}" })), status: "400 / 422",
+      expect: "từ chối — khoá ngoại phải trỏ tới danh mục đang tồn tại",
+      basis: "spec §3.4 · FR-14 (quản lý danh mục) — sản phẩm mồ côi danh mục thì trang danh mục hiển thị sai", src: "SV", audit: "VALID",
+      checks: [["statusIn", "400,422"]] },
+
+    { id: `${P}-206`, folder: "91-sv-own", tech: "State", part: "**hệ quả** TC-205: sản phẩm có bị gắn danh mục không tồn tại",
+      method: "GET", path: "/api/products/{{product_id}}", auth: "none", status: 200,
+      expect: "`category_id` **không** trỏ tới danh mục đã xoá", basis: "FR-14 · spec §3.4", src: "SV", audit: "VALID",
+      checks: [["status", 200],
+        ["raw", `pm.test("category_id không trỏ danh mục đã bị xoá", () => {
+  const dead = String(pm.environment.get("temp_category_id"));
+  pm.expect(String(pm.response.json().category_id)).to.not.eql(dead);
+});`]] },
+
+    { id: `${P}-207`, folder: "91-sv-own", tech: "Security SEC-01", part: "**SEC-01**: response của `GET :id` sau khi cập nhật có lộ field nội bộ",
+      method: "GET", path: "/api/products/{{product_id}}", auth: "none", status: 200,
+      expect: "chỉ chứa field spec §3.3 định nghĩa; **không** có field nội bộ nào khác (SUT dùng `SELECT *`)",
+      basis: "SEC-01 (không phơi dữ liệu không cần thiết) · spec §3.2/§3.3", src: "SV", audit: "VALID",
+      checks: [["status", 200],
+        ["raw", `pm.test("không có field ngoài tập spec định nghĩa", () => {
+  const allowed = ["id","name","price","description","imageUrl","category_id"];
+  const extra = Object.keys(pm.response.json()).filter(k => !allowed.includes(k));
+  pm.expect(extra, "field lạ: " + extra.join(", ")).to.have.lengthOf(0);
+});`]] },
+  ],
+
+  ownWhyMissed: [
+    { id: `${P}-201`, missed: "chỉ sinh case XSS cho `name`, không cho **`imageUrl`**", group: "model limitations", why: "AI gắn XSS với trường *văn bản hiển thị*. `imageUrl` nguy hiểm theo cách khác: nó đi vào thuộc tính `src`/`href`, nơi `javascript:` chạy được mà không cần thẻ `<script>`." },
+    { id: `${P}-202`, missed: "cùng nhóm với 201", group: "model limitations", why: "Phần chứng minh phải đọc lại giá trị đã lưu." },
+    { id: `${P}-203`, missed: "không sinh chuỗi **xoá danh mục rồi trỏ sản phẩm vào đó**", group: "prompt quality", why: "AI đã kiểm `category_id = 999999` (số chưa từng tồn tại). Trường hợp khó hơn — id **từng tồn tại rồi bị xoá** — cần nghĩ theo trục thời gian của dữ liệu, và prompt không yêu cầu điều đó." },
+    { id: `${P}-204`, missed: "cùng chuỗi với 203", group: "prompt quality", why: "Chuỗi này đi qua FR-14 (danh mục) trong khi API được giao là FR-15 (sản phẩm)." },
+    { id: `${P}-205`, missed: "cùng chuỗi với 203", group: "prompt quality", why: "Sinh viên đặt câu hỏi từ góc *dữ liệu sau này hiển thị ra sao*, không từ góc *tham số có hợp lệ không*." },
+    { id: `${P}-206`, missed: "không kiểm hệ quả mồ côi khoá ngoại", group: "characteristics of the API", why: "SQLite ở SUT này **không bật** kiểm khoá ngoại, nên mọi `category_id` đều ghi được. Chỉ đọc `database.js` mới biết, không suy từ spec." },
+    { id: `${P}-207`, missed: "kiểm field lạ ở endpoint **danh sách** nhưng không ở endpoint **chi tiết**", group: "model limitations", why: "AI viết một case cho `GET /api/products` rồi coi như đã phủ; nhưng hai endpoint là hai câu truy vấn khác nhau, và cái `:id` còn có nhánh sửa `price` theo id chẵn/lẻ." },
+  ],
+
   teardown: [
     { id: "TEARDOWN-01", folder: "99-teardown", tech: "Teardown", part: "xoá fixture `HW06-*`", basis: "-", src: "-",
       method: "GET", path: "/api/products", auth: "none", status: 200, expect: "đã gửi lệnh xoá",

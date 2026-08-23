@@ -29,7 +29,7 @@ APIS = [
     ("api-02-cart-add", "API-02 Pool B POST cart"),
     ("api-03-product-update", "API-03 Pool C PUT product"),
 ]
-STEPS = [("generated.md", "AI sinh"), ("audit.md", "Audit"), ("extended.md", "SV thêm")]
+STEPS = [("generated.md", "AI sinh"), ("audit.md", "Audit"), ("extended.md", "AI lượt 2"), ("own.md", "SV tự chọn")]
 
 HDR_FILL = PatternFill("solid", fgColor="DCE6F1")
 HDR_FONT = Font(bold=True)

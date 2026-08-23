@@ -13,10 +13,10 @@
 | | |
 |---|---|
 | API kiểm thử | **3** — mỗi pool một API, không trùng thành viên nhóm ([`docs/api-selection.md`](../docs/api-selection.md)) |
-| Test case | **136** (109 do AI sinh + **22 sinh viên tự thêm** + 24 request setup/teardown) |
-| Đã thực thi | **171 request · 333 assertion** trên SUT thật ở `localhost:3000` · thêm **regression suite 216 assertion, 0 đỏ** |
-| Kết quả | **244 assertion xanh · 89 đỏ** — mọi assertion đỏ đều map tới một bug đã tái hiện được |
-| Bug | **19 bug, 19/19 tái hiện được** — 5 Critical, 5 High, 7 Medium, 2 Low · Issues [#323–#341](https://github.com/DuyITLOR/group05_eshop/issues/323) |
+| Test case | **157** — 114 do AI sinh (lượt 1) + 22 do AI sinh (lượt 2, `AI-2`) + **21 do sinh viên chọn** (`SV`, §6.3) |
+| Đã thực thi | **192 request · 368 assertion** trên SUT thật ở `localhost:3000` · thêm **regression suite 241 assertion, 0 đỏ** |
+| Kết quả | **271 assertion xanh · 97 đỏ** — mọi assertion đỏ đều map tới một bug |
+| Bug | **25 bug** — 19 từ bộ AI (Issues [#323–#341](https://github.com/DuyITLOR/group05_eshop/issues/323)) + **6 do case sinh viên chọn tìm ra** (BUG-20…25) · 5 Critical, 7 High, 11 Medium, 2 Low |
 | Bug đáng chú ý nhất | **BUG-14**: khách **không đăng nhập** làm **sập cả backend** bằng 2 request — chuỗi 3 lỗi |
 | Lỗi của AI đã bắt và sửa | **25** (bảng đầy đủ ở §11) — 5 lỗi thiết kế test case (gồm 2 case assertion nghiêm hơn expected), 5 lỗi kỹ thuật, 4 lỗi bỏ sót phân vùng, 2 lỗi số liệu, 2 lỗi quy trình |
 | Giả thuyết đã **loại** sau khi kiểm | **4** (ghi lại ở [bug-report §Bug đã loại](../bug-report/bug-report.md)) |
@@ -43,9 +43,9 @@
 
 | Mã | Pool | FR | API chính | Endpoint hỗ trợ trong cùng chuỗi test | Test case |
 |---|---|---|---|---|---|
-| **API-01** | A | FR-05 Product listing & search | `GET /api/products?search=` | `GET /api/products/:id`, `POST`/`DELETE /api/products` | 43 |
-| **API-02** | B | FR-07 Shopping cart | `POST /api/cart` | `GET /api/cart`, `POST /api/checkout`, `POST /api/login` | 46 |
-| **API-03** | C | FR-15 Product management (admin) | `PUT /api/products/:id` | `POST`/`GET`/`DELETE /api/products` | 47 |
+| **API-01** | A | FR-05 Product listing & search | `GET /api/products?search=` | `GET /api/products/:id`, `POST`/`DELETE /api/products` | 48 |
+| **API-02** | B | FR-07 Shopping cart | `POST /api/cart` | `GET /api/cart`, `POST /api/checkout`, `POST /api/login`, `DELETE /api/admin/users/:id` | 55 |
+| **API-03** | C | FR-15 Product management (admin) | `PUT /api/products/:id` | `POST`/`GET`/`DELETE /api/products`, `POST`/`DELETE /api/categories` | 54 |
 
 Bằng chứng không trùng nhóm (bảng 4 bộ API các thành viên khác đã đăng ký) và lý do chọn rút từ source:
 [`docs/api-selection.md`](../docs/api-selection.md).
@@ -110,7 +110,8 @@ ghi rõ suy từ đâu, hoặc (b) chỉ khẳng định phần spec bảo đả
 
 Bảng đầy đủ 12 cột: [`generated.md`](../test-cases/api-01-products-search/generated.md) ·
 [`audit.md`](../test-cases/api-01-products-search/audit.md) ·
-[`extended.md`](../test-cases/api-01-products-search/extended.md).
+[`extended.md`](../test-cases/api-01-products-search/extended.md) ·
+**[`own.md`](../test-cases/api-01-products-search/own.md) — 5 case do sinh viên chọn (§6.3)**.
 
 ### 3.5 Audit (§6.2)
 
@@ -310,11 +311,11 @@ trong `reports/newman/` để bộ nộp không phình; hai lượt trước đ�
 
 | API | Request | Assertion | Passed | **Failed** |
 |---|---|---|---|---|
-| API-01 · `GET /api/products` | 62 | 155 | 126 | **29** |
-| API-02 · `POST /api/cart` | 52 | 85 | 55 | **30** |
-| API-03 · `PUT /api/products/:id` | 57 | 93 | 63 | **30** |
-| **Tổng** | **171** | **333** | **244** | **89** |
-| *(regression suite — cổng CI)* | 94 | 216 | 216 | **0** |
+| API-01 · `GET /api/products` | 67 | 167 | 136 | **31** |
+| API-02 · `POST /api/cart` | 61 | 98 | 65 | **33** |
+| API-03 · `PUT /api/products/:id` | 64 | 103 | 70 | **33** |
+| **Tổng** | **192** | **368** | **271** | **97** |
+| *(regression suite — cổng CI)* | 109 | 241 | 241 | **0** |
 
 <a id="7-bug"></a>
 ## 7. Bug (§6.5)

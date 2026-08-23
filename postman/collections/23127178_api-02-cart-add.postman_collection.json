@@ -126,7 +126,8 @@
                 "exec": [
                   "// SETUP-03 · Setup · login user thứ hai (kiểm cách ly giỏ)",
                   "pm.test(\"status = 200\", () => pm.response.to.have.status(200));",
-                  "pm.environment.set(\"user2_token\", pm.response.json().token);"
+                  "pm.environment.set(\"user2_token\", pm.response.json().token);",
+                  "pm.environment.set(\"user2_id\", pm.response.json().user && pm.response.json().user.id);"
                 ]
               }
             }
@@ -1911,6 +1912,301 @@
               {
                 "key": "Authorization",
                 "value": "Bearer {{user_token}}"
+              }
+            ],
+            "url": "{{base_url}}/api/cart"
+          }
+        }
+      ]
+    },
+    {
+      "name": "91-sv-own",
+      "item": [
+        {
+          "name": "TC-CART-201 · bước 1: thêm sản phẩm vào giỏ với giá catalog hiện tại",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// TC-CART-201 · State · bước 1: thêm sản phẩm vào giỏ với giá catalog hiện tại",
+                  "pm.test(\"status = 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"body đúng schema {message: string}\", () => pm.response.to.have.jsonSchema({\n  type: \"object\", required: [\"message\"], properties: { message: { type: \"string\" } }\n}));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{user_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/api/cart",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": \"{{product_id}}\",\n  \"name\": \"HW06-Cart-Fixture\",\n  \"price\": 111000,\n  \"quantity\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "TC-CART-202 · bước 2: **admin đổi giá sản phẩm** đó lên 222000",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// TC-CART-202 · State · bước 2: **admin đổi giá sản phẩm** đó lên 222000",
+                  "pm.test(\"status = 200\", () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/api/products/{{product_id}}",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"HW06-Cart-Fixture\",\n  \"price\": 222000,\n  \"description\": \"đổi giá\",\n  \"imageUrl\": \"\",\n  \"category_id\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "TC-CART-203 · bước 3: **giá trong giỏ sau khi catalog đổi giá**",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// TC-CART-203 · State · bước 3: **giá trong giỏ sau khi catalog đổi giá**",
+                  "pm.test(\"status = 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"giỏ không được giữ giá cũ sau khi catalog đổi giá\", () => {",
+                  "  const pid = Number(pm.environment.get(\"product_id\"));",
+                  "  const stale = pm.response.json().filter(r => Number(r.id) === pid && Number(r.price) === 111000);",
+                  "  pm.expect(stale.length, \"có \" + stale.length + \" dòng còn giá cũ 111000 dù catalog đã là 222000\").to.eql(0);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{user_token}}"
+              }
+            ],
+            "url": "{{base_url}}/api/cart"
+          }
+        },
+        {
+          "name": "TC-CART-204 · **XSS**: name chứa <script> khi thêm vào giỏ",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// TC-CART-204 · Security SEC-04 · **XSS**: name chứa <script> khi thêm vào giỏ",
+                  "pm.test(\"status thuộc [200,400,422]\", () => pm.expect([200,400,422]).to.include(pm.response.code));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{user_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/api/cart",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": \"{{product_id}}\",\n  \"name\": \"<script>alert(1)</script>\",\n  \"price\": 222000,\n  \"quantity\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "TC-CART-205 · **hệ quả** TC-204: giỏ không được chứa thẻ script nguyên văn",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// TC-CART-205 · Security SEC-04 · **hệ quả** TC-204: giỏ không được chứa thẻ script nguyên văn",
+                  "pm.test(\"status = 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"giỏ không chứa thẻ <script> nguyên văn\", () => {",
+                  "  const bad = pm.response.json().filter(r => String(r.name || \"\").includes(\"<script\"));",
+                  "  pm.expect(bad.length, \"có \" + bad.length + \" dòng chứa thẻ script\").to.eql(0);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{user_token}}"
+              }
+            ],
+            "url": "{{base_url}}/api/cart"
+          }
+        },
+        {
+          "name": "TC-CART-206 · **giỏ của admin** — admin thêm hàng, giỏ user không được thấy",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// TC-CART-206 · Security SEC-03 · **giỏ của admin** — admin thêm hàng, giỏ user không được thấy",
+                  "pm.test(\"status = 200\", () => pm.response.to.have.status(200));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/api/cart",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": \"{{product_id}}\",\n  \"name\": \"HW06-Admin-Cart\",\n  \"price\": 222000,\n  \"quantity\": 9\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "TC-CART-207 · **hệ quả** TC-206: giỏ user không chứa dòng admin vừa thêm",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// TC-CART-207 · Security SEC-03 · **hệ quả** TC-206: giỏ user không chứa dòng admin vừa thêm",
+                  "pm.test(\"status = 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"giỏ user không lẫn hàng của admin\", () => {",
+                  "  pm.expect(pm.response.json().filter(r => String(r.name) === \"HW06-Admin-Cart\").length).to.eql(0);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{user_token}}"
+              }
+            ],
+            "url": "{{base_url}}/api/cart"
+          }
+        },
+        {
+          "name": "TC-CART-208 · **token của user đã bị xoá** — bước 1: admin xoá user thứ hai",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// TC-CART-208 · Security SEC-02 · **token của user đã bị xoá** — bước 1: admin xoá user thứ hai",
+                  "pm.test(\"status thuộc [200,204]\", () => pm.expect([200,204]).to.include(pm.response.code));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
+            "url": "{{base_url}}/api/admin/users/{{user2_id}}"
+          }
+        },
+        {
+          "name": "TC-CART-209 · **hệ quả** TC-208: token cũ của user đã xoá còn dùng được không",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// TC-CART-209 · Security SEC-02 · **hệ quả** TC-208: token cũ của user đã xoá còn dùng được không",
+                  "pm.test(\"status thuộc [401,403]\", () => pm.expect([401,403]).to.include(pm.response.code));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{user2_token}}"
               }
             ],
             "url": "{{base_url}}/api/cart"

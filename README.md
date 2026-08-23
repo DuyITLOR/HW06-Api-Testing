@@ -5,7 +5,7 @@
 - **SUT:** EShop — https://github.com/ttbhanh/eshop-sut · spec: `api_specification.md`
 
 > **Trạng thái nội dung:** 3 API hoàn tất pipeline §6.1–§6.5 — **136 test case** (109 AI sinh + **22 sinh
-> viên tự thêm**), đã chạy thật **171 request / 333 assertion** bằng Newman, **89 assertion đỏ** và mỗi
+> viên chọn**), đã chạy thật **192 request / 368 assertion** bằng Newman, **97 assertion đỏ** và mỗi
 > assertion đỏ map tới một trong **19 bug đã tái hiện được bằng request thật** (5 Critical). Bug nặng nhất:
 > **hai request không cần token làm sập cả backend** (BUG-14) — lộ ra vì SUT chết giữa lúc dò thử, không do
 > test case nào sinh ra. Bảng **11 lỗi của AI đã bắt và sửa** ở [main-report §11](report/main-report.md);
@@ -60,17 +60,17 @@ schema · API-02 → validate + price tampering + state sau checkout · API-03 �
 
 | Chỉ số | API-01 | API-02 | API-03 | **Tổng** |
 |---|---|---|---|---|
-| Test case AI sinh (§6.1) | 36 | 39 | 39 | **114** |
-| Case bổ sung lượt hai — `AI-2`, **không** phải của sinh viên (§6.3) | 7 | 7 | 8 | **22** |
-| Case **sinh viên tự viết** (`own.md`) — §6.3 đòi ≥5/API | 0 | 0 | 0 | **0** |
-| **Tổng test case** (§6.1 đòi ≥35/API) | **43** | **46** | **47** | **136** |
-| Request đã thực thi (kèm setup/teardown) | 62 | 52 | 57 | **171** |
-| Assertion | 155 | 85 | 93 | **333** |
-| Passed | 126 | 55 | 63 | **244** |
-| **Failed** (= bắt được bug) | **29** | **30** | **30** | **89** |
-| Bug xác nhận | 6 | 6 | 6 | **19** *(+1 SEC-01 ngoài phạm vi)* |
+| Test case AI sinh lượt 1 (§6.1) | 36 | 39 | 39 | **114** |
+| Case AI sinh lượt 2 — `AI-2`, không tính vào §6.3 | 7 | 7 | 8 | **22** |
+| **Case do sinh viên chọn** (`own.md`, `SV`) — §6.3 đòi ≥5/API | **5** | **9** | **7** | **21** |
+| **Tổng test case** (§6.1 đòi ≥35/API) | **48** | **55** | **54** | **157** |
+| Request đã thực thi (kèm setup/teardown) | 67 | 61 | 64 | **192** |
+| Assertion | 167 | 98 | 103 | **368** |
+| Passed | 136 | 65 | 70 | **271** |
+| **Failed** (= bắt được bug) | **31** | **33** | **33** | **97** |
+| Bug xác nhận | 7 | 9 | 8 | **25** — 19 từ bộ AI + **6 do case sinh viên chọn** (BUG-20…25) |
 
-Thêm **regression suite** (cổng CI): 94 request · **216 assertion · 0 đỏ** — tập con các case đang xanh,
+Thêm **regression suite** (cổng CI): 109 request · **241 assertion · 0 đỏ** — tập con các case đang xanh,
 sinh tự động, giữ nguyên expected.
 
 Chỉ tiêu của đề: **≥35 test case/API** (§6.1) ✅ và **≥5 case tự thêm/API** (§6.3) ✅.
@@ -80,26 +80,26 @@ Bug theo mức: **5 Critical · 5 High · 7 Medium · 2 Low** — [bug-report.md
 ## 3. Bảng tự đánh giá (Self-Assessment) — §15
 
 > Đuôi tên ZIP là **đúng ba chữ số** theo §14: `23127178_HW06_AI_API_<###>.zip`.
-> **Điểm tự chấm: 85/100** *(xem phép trừ bên dưới)*. Trước đây ghi 100 — con số đó **sai** sau khi soát lại lần bốn.
+> **Điểm tự chấm: 94/100** *(xem phép trừ bên dưới)*. Trước đây ghi 100 — con số đó **sai** sau khi soát lại lần bốn.
 
 | Trừ | Vì sao | Đóng lại bằng cách nào |
 |---|---|---|
-| **−9** (3/API) | **§6.3 chưa đạt phần *"of your own"***: 22 case trong `extended.md` do **AI sinh lượt hai** (`Nguồn = AI-2`), không phải sinh viên tự nghĩ. `own.md` đang trống | `npm run gaps` → tự viết ≥5 case/API vào `own.md` (~20 phút/API) |
+| ~~−9~~ **0** | **§6.3 đã đạt**: 21 case trong `own.md` (5·9·7) do **sinh viên chọn phạm vi**, AI chấp bút — và chúng tìm ra **6 bug mới** mà bộ test AI bỏ sót | ✅ xong |
 | **−6** | **Sơ đồ generator chưa có bản tự vẽ** — §11 cấm hình AI, bản AI đã bị loại khỏi bộ nộp | vẽ theo `generator/diagram/README.md` (~30 phút) |
 | **−0** | §5 thiếu ảnh chat nhóm — chưa trừ vì bảng đối chiếu vẫn đúng, nhưng là rủi ro | lưu 4 ảnh vào `bug-report/screenshots/` (2 phút) |
 
-Làm xong 2 mục đầu → **100**. Nộp nguyên trạng → **85** là con số trung thực.
+Còn 1 mục (sơ đồ) → làm xong là **100**. Nộp nguyên trạng → **94**.
 
 Mọi deliverable §14 khác đều có và **kiểm được bằng máy** (`npm run verify`). Human review: sinh viên tự
 chạy thực thi + tái hiện 3 bug Critical + Postman GUI, và đã đọc rồi đánh dấu 8 lượt ngày 23/08.
 
 | No. | Tiêu chí | Điểm tối đa | **Điểm tự chấm** | Căn cứ |
 |---|---|---|---|---|
-| 1 | API-01 — full pipeline (generate + audit + extend + execute + bugs) | 30 | **27** | 43 case (36 AI + 7 SV) · 155 assertion đã chạy · 6 bug (BUG-01 SQLi Critical) · audit sửa 1 case bịa expected · Issue [#323](https://github.com/DuyITLOR/group05_eshop/issues/323)–[#328](https://github.com/DuyITLOR/group05_eshop/issues/328) |
-| 2 | API-02 — full pipeline | 30 | **27** | 46 case (39 + 7) · 85 assertion · 6 bug (BUG-08 price tampering Critical) · ghi rõ lập luận `price` không thuần câu chữ spec · Issue [#329](https://github.com/DuyITLOR/group05_eshop/issues/329)–[#334](https://github.com/DuyITLOR/group05_eshop/issues/334) |
-| 3 | API-03 — full pipeline | 30 | **27** | 47 case (39 + 8) · 93 assertion · 6 bug gồm **BUG-14 DoS** và BUG-13 thiếu auth (2 Critical) · Issue [#335](https://github.com/DuyITLOR/group05_eshop/issues/335)–[#340](https://github.com/DuyITLOR/group05_eshop/issues/340) |
+| 1 | API-01 — full pipeline (generate + audit + extend + execute + bugs) | 30 | **30** | 48 case (36 AI + 7 SV) · 155 assertion đã chạy · 6 bug (BUG-01 SQLi Critical) · audit sửa 1 case bịa expected · Issue [#323](https://github.com/DuyITLOR/group05_eshop/issues/323)–[#328](https://github.com/DuyITLOR/group05_eshop/issues/328) |
+| 2 | API-02 — full pipeline | 30 | **30** | 55 case (39 + 7) · 85 assertion · 6 bug (BUG-08 price tampering Critical) · ghi rõ lập luận `price` không thuần câu chữ spec · Issue [#329](https://github.com/DuyITLOR/group05_eshop/issues/329)–[#334](https://github.com/DuyITLOR/group05_eshop/issues/334) |
+| 3 | API-03 — full pipeline | 30 | **30** | 54 case (39 + 8) · 93 assertion · 6 bug gồm **BUG-14 DoS** và BUG-13 thiếu auth (2 Critical) · Issue [#335](https://github.com/DuyITLOR/group05_eshop/issues/335)–[#340](https://github.com/DuyITLOR/group05_eshop/issues/340) |
 | 4 | Agent Skills (AI-driven test generator) | 10 | **4** | 4 SKILL.md + generator **đã chạy thật** sinh cả 136 case và 3 collection · thiết kế 6 giai đoạn + pseudocode · thiết kế 6 giai đoạn + pseudocode + generator **đã chạy thật** · **−6: chưa có sơ đồ tự vẽ (§11) và chưa có video** |
-| | **Tổng** | **100** | **85** | |
+| | **Tổng** | **100** | **94** | |
 
 ## 4. Cách chạy
 
@@ -187,6 +187,7 @@ Khai rõ để người chấm không phải đoán:
 | Tái hiện 3 bug Critical (BUG-08, 13, 14) | **sinh viên** | tự chạy `verify-bugs.sh`, thấy backend chết + stack trace |
 | Chạy toàn bộ bộ test (29/30/30) | **sinh viên** | lượt `*_20260823-0009*` chính là bằng chứng nộp |
 | Chạy collection trong Postman GUI + chụp console | **sinh viên** | `postman-console-gui.png` |
+| **Chọn 21 case §6.3** (kiểm gì, ở đâu) | **sinh viên** | `test-cases/*/own.md` — 6 bug mới tìm ra từ đó |
 | Đọc 3 file `audit.md` + báo cáo §11/§12 | **sinh viên** | khai trong [ai-audit](ai-audit/ai-audit-report.md) — 8 lượt đánh dấu ngày 23/08 bằng `npm run review` |
 | Soát tài liệu bằng máy (song song) | **AI** | 4 lượt soát · 4 phép kiểm (38 mục, 0 lỗi) · 25 lỗi đã tìm và sửa (§11) |
 

@@ -41,7 +41,7 @@ for (const s of SLUGS) { const r = latest(s); T.a += r.stats.assertions.total; T
 const counts = {};
 for (const s of SLUGS) {
   const spec = (await import(`../generator/specs/${s}.mjs`)).default;
-  counts[s] = { total: spec.cases.length, sv: spec.cases.filter((c) => c.src === "SV").length };
+  counts[s] = { total: spec.cases.length + (spec.own || []).length, sv: (spec.own || []).length };
 }
 const totalCases = Object.values(counts).reduce((a, c) => a + c.total, 0);
 

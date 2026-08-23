@@ -25,7 +25,7 @@ const F = (m) => { console.log(`  [LECH] ${m}`); bad++; };
 const specs = {};
 for (const s of ["api-01-products-search", "api-02-cart-add", "api-03-product-update"])
   specs[s] = (await import(`../generator/specs/${s}.mjs`)).default;
-const allTc = new Set(Object.values(specs).flatMap((sp) => sp.cases.map((c) => c.id)));
+const allTc = new Set(Object.values(specs).flatMap((sp) => [...sp.cases, ...(sp.own || [])].map((c) => c.id)));
 const bug = read("bug-report/bug-report.md");
 const cited = [...bug.matchAll(/\bTC-[A-Z]+-\d{3}\b/g)].map((m) => m[0]);
 const ghost = [...new Set(cited)].filter((t) => !allTc.has(t));
@@ -74,7 +74,7 @@ new Set(pre).size === 1 ? P(`cả ${pre.length} collection dùng cùng pre-reque
                         : F(`pre-request script KHÁC nhau giữa các collection (${new Set(pre).size} bản)`);
 
 // 6. Excel khớp số case
-const tc = Object.values(specs).reduce((a, s) => a + s.cases.length, 0);
+const tc = Object.values(specs).reduce((a, s) => a + s.cases.length + (s.own || []).length, 0);
 read("README.md").includes(`**${tc}**`) ? P(`README công bố ${tc} case — khớp specs`) : F(`README không công bố ${tc} case`);
 
 // 7. placeholder còn sót

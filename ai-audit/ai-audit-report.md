@@ -362,6 +362,39 @@ audit, mọi danh sách case đỏ đều được đối chiếu với dữ li�
   1 điểm sai sự thật nhưng do lỗi tool của AI, 1 điểm (human audit) là nhận định về quy trình.
 - **Commit:** *(commit kế tiếp)*
 
+### Interaction #15
+- **API / Bước:** §6.3 — 21 test case do **sinh viên chọn**
+- **Bước trong quy trình:** api-test-audit (§6.3), có sinh viên trực tiếp quyết định nội dung
+- **AI tool:** Claude Code (Opus 5)
+- **Date & time:** 2026-08-23 17:20
+- **Prompt:**
+  ```
+  viết cho tui đi / hoặc bạn hỏi tui để tui cung cấp thông tin cho bạn viết
+  ```
+- **Phân công — điểm quan trọng nhất của lượt này:**
+  - **AI làm:** in ra các **ô phủ còn trống** của từng API (`npm run gaps`: mã SEC chưa chạm, loại phân hoạch
+    chưa dùng), rồi trình bày mỗi ô kèm request cụ thể để sinh viên hiểu đang chọn gì.
+  - **Sinh viên quyết định:** chọn **kiểm gì** — API-01: phân trang/`limit` · tìm theo `description` ·
+    `search` 8000 ký tự. API-02: giá đổi sau khi hàng vào giỏ · XSS vào giỏ · giỏ sau khi user bị xoá ·
+    giỏ của admin. API-03: `imageUrl` là `javascript:` · `category_id` trỏ danh mục đã xoá · SEC-01 field
+    nội bộ. Sinh viên cũng quyết định **cách ghi nguồn** (cột `Nguồn = SV` + khai phân công ở đây).
+  - **AI làm tiếp:** định dạng thành bảng 12 cột, tra **căn cứ** từ spec §/FR/SEC, viết assertion, và viết
+    cột *"vì sao AI bỏ sót"* theo 3 nhóm §6.3.
+- **AI output (tóm tắt):** 21 case (5 · 9 · 7) vào `test-cases/*/own.md`, chạy thật → **6 bug mới**:
+  BUG-20 không có phân trang · BUG-21 giỏ giữ giá cũ sau khi catalog đổi giá (FR-08) · BUG-22 XSS lưu
+  nguyên trong giỏ (SEC-04) · BUG-23 **token của user đã bị xoá vẫn dùng được** (SEC-02) · BUG-24
+  `imageUrl: javascript:` được lưu (SEC-04) · BUG-25 `category_id` trỏ danh mục đã xoá (FR-14).
+  Số liệu sau khi thêm: **157 case · 368 assertion · 97 đỏ**; regression suite 241/0.
+- **AI sai / bỏ sót:** 4/6 bug mới thuộc loại AI **không thể** tìm bằng cách phân hoạch tham số — chúng
+  nằm trên **trục thời gian của dữ liệu** (giá đổi *sau khi* vào giỏ · người dùng bị xoá *sau khi* có token ·
+  danh mục bị xoá *sau khi* được gán). Toàn bộ 136 case AI sinh trước đó không có case nào loại này.
+- **Vì sao bỏ sót:** **prompt quality** (prompt khoanh state transition vào một endpoint, nên AI không nối
+  hai feature khác pool thành một tình huống nghiệp vụ) và **characteristics of the API** (giỏ lưu bản chụp;
+  `authenticateToken` không đối chiếu bảng `users`; SQLite không bật khoá ngoại — cả ba chỉ thấy khi đọc source).
+- **Human review:** ***(SV đã kiểm)*** — sinh viên là người chọn toàn bộ 10 phạm vi kiểm ở trên; đây là lượt
+  duy nhất trong bài mà **nội dung** do sinh viên quyết định, không phải AI đề xuất rồi sinh viên chấp nhận.
+- **Commit:** *(commit kế tiếp)*
+
 <!-- NEW_INTERACTION_MARKER -->
 
 ---

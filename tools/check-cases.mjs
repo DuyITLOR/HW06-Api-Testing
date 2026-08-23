@@ -27,13 +27,13 @@ const allIds = new Map();
 for (const slug of SLUGS) {
   const spec = (await import(`../generator/specs/${slug}.mjs`)).default;
   const ids = new Set();
-  for (const c of [...spec.setup, ...spec.cases, ...(spec.teardown||[])]) {
+  for (const c of [...spec.setup, ...spec.cases, ...(spec.own||[]), ...(spec.teardown||[])]) {
     if (ids.has(c.id)) issues.push(`[TRÙNG ID] ${slug}: ${c.id}`);
     ids.add(c.id);
     if (allIds.has(c.id) && c.id.startsWith("TC-")) issues.push(`[ID DÙNG 2 API] ${c.id}`);
     if (c.id.startsWith("TC-")) allIds.set(c.id, slug);
   }
-  for (const c of spec.cases) {
+  for (const c of [...spec.cases, ...(spec.own||[])]) {
     // 1. căn cứ phải trỏ vào nguồn kiểm được
     const b = String(c.basis||"");
     if (!/spec §|FR-\d|SEC-0|server\.js|đề §|database\.js/.test(b))
@@ -55,7 +55,15 @@ for (const slug of SLUGS) {
   // Bất biến chống misattribution: nhãn `SV` chỉ được dùng cho case sinh viên TỰ VIẾT (file own.md).
   // Case do AI sinh ở lượt hai phải là `AI-2`. Bản trước gán `SV` cho 22 case do AI sinh.
   const sv = spec.cases.filter(c=>c.src==="AI-2").map(c=>c.id);
-  for (const c of spec.cases) if (c.src === "SV") issues.push(`[NHÃN SV CHO CASE KHÔNG DO SV VIẾT] ${c.id} — dùng "AI-2" hoặc chuyển sang own.md`);
+  for (const c of spec.cases) if (c.src === "SV") issues.push(`[NHÃN SV Ở SAI CHỖ] ${c.id} — case do SV chọn phải nằm trong mảng \`own\`, không nằm trong \`cases\``);
+  // own: phải ≥5 case, tất cả src SV, và mỗi case có dòng lý do bỏ sót
+  const own = spec.own || [], ownWhy = new Map((spec.ownWhyMissed||[]).map(w=>[w.id,w]));
+  if (own.length < 5) issues.push(`[§6.3 THIẾU CASE CỦA SV] ${slug}: ${own.length}/5`);
+  for (const c of own) {
+    if (c.src !== "SV") issues.push(`[CASE own KHÔNG PHẢI SV] ${c.id}`);
+    if (!ownWhy.has(c.id)) issues.push(`[THIẾU LÝ DO AI BỎ SÓT] ${c.id} (own)`);
+  }
+  for (const [id,w] of ownWhy) if (!GROUPS.includes(w.group)) issues.push(`[NHÓM LÝ DO SAI] ${id}: "${w.group}"`);
   const wm = new Map((spec.whyMissed||[]).map(w=>[w.id,w]));
   for (const id of sv) if (!wm.has(id)) issues.push(`[THIẾU LÝ DO AI BỎ SÓT] ${id}`);
   for (const [id,w] of wm) {
@@ -68,7 +76,7 @@ for (const slug of SLUGS) {
   const inCol = new Set();
   const walk = (it)=>it.forEach(x=>x.item?walk(x.item):inCol.add(x.name.split(" · ")[0]));
   walk(col.item);
-  for (const c of spec.cases) if (!inCol.has(c.id)) issues.push(`[CÓ TRONG BẢNG, THIẾU TRONG COLLECTION] ${c.id}`);
+  for (const c of [...spec.cases, ...(spec.own||[])]) if (!inCol.has(c.id)) issues.push(`[CÓ TRONG BẢNG, THIẾU TRONG COLLECTION] ${c.id}`);
 }
 // 8. danh sách case "ĐỎ ở lượt nộp" nêu trong audit.md phải khớp raw JSON của Newman
 //    (bản trước ghi sai: liệt kê case XANH và gộp khoảng "101–107")

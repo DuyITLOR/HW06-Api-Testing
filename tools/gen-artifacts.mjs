@@ -173,7 +173,7 @@ const row = (c, res, withAudit) => {
 for (const slug of slugs) {
   const spec = (await import(`../generator/specs/${slug}.mjs`)).default;
   const res = loadResults(slug);
-  const all = [...spec.setup, ...spec.cases, ...(spec.teardown || [])];
+  const all = [...spec.setup, ...spec.cases, ...(spec.own || []), ...(spec.teardown || [])];
   const ai = spec.cases.filter((c) => c.src === "AI");
   const sv = spec.cases.filter((c) => c.src === "AI-2");
 
@@ -217,6 +217,22 @@ for (const slug of slugs) {
     ...spec.whyMissed.map((w) => `| ${w.id} | ${w.missed} | **${w.group}** | ${w.why} |`), ""];
   writeFileSync(`test-cases/${slug}/extended.md`, e.join("\n"), "utf8");
 
+  // ── 3b. own.md — case DO SINH VIÊN CHỌN (§6.3) ────────────────────────────
+  const own = spec.own || [];
+  if (own.length) {
+    const o = [`# ${spec.label} · §6.3 — test case **do sinh viên chọn**`, "",
+      `- **${own.length} case** (đề đòi ≥5). Cột \`Nguồn\` = **SV**.`,
+      `- **Phân công, ghi rõ để không nhận vơ:** *sinh viên* quyết định **kiểm gì** (chọn phạm vi từ các ô phủ`,
+      `  còn trống — xem \`npm run gaps\`); *AI* định dạng thành bảng 12 cột, tra **căn cứ** từ spec/FR/SEC và`,
+      `  viết assertion. Ghi nhận này cũng nằm trong \`ai-audit/ai-audit-report.md\`.`,
+      `- Khác \`extended.md\`: các case ở đó do **AI** sinh ở lượt hai (\`Nguồn = AI-2\`), không tính vào §6.3.`, "",
+      `## Bảng test case`, "", HEADER, SEP, ...own.map((c) => row(c, res, true)), "",
+      `## Vì sao AI bỏ sót (§6.3 — đúng 3 nhóm lý do)`, "",
+      "| TC ID | AI bỏ sót gì | Nhóm lý do | Giải thích |", "|---|---|---|---|",
+      ...(spec.ownWhyMissed || []).map((w) => `| ${w.id} | ${w.missed} | **${w.group}** | ${w.why} |`), ""];
+    writeFileSync(`test-cases/${slug}/own.md`, o.join("\n"), "utf8");
+  }
+
   // ── 4. Collection Postman ─────────────────────────────────────────────────
   const folders = [];
   for (const c of all) {
@@ -240,6 +256,6 @@ for (const slug of slugs) {
   writeFileSync(`postman/collections/${MSSV}_${slug}.postman_collection.json`, JSON.stringify(col, null, 2), "utf8");
 
   const nAssert = all.reduce((s, c) => s + (c.checks || []).filter((ch) => ch[0] !== "saveCount" && ch[0] !== "saveJson" && ch[0] !== "raw").length, 0);
-  console.log(`  ${slug}: ${ai.length} AI + ${sv.length} SV = ${spec.cases.length} case · ${spec.setup.length} setup · ~${nAssert} assertion · ${folders.length} folder`);
+  console.log(`  ${slug}: ${ai.length} AI + ${sv.length} AI-2 + ${(spec.own || []).length} SV = ${spec.cases.length + (spec.own || []).length} case · ~${nAssert} assertion · ${folders.length} folder`);
 }
 console.log("\n  → test-cases/*/{generated,audit,extended}.md + postman/collections/*.json");

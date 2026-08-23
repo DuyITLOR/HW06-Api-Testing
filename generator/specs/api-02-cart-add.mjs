@@ -33,7 +33,8 @@ export default {
       status: 200, expect: "token user", checks: [["status", 200], ["saveJson", "user_token", "token"]] },
     { id: "SETUP-03", folder: "00-setup", tech: "Setup", part: "login user thứ hai (kiểm cách ly giỏ)", basis: "-", src: "-",
       method: "POST", path: "/api/login", auth: "none", body: { email: "{{user2_email}}", password: "{{user2_password}}" },
-      status: 200, expect: "token user2 — nếu chưa có tài khoản: `npm run seed:api`", checks: [["status", 200], ["saveJson", "user2_token", "token"]] },
+      status: 200, expect: "token user2 + `user2_id` (cần cho TC-208)", checks: [["status", 200], ["saveJson", "user2_token", "token"],
+        ["raw", `pm.environment.set("user2_id", pm.response.json().user && pm.response.json().user.id);`]] },
     { id: "SETUP-04", folder: "00-setup", tech: "Setup", part: `fixture sản phẩm giá ${PRICE}`, basis: "spec §3.3", src: "-",
       method: "POST", path: "/api/products", auth: "admin",
       body: { name: "HW06-Cart-Fixture", price: PRICE, description: "HW06 fixture", imageUrl: "", category_id: 1 },
@@ -328,6 +329,81 @@ export default {
   const bad = pm.response.json().filter(r => r.price === undefined || r.price === null || r.price === "");
   pm.expect(bad.length, "có " + bad.length + " dòng không có giá: " + JSON.stringify(bad.slice(0,3))).to.eql(0);
 });`]] },
+  ],
+
+  // ── §6.3 — case DO SINH VIÊN CHỌN ────────────────────────────────────────
+  own: [
+    { id: `${P}-201`, folder: "91-sv-own", tech: "State", part: "bước 1: thêm sản phẩm vào giỏ với giá catalog hiện tại",
+      ...add({ id: "{{product_id}}", name: "HW06-Cart-Fixture", price: PRICE, quantity: 1 }), status: 200,
+      expect: "200", basis: "spec §4.2", src: "SV", audit: "VALID",
+      checks: [["status", 200], ["schemaMessage"]] },
+
+    { id: `${P}-202`, folder: "91-sv-own", tech: "State", part: "bước 2: **admin đổi giá sản phẩm** đó lên 222000",
+      method: "PUT", path: "/api/products/{{product_id}}", auth: "admin",
+      body: { name: "HW06-Cart-Fixture", price: 222000, description: "đổi giá", imageUrl: "", category_id: 1 },
+      status: 200, expect: "200 — giá trong catalog giờ là 222000", basis: "spec §3.3", src: "SV", audit: "VALID",
+      checks: [["status", 200]] },
+
+    { id: `${P}-203`, folder: "91-sv-own", tech: "State", part: "bước 3: **giá trong giỏ sau khi catalog đổi giá**",
+      method: "GET", path: "/api/cart", auth: "user", status: 200,
+      expect: "dòng của `product_id` **không được** giữ giá cũ 111000 — hoặc cập nhật 222000, hoặc giỏ phải báo giá đã thay đổi",
+      basis: "FR-08 (tiền đơn hàng tính từ giỏ) — nếu giỏ giữ giá cũ thì khách trả giá cũ cho sản phẩm đã tăng giá", src: "SV", audit: "VALID",
+      checks: [["status", 200],
+        ["raw", `pm.test("giỏ không được giữ giá cũ sau khi catalog đổi giá", () => {
+  const pid = Number(pm.environment.get("product_id"));
+  const stale = pm.response.json().filter(r => Number(r.id) === pid && Number(r.price) === ${PRICE});
+  pm.expect(stale.length, "có " + stale.length + " dòng còn giá cũ 111000 dù catalog đã là 222000").to.eql(0);
+});`]] },
+
+    { id: `${P}-204`, folder: "91-sv-own", tech: "Security SEC-04", part: "**XSS**: `name` chứa `<script>` khi thêm vào giỏ",
+      ...add({ id: "{{product_id}}", name: "<script>alert(1)</script>", price: 222000, quantity: 1 }), status: "200 / 400",
+      expect: "từ chối, hoặc nhận rồi **escape** — hệ quả kiểm ở TC-205", basis: "SEC-04 *dữ liệu người dùng khi hiển thị phải được escape*", src: "SV", audit: "VALID",
+      checks: [["statusIn", "200,400,422"]] },
+
+    { id: `${P}-205`, folder: "91-sv-own", tech: "Security SEC-04", part: "**hệ quả** TC-204: giỏ không được chứa thẻ script nguyên văn",
+      method: "GET", path: "/api/cart", auth: "user", status: 200,
+      expect: "không dòng nào có `name` chứa `<script`", basis: "SEC-04 — payload phải là dữ liệu, không phải markup sống", src: "SV", audit: "VALID",
+      checks: [["status", 200],
+        ["raw", `pm.test("giỏ không chứa thẻ <script> nguyên văn", () => {
+  const bad = pm.response.json().filter(r => String(r.name || "").includes("<script"));
+  pm.expect(bad.length, "có " + bad.length + " dòng chứa thẻ script").to.eql(0);
+});`]] },
+
+    { id: `${P}-206`, folder: "91-sv-own", tech: "Security SEC-03", part: "**giỏ của admin** — admin thêm hàng, giỏ user không được thấy",
+      ...add({ id: "{{product_id}}", name: "HW06-Admin-Cart", price: 222000, quantity: 9 }, { auth: "admin" }), status: 200,
+      expect: "200 — admin có giỏ riêng theo `id` trong token", basis: "SEC-03 (phân biệt theo role/định danh) · spec §4.1", src: "SV", audit: "VALID",
+      checks: [["status", 200]] },
+
+    { id: `${P}-207`, folder: "91-sv-own", tech: "Security SEC-03", part: "**hệ quả** TC-206: giỏ user không chứa dòng admin vừa thêm",
+      method: "GET", path: "/api/cart", auth: "user", status: 200,
+      expect: "không dòng nào có `name = HW06-Admin-Cart`", basis: "SEC-03 · FR-07 (giỏ theo từng người dùng)", src: "SV", audit: "VALID",
+      checks: [["status", 200],
+        ["raw", `pm.test("giỏ user không lẫn hàng của admin", () => {
+  pm.expect(pm.response.json().filter(r => String(r.name) === "HW06-Admin-Cart").length).to.eql(0);
+});`]] },
+
+    { id: `${P}-208`, folder: "91-sv-own", tech: "Security SEC-02", part: "**token của user đã bị xoá** — bước 1: admin xoá user thứ hai",
+      method: "DELETE", path: "/api/admin/users/{{user2_id}}", auth: "admin", status: 200,
+      expect: "200 — user2 bị xoá khỏi hệ thống", basis: "spec §6.1 *Xóa người dùng*", src: "SV", audit: "VALID",
+      checks: [["statusIn", "200,204"]] },
+
+    { id: `${P}-209`, folder: "91-sv-own", tech: "Security SEC-02", part: "**hệ quả** TC-208: token cũ của user đã xoá còn dùng được không",
+      method: "GET", path: "/api/cart", auth: "user2", status: "401 / 403",
+      expect: "401/403 — JWT của người dùng không còn tồn tại phải bị từ chối",
+      basis: "SEC-02 *API bảo mật phải yêu cầu JWT **hợp lệ***; một token trỏ tới user đã bị xoá không còn hợp lệ", src: "SV", audit: "VALID",
+      checks: [["statusIn", "401,403"]] },
+  ],
+
+  ownWhyMissed: [
+    { id: `${P}-201`, missed: "không sinh chuỗi **giá catalog đổi sau khi hàng đã vào giỏ**", group: "prompt quality", why: "Prompt khoanh state transition vào *một* endpoint. Chuỗi này đi qua **hai feature khác pool** (giỏ ở Pool B, sửa giá ở Pool C) nên không nằm trong phạm vi mà prompt vẽ ra." },
+    { id: `${P}-202`, missed: "cùng chuỗi với 201", group: "prompt quality", why: "AI không tự nối hai API của hai pool khác nhau thành một tình huống nghiệp vụ." },
+    { id: `${P}-203`, missed: "không kiểm **giá trong giỏ có bị lệch catalog theo thời gian**", group: "characteristics of the API", why: "Giỏ ở SUT này lưu **bản chụp** (`push(req.body)`) chứ không tham chiếu `products`. Đặc điểm đó chỉ thấy khi đọc `server.js:290-295` và nghĩ tới trục thời gian: giá đúng lúc thêm, sai lúc thanh toán." },
+    { id: `${P}-204`, missed: "không sinh case SEC-04 cho API-02", group: "prompt quality", why: "Bảng phủ SEC của API-02 trống ở SEC-04 — prompt liệt kê SEC-01…07 nhưng AI chỉ sinh case cho những mã nó *thấy liên quan trực tiếp*, và bỏ SEC-04 vì cho rằng escape là việc của UI." },
+    { id: `${P}-205`, missed: "cùng nhóm với 204", group: "model limitations", why: "Lại là hệ quả: payload gửi được không có nghĩa gì nếu không đọc lại state." },
+    { id: `${P}-206`, missed: "không sinh case SEC-03 cho API-02", group: "prompt quality", why: "AI gán SEC-03 cho *endpoint admin*, mà `/api/cart` không phải endpoint admin — nên nó không hỏi *admin dùng endpoint của user thì sao*." },
+    { id: `${P}-207`, missed: "cùng nhóm với 206", group: "model limitations", why: "Phần chứng minh cách ly phải đọc giỏ bằng token khác, AI không tự thêm bước đó." },
+    { id: `${P}-208`, missed: "không nghĩ tới **vòng đời của người dùng** ảnh hưởng tới token", group: "characteristics of the API", why: "JWT ở SUT này không có cơ chế thu hồi và `authenticateToken` chỉ verify chữ ký, không đối chiếu bảng `users` (`server.js:104-110`). Muốn đặt ra câu hỏi này phải đọc middleware, không suy từ spec." },
+    { id: `${P}-209`, missed: "cùng chuỗi với 208", group: "characteristics of the API", why: "Đây là chỗ đáng chú ý: token của một người dùng **đã bị xoá** vẫn mở được giỏ — sinh viên đặt câu hỏi từ góc *nghiệp vụ*, không từ góc *tham số*." },
   ],
 
   teardown: [

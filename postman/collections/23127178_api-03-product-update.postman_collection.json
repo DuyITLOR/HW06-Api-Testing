@@ -1876,6 +1876,223 @@
       ]
     },
     {
+      "name": "91-sv-own",
+      "item": [
+        {
+          "name": "TC-PRODUPD-201 · imageUrl là **javascript: URL**",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// TC-PRODUPD-201 · Security SEC-04 · imageUrl là **javascript: URL**",
+                  "pm.test(\"status thuộc [200,400,422]\", () => pm.expect([200,400,422]).to.include(pm.response.code));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/api/products/{{product_id}}",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"HW06-JsUrl\",\n  \"price\": 200000,\n  \"description\": \"d\",\n  \"imageUrl\": \"javascript:alert(1)\",\n  \"category_id\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "TC-PRODUPD-202 · **hệ quả** TC-201: imageUrl có bị lưu nguyên javascript:",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// TC-PRODUPD-202 · Security SEC-04 · **hệ quả** TC-201: imageUrl có bị lưu nguyên javascript:",
+                  "pm.test(\"status = 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"imageUrl không được là javascript: URL\", () => {",
+                  "  pm.expect(String(pm.response.json().imageUrl || \"\").toLowerCase()).to.not.include(\"javascript:\");",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base_url}}/api/products/{{product_id}}"
+          }
+        },
+        {
+          "name": "TC-PRODUPD-203 · **category_id trỏ danh mục đã xoá** — bước 1: tạo danh mục tạm",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// TC-PRODUPD-203 · State · **category_id trỏ danh mục đã xoá** — bước 1: tạo danh mục tạm",
+                  "pm.test(\"status = 200\", () => pm.response.to.have.status(200));",
+                  "pm.environment.set(\"temp_category_id\", pm.response.json().id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/api/categories",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"HW06-Temp-Category\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "TC-PRODUPD-204 · bước 2: xoá danh mục vừa tạo",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// TC-PRODUPD-204 · State · bước 2: xoá danh mục vừa tạo",
+                  "pm.test(\"status thuộc [200,204]\", () => pm.expect([200,204]).to.include(pm.response.code));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
+            "url": "{{base_url}}/api/categories/{{temp_category_id}}"
+          }
+        },
+        {
+          "name": "TC-PRODUPD-205 · bước 3: PUT sản phẩm trỏ vào **danh mục đã xoá**",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// TC-PRODUPD-205 · Domain · bước 3: PUT sản phẩm trỏ vào **danh mục đã xoá**",
+                  "pm.test(\"status thuộc [400,422]\", () => pm.expect([400,422]).to.include(pm.response.code));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": "{{base_url}}/api/products/{{product_id}}",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"HW06-Orphan-Category\",\n  \"price\": 200000,\n  \"description\": \"d\",\n  \"imageUrl\": \"http://x/i.png\",\n  \"category_id\": \"{{temp_category_id}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "TC-PRODUPD-206 · **hệ quả** TC-205: sản phẩm có bị gắn danh mục không tồn tại",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// TC-PRODUPD-206 · State · **hệ quả** TC-205: sản phẩm có bị gắn danh mục không tồn tại",
+                  "pm.test(\"status = 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"category_id không trỏ danh mục đã bị xoá\", () => {",
+                  "  const dead = String(pm.environment.get(\"temp_category_id\"));",
+                  "  pm.expect(String(pm.response.json().category_id)).to.not.eql(dead);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base_url}}/api/products/{{product_id}}"
+          }
+        },
+        {
+          "name": "TC-PRODUPD-207 · **SEC-01**: response của GET :id sau khi cập nhật có lộ field nội bộ",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// TC-PRODUPD-207 · Security SEC-01 · **SEC-01**: response của GET :id sau khi cập nhật có lộ field nội bộ",
+                  "pm.test(\"status = 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"không có field ngoài tập spec định nghĩa\", () => {",
+                  "  const allowed = [\"id\",\"name\",\"price\",\"description\",\"imageUrl\",\"category_id\"];",
+                  "  const extra = Object.keys(pm.response.json()).filter(k => !allowed.includes(k));",
+                  "  pm.expect(extra, \"field lạ: \" + extra.join(\", \")).to.have.lengthOf(0);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base_url}}/api/products/{{product_id}}"
+          }
+        }
+      ]
+    },
+    {
       "name": "99-teardown",
       "item": [
         {
