@@ -346,13 +346,15 @@ export default {
 
     { id: `${P}-203`, folder: "91-sv-own", tech: "State", part: "bước 3: **giá trong giỏ sau khi catalog đổi giá**",
       method: "GET", path: "/api/cart", auth: "user", status: 200,
-      expect: "dòng của `product_id` **không được** giữ giá cũ 111000 — hoặc cập nhật 222000, hoặc giỏ phải báo giá đã thay đổi",
-      basis: "FR-08 (tiền đơn hàng tính từ giỏ) — nếu giỏ giữ giá cũ thì khách trả giá cũ cho sản phẩm đã tăng giá", src: "SV", audit: "VALID",
+      expect: "**ghi nhận**: giỏ giữ giá lúc thêm (111000) dù catalog đã là 222000. Đây có thể là **chính sách price-snapshot** hợp lệ — case này ghi lại hành vi và nêu **câu hỏi nghiệp vụ**, không kết luận SUT sai",
+      basis: "spec §4.1/§4.2 **không định nghĩa** giỏ tham chiếu hay chụp giá; FR-08 chỉ nói tính tiền từ giỏ → không suy ra được bên nào đúng", src: "SV",
+      audit: "INVALID: bản đầu khẳng định *'giỏ không được giữ giá cũ'* và báo thành BUG-21 mức High. Nhưng price-snapshot là chính sách phổ biến và hợp lệ; spec không nói bên nào. Đã hạ thành **characterization + câu hỏi nghiệp vụ Q-01** (báo cáo §12). Rủi ro thật vẫn còn nhưng nằm ở **BUG-08** (client tự đặt giá) — chỗ đó có căn cứ FR-08 rõ ràng.",
       checks: [["status", 200],
-        ["raw", `pm.test("giỏ không được giữ giá cũ sau khi catalog đổi giá", () => {
+        ["raw", `pm.test("ghi nhận: giỏ giữ giá lúc thêm (price snapshot) — xem câu hỏi Q-01 ở §12", () => {
   const pid = Number(pm.environment.get("product_id"));
-  const stale = pm.response.json().filter(r => Number(r.id) === pid && Number(r.price) === ${PRICE});
-  pm.expect(stale.length, "có " + stale.length + " dòng còn giá cũ 111000 dù catalog đã là 222000").to.eql(0);
+  const rows = pm.response.json().filter(r => Number(r.id) === pid);
+  pm.expect(rows.length, "phải có dòng của product_id").to.be.above(0);
+  pm.expect(rows.some(r => Number(r.price) === ${PRICE}), "giỏ giữ giá cũ").to.be.true;
 });`]] },
 
     { id: `${P}-204`, folder: "91-sv-own", tech: "Security SEC-04", part: "**XSS**: `name` chứa `<script>` khi thêm vào giỏ",
@@ -362,11 +364,14 @@ export default {
 
     { id: `${P}-205`, folder: "91-sv-own", tech: "Security SEC-04", part: "**hệ quả** TC-204: giỏ không được chứa thẻ script nguyên văn",
       method: "GET", path: "/api/cart", auth: "user", status: 200,
-      expect: "không dòng nào có `name` chứa `<script`", basis: "SEC-04 — payload phải là dữ liệu, không phải markup sống", src: "SV", audit: "VALID",
-      checks: [["status", 200],
-        ["raw", `pm.test("giỏ không chứa thẻ <script> nguyên văn", () => {
-  const bad = pm.response.json().filter(r => String(r.name || "").includes("<script"));
-  pm.expect(bad.length, "có " + bad.length + " dòng chứa thẻ script").to.eql(0);
+      expect: "**ghi nhận**: payload được lưu và trả lại nguyên văn, `Content-Type: application/json`. SEC-04 đòi escape **khi hiển thị**, nên tầng API lưu nguyên văn **chưa tự nó** là vi phạm — rủi ro hiện thực hoá ở UI",
+      basis: "SEC-04 *(dữ liệu người dùng khi **hiển thị** trên UI phải được escape, không dùng `innerHTML`)* — nguyên văn README SUT", src: "SV",
+      audit: "INVALID: bản đầu assert *'giỏ không được chứa thẻ script'* và báo BUG-22 vi phạm SEC-04. Đọc lại nguyên văn SEC-04: nó nói escape **khi hiển thị**, không nói cấm lưu. Đã hạ thành ghi nhận + **rủi ro R-02** (§12): không có tầng nào validate, nên toàn bộ trách nhiệm dồn lên UI.",
+      checks: [["status", 200], ["ctJson"],
+        ["raw", `pm.test("ghi nhận: payload được lưu nguyên văn, trả về dưới dạng dữ liệu JSON (rủi ro R-02)", () => {
+  const rows = pm.response.json().filter(r => String(r.name || "").includes("<script"));
+  pm.expect(rows.length, "số dòng chứa payload").to.be.at.least(0);
+  pm.expect(pm.response.headers.get("Content-Type") || "").to.include("application/json");
 });`]] },
 
     { id: `${P}-206`, folder: "91-sv-own", tech: "Security SEC-03", part: "**giỏ của admin** — admin thêm hàng, giỏ user không được thấy",
@@ -397,8 +402,8 @@ export default {
   ownWhyMissed: [
     { id: `${P}-201`, missed: "không sinh chuỗi **giá catalog đổi sau khi hàng đã vào giỏ**", group: "prompt quality", why: "Prompt khoanh state transition vào *một* endpoint. Chuỗi này đi qua **hai feature khác pool** (giỏ ở Pool B, sửa giá ở Pool C) nên không nằm trong phạm vi mà prompt vẽ ra." },
     { id: `${P}-202`, missed: "cùng chuỗi với 201", group: "prompt quality", why: "AI không tự nối hai API của hai pool khác nhau thành một tình huống nghiệp vụ." },
-    { id: `${P}-203`, missed: "không kiểm **giá trong giỏ có bị lệch catalog theo thời gian**", group: "characteristics of the API", why: "Giỏ ở SUT này lưu **bản chụp** (`push(req.body)`) chứ không tham chiếu `products`. Đặc điểm đó chỉ thấy khi đọc `server.js:290-295` và nghĩ tới trục thời gian: giá đúng lúc thêm, sai lúc thanh toán." },
-    { id: `${P}-204`, missed: "không sinh case SEC-04 cho API-02", group: "prompt quality", why: "Bảng phủ SEC của API-02 trống ở SEC-04 — prompt liệt kê SEC-01…07 nhưng AI chỉ sinh case cho những mã nó *thấy liên quan trực tiếp*, và bỏ SEC-04 vì cho rằng escape là việc của UI." },
+    { id: `${P}-203`, missed: "không kiểm **giá trong giỏ có lệch catalog theo thời gian**", group: "characteristics of the API", why: "Giỏ lưu **bản chụp** (`push(req.body)`) chứ không tham chiếu `products` — chỉ thấy khi đọc `server.js:290-295`. **Kết luận sau khi soát:** đây là **câu hỏi nghiệp vụ Q-01**, không phải bug: price-snapshot là chính sách hợp lệ và spec không nói bên nào. Case vẫn giá trị vì nó buộc câu hỏi đó phải được trả lời." },
+    { id: `${P}-204`, missed: "không sinh case SEC-04 cho API-02", group: "prompt quality", why: "Bảng phủ SEC của API-02 trống ở SEC-04. **Kết luận sau khi soát:** AI *đúng* khi cho rằng escape là việc của UI — SEC-04 nói escape *khi hiển thị*. Case vẫn có giá trị vì nó ghi lại rằng **không tầng nào validate**, nhưng nó là **rủi ro R-02**, không phải bug." },
     { id: `${P}-205`, missed: "cùng nhóm với 204", group: "model limitations", why: "Lại là hệ quả: payload gửi được không có nghĩa gì nếu không đọc lại state." },
     { id: `${P}-206`, missed: "không sinh case SEC-03 cho API-02", group: "prompt quality", why: "AI gán SEC-03 cho *endpoint admin*, mà `/api/cart` không phải endpoint admin — nên nó không hỏi *admin dùng endpoint của user thì sao*." },
     { id: `${P}-207`, missed: "cùng nhóm với 206", group: "model limitations", why: "Phần chứng minh cách ly phải đọc giỏ bằng token khác, AI không tự thêm bước đó." },

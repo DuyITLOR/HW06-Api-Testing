@@ -5,7 +5,7 @@
 - **SUT:** EShop — https://github.com/ttbhanh/eshop-sut · spec: `api_specification.md`
 
 > **Trạng thái nội dung:** 3 API hoàn tất pipeline §6.1–§6.5 — **136 test case** (109 AI sinh + **22 sinh
-> viên chọn**), đã chạy thật **192 request / 368 assertion** bằng Newman, **97 assertion đỏ** và mỗi
+> viên chọn**), đã chạy thật **192 request / 372 assertion** bằng Newman, **93 assertion đỏ** và mỗi
 > assertion đỏ map tới một trong **19 bug đã tái hiện được bằng request thật** (5 Critical). Bug nặng nhất:
 > **hai request không cần token làm sập cả backend** (BUG-14) — lộ ra vì SUT chết giữa lúc dò thử, không do
 > test case nào sinh ra. Bảng **11 lỗi của AI đã bắt và sửa** ở [main-report §11](report/main-report.md);
@@ -65,16 +65,16 @@ schema · API-02 → validate + price tampering + state sau checkout · API-03 �
 | **Case do sinh viên chọn** (`own.md`, `SV`) — §6.3 đòi ≥5/API | **5** | **9** | **7** | **21** |
 | **Tổng test case** (§6.1 đòi ≥35/API) | **48** | **55** | **54** | **157** |
 | Request đã thực thi (kèm setup/teardown) | 67 | 61 | 64 | **192** |
-| Assertion | 167 | 98 | 103 | **368** |
-| Passed | 136 | 65 | 70 | **271** |
-| **Failed** (= bắt được bug) | **31** | **33** | **33** | **97** |
-| Bug xác nhận | 7 | 9 | 8 | **25** — 19 từ bộ AI + **6 do case sinh viên chọn** (BUG-20…25) |
+| Assertion | 170 | 99 | 103 | **372** |
+| Passed | 141 | 68 | 70 | **279** |
+| **Failed** (= bắt được bug) | **29** | **31** | **33** | **93** |
+| Bug xác nhận | 6 | 6 | 8 | **22** + **2 rủi ro (R-01, R-02)** + **1 câu hỏi nghiệp vụ (Q-01)** ghi riêng |
 
-Thêm **regression suite** (cổng CI): 109 request · **241 assertion · 0 đỏ** — tập con các case đang xanh,
+Thêm **regression suite** (cổng CI): 120 request · **253 assertion · 0 đỏ** — tập con các case đang xanh,
 sinh tự động, giữ nguyên expected.
 
 Chỉ tiêu của đề: **≥35 test case/API** (§6.1) ✅ và **≥5 case tự thêm/API** (§6.3) ✅.
-Bug theo mức: **5 Critical · 5 High · 7 Medium · 2 Low** — [bug-report.md](bug-report/bug-report.md).
+Bug theo mức: **5 Critical · 6 High · 9 Medium · 2 Low** — [bug-report.md](bug-report/bug-report.md).
 **4 giả thuyết bị loại** sau khi kiểm chứng (ghi lại để không nhận vơ).
 
 ## 3. Bảng tự đánh giá (Self-Assessment) — §15

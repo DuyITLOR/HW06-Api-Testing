@@ -1467,19 +1467,20 @@
       "name": "91-sv-own",
       "item": [
         {
-          "name": "TC-PRODLIST-201 · **không có cơ chế giới hạn số dòng** — thử ?limit=1",
+          "name": "TC-PRODLIST-201 · ?limit=1 — **ghi nhận hành vi** với tham số spec không định nghĩa",
           "event": [
             {
               "listen": "test",
               "script": {
                 "type": "text/javascript",
                 "exec": [
-                  "// TC-PRODLIST-201 · Domain · **không có cơ chế giới hạn số dòng** — thử ?limit=1",
-                  "pm.test(\"status thuộc [200,400]\", () => pm.expect([200,400]).to.include(pm.response.code));",
-                  "pm.test(\"hoặc giới hạn được số dòng, hoặc từ chối tham số\", () => {",
-                  "  if (pm.response.code === 400) return;",
+                  "// TC-PRODLIST-201 · Domain · ?limit=1 — **ghi nhận hành vi** với tham số spec không định nghĩa",
+                  "pm.test(\"status = 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"body là mảng JSON\", () => pm.expect(pm.response.json()).to.be.an(\"array\"));",
+                  "pm.test(\"mảng đúng schema product (spec §3.1)\", () => pm.response.to.have.jsonSchema({\n  type: \"array\",\n  items: { type: \"object\", required: [\"id\",\"name\",\"price\"], properties: {\n    id: { type: \"integer\" }, name: { type: \"string\" }, price: { type: \"number\" },\n    description: { type: [\"string\",\"null\"] }, imageUrl: { type: [\"string\",\"null\"] },\n    category_id: { type: [\"integer\",\"null\"] } } }\n}));",
+                  "pm.test(\"ghi nhận: tham số lạ bị bỏ qua, trả toàn bộ bảng (không phải bug, xem §12)\", () => {",
                   "  const n = pm.response.json().length, total = Number(pm.environment.get(\"total_products\"));",
-                  "  pm.expect(n, \"trả \" + n + \" dòng = toàn bộ bảng, ?limit bị bỏ qua\").to.be.below(total);",
+                  "  pm.expect(n).to.eql(total);",
                   "});"
                 ]
               }
@@ -1492,19 +1493,18 @@
           }
         },
         {
-          "name": "TC-PRODLIST-202 · **phân trang** — thử ?page=2",
+          "name": "TC-PRODLIST-202 · ?page=2 — ghi nhận hành vi, cùng lý do TC-201",
           "event": [
             {
               "listen": "test",
               "script": {
                 "type": "text/javascript",
                 "exec": [
-                  "// TC-PRODLIST-202 · Domain · **phân trang** — thử ?page=2",
-                  "pm.test(\"status thuộc [200,400]\", () => pm.expect([200,400]).to.include(pm.response.code));",
-                  "pm.test(\"page=2 phải cho kết quả khác toàn bộ bảng, hoặc bị từ chối\", () => {",
-                  "  if (pm.response.code === 400) return;",
-                  "  const n = pm.response.json().length, total = Number(pm.environment.get(\"total_products\"));",
-                  "  pm.expect(n, \"page=2 vẫn trả \" + n + \"/\" + total + \" dòng\").to.not.eql(total);",
+                  "// TC-PRODLIST-202 · Domain · ?page=2 — ghi nhận hành vi, cùng lý do TC-201",
+                  "pm.test(\"status = 200\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"body là mảng JSON\", () => pm.expect(pm.response.json()).to.be.an(\"array\"));",
+                  "pm.test(\"ghi nhận: page=2 trả y hệt không phân trang\", () => {",
+                  "  pm.expect(pm.response.json().length).to.eql(Number(pm.environment.get(\"total_products\")));",
                   "});"
                 ]
               }

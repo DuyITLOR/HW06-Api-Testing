@@ -4,7 +4,7 @@
 - **SUT:** EShop — https://github.com/ttbhanh/eshop-sut · fork nhóm: `DuyITLOR/group05_eshop` commit `f0f3b7b`
 - **Môi trường:** `localhost:3000` · Node `v22.23.1` · Newman `6.2.2` · macOS `26.1 arm64`
 - **Tái hiện lại toàn bộ:** `bash bug-report/verify-bugs.sh` → log lượt chạy thật: [`verify-bugs-output.txt`](verify-bugs-output.txt)
-- **Trạng thái:** **25 bug** — 19 bug từ bộ test AI + **6 bug do case sinh viên chọn tìm ra** (BUG-20…25, Issues [#402](https://github.com/DuyITLOR/group05_eshop/issues/402)–[#407](https://github.com/DuyITLOR/group05_eshop/issues/407)) (không có bug nào chỉ suy từ đọc code).
+- **Trạng thái:** **22 bug xác nhận** (19 từ bộ test AI + 3 từ case sinh viên chọn) + **2 rủi ro** + **1 câu hỏi nghiệp vụ**. Issues: [#323–#341](https://github.com/DuyITLOR/group05_eshop/issues/323) và [#402–#407](https://github.com/DuyITLOR/group05_eshop/issues/402) (không có bug nào chỉ suy từ đọc code).
 - **GitHub Issues:** [#323](https://github.com/DuyITLOR/group05_eshop/issues/323)–[#341](https://github.com/DuyITLOR/group05_eshop/issues/341) (19 bug từ bộ AI) và [#402](https://github.com/DuyITLOR/group05_eshop/issues/402)–[#407](https://github.com/DuyITLOR/group05_eshop/issues/407) (6 bug do case sinh viên chọn) trên `DuyITLOR/group05_eshop` — mỗi issue có đủ 8 trường của template, ảnh báo cáo Newman nhúng sẵn, và lệnh tái hiện. Script tạo: [`create-github-issues.sh`](create-github-issues.sh) · nội dung: [`issues/`](issues/)
 
 > **Luật của file này:** một dòng chỉ được gọi là bug khi (1) tái hiện được bằng request thật,
@@ -35,23 +35,30 @@
 | **BUG-18** | products/admin | Mất chính xác số tiền > 2^53 (`9007199254740993` → `…992`) | FR-15 | Low / P3 | TC-PRODUPD-014 | [#340](https://github.com/DuyITLOR/group05_eshop/issues/340) |
 | **BUG-19** | users (ngoài phạm vi) | `GET /api/users/me` trả **mật khẩu plaintext** | **SEC-01** | **Critical / P1** | *(phát hiện khi dựng setup — xem §BUG-19)* | [#341](https://github.com/DuyITLOR/group05_eshop/issues/341) |
 
-### 6 bug do case **sinh viên chọn** tìm ra (§6.3)
+### Case sinh viên chọn (§6.3) — 3 bug xác nhận + 2 rủi ro + 1 câu hỏi nghiệp vụ
 
-| # | Module | Bug | Yêu cầu | Severity | Case bắt được | Issue |
+**Sau khi soát lại lần năm, 3 trong 6 mục ban đầu bị hạ khỏi mức "bug".** Lý do ghi thẳng ở đây vì nó là
+điều đáng đọc nhất của phần này: một phát hiện chỉ được gọi là bug khi expected có **căn cứ bắt buộc**, và
+ba mục dưới đây không có.
+
+| # | Module | Nội dung | Yêu cầu | Severity | Case | Issue |
 |---|---|---|---|---|---|---|
-| **BUG-20** | products/search | `GET /api/products` **không có giới hạn số dòng** — `?limit=1` và `?page=2` bị bỏ qua, luôn trả toàn bộ bảng | FR-05 | Medium / P2 | TC-PRODLIST-201, 202 | [#402](https://github.com/DuyITLOR/group05_eshop/issues/402) |
-| **BUG-21** | cart | **Giỏ giữ giá cũ** sau khi admin đổi giá sản phẩm: giỏ lưu bản chụp lúc thêm, không tham chiếu catalog | **FR-08** | **High / P1** | TC-CART-203 | [#403](https://github.com/DuyITLOR/group05_eshop/issues/403) |
-| **BUG-22** | cart | Payload `<script>alert(1)</script>` **lưu nguyên văn** vào giỏ và trả lại cho client | **SEC-04** | Medium / P2 | TC-CART-204, 205 | [#404](https://github.com/DuyITLOR/group05_eshop/issues/404) |
-| **BUG-23** | cart / users | **Token của user đã bị xoá vẫn dùng được** — `authenticateToken` chỉ verify chữ ký, không đối chiếu bảng `users` (`server.js:104-110`) | **SEC-02** | **High / P1** | TC-CART-208, 209 | [#405](https://github.com/DuyITLOR/group05_eshop/issues/405) |
-| **BUG-24** | products/admin | `imageUrl = javascript:alert(1)` được **lưu nguyên** — đi thẳng vào `src`/`href` của frontend là XSS không cần thẻ `<script>` | **SEC-04** | Medium / P2 | TC-PRODUPD-201, 202 | [#406](https://github.com/DuyITLOR/group05_eshop/issues/406) |
-| **BUG-25** | products/admin | `category_id` **trỏ danh mục đã bị xoá** vẫn ghi được — SQLite không bật kiểm khoá ngoại | FR-14 · spec §3.4 | Medium / P2 | TC-PRODUPD-205, 206 | [#407](https://github.com/DuyITLOR/group05_eshop/issues/407) |
+| **BUG-23** | cart / users | **Token của user đã bị xoá vẫn mở được giỏ** — `authenticateToken` chỉ verify chữ ký, không đối chiếu bảng `users` (`server.js:104-110`); `jwt.sign` cũng không có `expiresIn` nên token **không bao giờ hết hạn** | **SEC-02** | **High / P1** | TC-CART-208, 209 | [#405](https://github.com/DuyITLOR/group05_eshop/issues/405) |
+| **BUG-24** | products/admin | `imageUrl = javascript:alert(1)` được lưu nguyên. **Không phải** vấn đề escape (SEC-04 nói escape khi *hiển thị*) mà là **thiếu validate scheme**: spec §3.3 định nghĩa `imageUrl` dạng `http://...`, và một URL `javascript:` trong `href`/`src` chạy được **kể cả khi đã escape đúng** | spec §3.3 · SEC-04 | Medium / P2 | TC-PRODUPD-201, 202 | [#406](https://github.com/DuyITLOR/group05_eshop/issues/406) |
+| **BUG-25** | products/admin | `category_id` **trỏ danh mục đã bị xoá** vẫn ghi được — SQLite không bật `PRAGMA foreign_keys`, tầng API cũng không kiểm | FR-14 · spec §3.4 | Medium / P2 | TC-PRODUPD-205, 206 | [#407](https://github.com/DuyITLOR/group05_eshop/issues/407) |
 
-**Đáng chú ý:** 6 bug này đều **nằm ngoài** vùng mà bộ test do AI sinh phủ, và 4/6 thuộc loại chỉ tìm ra khi
-nghĩ theo **nghiệp vụ hoặc trục thời gian** (giá đổi sau khi vào giỏ · người dùng bị xoá sau khi có token ·
-danh mục bị xoá sau khi được gán), không theo trục *phân hoạch tham số*. Đó chính là điều §6.3 muốn kiểm.
-Lý do AI bỏ sót từng case: xem cột cuối trong `test-cases/*/own.md`.
+### Hạ mức: 2 rủi ro và 1 câu hỏi nghiệp vụ — **không** báo là bug
 
-**Phân bố:** 5 Critical · 7 High · 11 Medium · 2 Low. 12/19 bug thuộc đúng 3 API được giao; 7 bug còn
+| # | Nội dung | Vì sao KHÔNG phải bug | Case | Issue (đã sửa nhãn) |
+|---|---|---|---|---|
+| **R-01** | `GET /api/products` không có phân trang; `?limit`/`?page` bị bỏ qua, luôn trả toàn bộ bảng | **Spec §3.1 chỉ định nghĩa `search`.** Bỏ qua query param lạ là hành vi HTTP bình thường; không yêu cầu nào trong spec/FR đòi phân trang. Rủi ro hiệu năng là **thật** (DB thật của SUT ở HW05 có ~900k dòng) nhưng thuộc **đề xuất cải tiến** | TC-PRODLIST-201, 202 *(giờ xanh — characterization test)* | [#402](https://github.com/DuyITLOR/group05_eshop/issues/402) |
+| **R-02** | Payload `<script>` được lưu và trả lại nguyên văn trong giỏ | **SEC-04 nguyên văn:** *"Mọi dữ liệu từ user nhập vào **khi hiển thị trên UI** phải được escape đúng cách, không dùng `innerHTML`"*. Nó nói escape **khi hiển thị**, không cấm lưu. Tầng API trả `application/json` — payload là **dữ liệu**. Rủi ro hiện thực hoá ở UI, ngoài phạm vi bài API | TC-CART-204, 205 *(giờ xanh)* | [#404](https://github.com/DuyITLOR/group05_eshop/issues/404) |
+| **Q-01** | Giỏ giữ giá lúc thêm, không cập nhật khi catalog đổi giá | **Price-snapshot là chính sách hợp lệ** và phổ biến (giá chốt lúc thêm giỏ). Spec §4.1/§4.2 không nói giỏ tham chiếu hay chụp giá → không suy ra được bên nào đúng. Cần **quyết định nghiệp vụ**, và nếu là chính sách thì phải công bố cho người mua | TC-CART-201→203 *(giờ xanh)* | [#403](https://github.com/DuyITLOR/group05_eshop/issues/403) |
+
+**Rủi ro thật về tiền vẫn còn, nhưng nó nằm ở [BUG-08](#) (price tampering)** — chỗ đó client **tự đặt giá**,
+và căn cứ FR-07/FR-08 rõ ràng hơn nhiều so với Q-01.
+
+**Phân bố:** 5 Critical · 6 High · 9 Medium · 2 Low = **22 bug**, cộng **2 rủi ro (R-01, R-02)** và **1 câu hỏi nghiệp vụ (Q-01)** được ghi riêng. 12/19 bug thuộc đúng 3 API được giao; 7 bug còn
 lại nằm ở **endpoint hỗ trợ** trong cùng chuỗi test (`GET /api/products/:id`, `POST /api/checkout`,
 `POST`/`DELETE /api/products`, `GET /api/users/me`).
 

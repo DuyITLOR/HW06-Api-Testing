@@ -4,12 +4,12 @@
   "_note_ci": "Runner CI dùng database.sqlite sạch trong repo SUT — cùng trạng thái với local sau restart, nên baseline dùng chung được. Nếu lệch, nguyên nhân đầu tiên cần kiểm là dữ liệu seed, không phải code test.",
   "collections": {
     "api-01-products-search": {
-      "expected_failed": 31,
-      "reason": "BUG-01 SQL injection (TC-024/025/026/027/103) · BUG-02 lỗi DB trả HTML + lộ SQLITE_ERROR (TC-026/104/105) · BUG-03 chi tiết sản phẩm không tồn tại trả 200 {} (TC-023/033/034/035/036) · BUG-04 price đổi kiểu theo id chẵn/lẻ (TC-107) · BUG-05 tìm kiếm tiếng Việt phân biệt hoa/thường (TC-101) · BUG-20 không có phân trang/limit (TC-201/202)"
+      "expected_failed": 29,
+      "reason": "BUG-01 SQL injection (TC-024/025/026/027/103) · BUG-02 lỗi DB trả HTML + lộ SQLITE_ERROR (TC-026/104/105) · BUG-03 chi tiết sản phẩm không tồn tại trả 200 {} (TC-023/033/034/035/036) · BUG-04 price đổi kiểu theo id chẵn/lẻ (TC-107) · BUG-05 tìm kiếm tiếng Việt phân biệt hoa/thường (TC-101) *(TC-201/202 giờ là characterization test — xanh; thiếu phân trang được nêu là đề xuất cải tiến R-01, không phải bug)*"
     },
     "api-02-cart-add": {
-      "expected_failed": 33,
-      "reason": "BUG-06 POST /api/cart không validate gì (TC-003…023, 101, 107) · BUG-07 price tampering (TC-025/101/102) · BUG-08 giỏ không xoá sau checkout (TC-029/103) · BUG-09 mass assignment field lạ vào giỏ (TC-104) · BUG-10 trùng dòng cùng sản phẩm (TC-027) · BUG-11 thêm được sản phẩm không tồn tại / đã xoá (TC-010/011/012/106) · schema giỏ sai (TC-038) · BUG-21 giỏ giữ giá cũ sau khi catalog đổi giá (TC-203) · BUG-22 XSS lưu nguyên trong giỏ (TC-205) · BUG-23 token của user đã xoá vẫn dùng được (TC-209)"
+      "expected_failed": 31,
+      "reason": "BUG-06 POST /api/cart không validate gì (TC-003…023, 101, 107) · BUG-07 price tampering (TC-025/101/102) · BUG-08 giỏ không xoá sau checkout (TC-029/103) · BUG-09 mass assignment field lạ vào giỏ (TC-104) · BUG-10 trùng dòng cùng sản phẩm (TC-027) · BUG-11 thêm được sản phẩm không tồn tại / đã xoá (TC-010/011/012/106) · schema giỏ sai (TC-038) *(TC-203 → câu hỏi nghiệp vụ Q-01, TC-205 → rủi ro R-02; cả hai giờ là characterization test — xanh)* · BUG-23 token của user đã xoá vẫn dùng được (TC-209)"
     },
     "api-03-product-update": {
       "expected_failed": 33,

@@ -395,6 +395,36 @@ audit, mọi danh sách case đỏ đều được đối chiếu với dữ li�
   duy nhất trong bài mà **nội dung** do sinh viên quyết định, không phải AI đề xuất rồi sinh viên chấp nhận.
 - **Commit:** *(commit kế tiếp)*
 
+### Interaction #16
+- **API / Bước:** soát lần năm — đối chiếu **từng expected** với câu chữ spec/SEC
+- **Bước trong quy trình:** review (do người chấm nêu)
+- **AI tool:** Claude Code (Opus 5)
+- **Date & time:** 2026-08-23 18:00
+- **Prompt:**
+  ```
+  (bản review: TC-201/202 coi việc không hỗ trợ limit/page là bug tuy spec §3.1 không định nghĩa;
+   giỏ giữ giá cũ có thể là chính sách price-snapshot; API lưu <script> chưa tự nó chứng minh XSS
+   vì SEC-04 nói escape khi hiển thị) còn này nè
+  ```
+- **AI output (tóm tắt):** **bản review đúng cả 3 điểm.** Đã hạ mức:
+  - **R-01** (thiếu phân trang): spec §3.1 chỉ định nghĩa `search`; bỏ qua query param lạ là hành vi HTTP
+    bình thường → *đề xuất cải tiến*, không phải bug. TC-201/202 đổi thành **characterization test**.
+  - **Q-01** (giỏ giữ giá cũ): price-snapshot là chính sách hợp lệ; spec §4.1/§4.2 không nói bên nào →
+    *câu hỏi nghiệp vụ*. Rủi ro tiền thật vẫn nằm ở **BUG-08** (client tự đặt giá), chỗ có căn cứ FR-08 rõ.
+  - **R-02** (`<script>` lưu nguyên văn): đọc lại nguyên văn SEC-04 — *"khi **hiển thị** trên UI phải được
+    escape"* — nó **không** cấm lưu → *rủi ro phụ thuộc UI*.
+  Và **sửa 3 issue công khai**: #402 → `[RISK]`, #403 → `[QUESTION]`, #404 → `[RISK]`, mỗi issue kèm comment
+  giải thích vì sao hạ mức. Số liệu sau khi sửa: 372 assertion · 93 đỏ · **22 bug + 2 rủi ro + 1 câu hỏi**.
+- **AI sai / bỏ sót:** đây là lỗi **#25** và là lỗi nghiêm trọng về phương pháp: AI kết luận "bug" khi expected
+  chỉ là **suy luận**, không phải yêu cầu bắt buộc — đúng họ lỗi #1–#3 (bịa expected khi spec im lặng), nhưng
+  lần này hậu quả nặng hơn vì nó đã **báo ra ngoài** dưới dạng 3 GitHub Issue công khai trên repo nhóm.
+- **Vì sao bỏ sót:** **model limitations** — khi một hành vi *trông sai*, AI đi tìm yêu cầu để hợp lý hoá kết
+  luận thay vì đọc yêu cầu trước rồi mới kết luận. Riêng SEC-04 là lỗi **đọc thiếu chữ**: mệnh đề *"khi hiển
+  thị trên UI"* nằm ngay trong câu, và AI đã dùng SEC-04 để buộc tội tầng lưu trữ.
+- **Human review:** ***(SV đã kiểm)*** — sinh viên đưa bản review chỉ ra cả 3 điểm; AI xác nhận cả 3 đúng và
+  đã sửa, gồm cả việc sửa nhãn 3 issue đã công khai.
+- **Commit:** *(commit kế tiếp)*
+
 <!-- NEW_INTERACTION_MARKER -->
 
 ---
@@ -460,7 +490,8 @@ chạy folder `00-setup` bằng Collection Runner và chụp `bug-report/screens
 | 22 | #8/#12 | README + main-report còn ghi **329 assertion** (số thật 333) ở 3 chỗ | kỹ thuật | `tools/check-claims.mjs` — soát mọi con số công bố so với raw JSON | sửa 3 chỗ; phép kiểm vào `npm run verify` mục 5b |
 | 23 | #5/#14 | **Dán nhãn `SV` cho 22 case do AI sinh** và gọi là "sinh viên tự thêm" — không thoả §6.3 *"of your own"*; cùng họ với việc ghi "SV đã đọc" khi chưa đọc | prompt quality | bản review của người chấm đối chiếu `extended.md` với lời khai ở Interaction #5 | đổi nhãn `AI-2`, cảnh báo đầu file, tạo `own.md`, thêm bất biến chặn nhãn `SV` |
 | 24 | #12/#14 | `check-submission.mjs` coi mọi lỗi `gh` là "issue KHÔNG tồn tại" → báo sai 3 issue, người chấm trừ điểm oan | model limitations | kiểm lại bằng API công khai: cả 3 issue đều OPEN | dùng `curl` API công khai; chỉ HTTP 404 là thiếu |
-| 25 | #5/#13 | `TC-CART-101/102` dán nhãn **Security** nhưng không trỏ được SEC-0x nào — dùng chữ "security" theo nghĩa thông thường thay vì theo SEC-01…07 | prompt quality | `tools/check-cases.mjs` — bất biến "case Security phải trỏ một SEC-0x" | ghi rõ *"ngoài SEC-01…07"* + ghi **lỗ hổng của danh sách SEC** vào traceability, kèm đề nghị thêm mục SEC về toàn vẹn giá |
+| 25 | #15/#16 | **Kết luận "bug" khi expected không có căn cứ bắt buộc** — 3 phát hiện (thiếu phân trang · giỏ giữ giá cũ · `<script>` lưu nguyên văn) bị báo thành bug, trong đó SEC-04 bị đọc thiếu mệnh đề *"khi hiển thị trên UI"*. Đã báo ra ngoài thành 3 issue công khai | model limitations | bản review của người chấm đối chiếu từng expected với câu chữ spec/SEC | hạ thành **R-01 · Q-01 · R-02**, đổi 3 case thành characterization test, **sửa nhãn + comment 3 issue công khai** (#402/#403/#404) |
+| 26 | #5/#13 | `TC-CART-101/102` dán nhãn **Security** nhưng không trỏ được SEC-0x nào — dùng chữ "security" theo nghĩa thông thường thay vì theo SEC-01…07 | prompt quality | `tools/check-cases.mjs` — bất biến "case Security phải trỏ một SEC-0x" | ghi rõ *"ngoài SEC-01…07"* + ghi **lỗ hổng của danh sách SEC** vào traceability, kèm đề nghị thêm mục SEC về toàn vẹn giá |
 
 **Bốn lỗi đáng giá nhất về phương pháp là #9, #10, #14 và #16.** Riêng #16 đáng đọc vì nó là **lỗi mà chính
 lượt tự audit của AI đã dán nhãn `VALID`** — bằng chứng cụ thể cho hạn chế đã ghi ở Interaction #5: AI không

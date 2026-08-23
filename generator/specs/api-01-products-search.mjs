@@ -288,26 +288,25 @@ export default {
 
   // ── §6.3 — case DO SINH VIÊN CHỌN (SV quyết định kiểm gì; AI định dạng + tra căn cứ) ──────────
   own: [
-    { id: `${P}-201`, folder: "91-sv-own", tech: "Domain", part: "**không có cơ chế giới hạn số dòng** — thử `?limit=1`",
-      method: "GET", path: "/api/products", query: { limit: 1 }, auth: "none", status: "200 (≤ mốc) hoặc 400",
-      expect: "hoặc honor `limit` (1 dòng), hoặc 400 vì tham số không hỗ trợ — **không được im lặng trả toàn bộ bảng**",
-      basis: "FR-05 *product listing* · spec §3.1 chỉ định nghĩa `search`; DB thật của SUT từng có ~900k dòng (HW05)", src: "SV", audit: "VALID",
-      checks: [["statusIn", "200,400"],
-        ["raw", `pm.test("hoặc giới hạn được số dòng, hoặc từ chối tham số", () => {
-  if (pm.response.code === 400) return;
+    { id: `${P}-201`, folder: "91-sv-own", tech: "Domain", part: "`?limit=1` — **ghi nhận hành vi** với tham số spec không định nghĩa",
+      method: "GET", path: "/api/products", query: { limit: 1 }, auth: "none", status: 200,
+      expect: "200 + mảng JSON đúng schema. **Không** khẳng định phải honor `limit` hay phải trả 400: spec §3.1 chỉ định nghĩa `search`, và bỏ qua query param lạ là hành vi HTTP bình thường",
+      basis: "spec §3.1 (chỉ `search` được định nghĩa) — case này là **characterization test**: ghi lại hành vi thật để lần sau đổi thì biết", src: "SV",
+      audit: "INVALID: bản đầu đặt expected *'phải honor limit hoặc trả 400'* và báo thành BUG-20. Không có yêu cầu nào trong spec/FR đòi phân trang, nên đó là **kết luận không có căn cứ bắt buộc** — đúng họ lỗi #1–#3 của bài. Đã hạ về ghi nhận hành vi; rủi ro hiệu năng chuyển sang mục **đề xuất cải tiến** ở báo cáo §12, không báo là bug.",
+      checks: [["status", 200], ["isArray"], ["schemaProductArray"],
+        ["raw", `pm.test("ghi nhận: tham số lạ bị bỏ qua, trả toàn bộ bảng (không phải bug, xem §12)", () => {
   const n = pm.response.json().length, total = Number(pm.environment.get("total_products"));
-  pm.expect(n, "trả " + n + " dòng = toàn bộ bảng, ?limit bị bỏ qua").to.be.below(total);
+  pm.expect(n).to.eql(total);
 });`]] },
 
-    { id: `${P}-202`, folder: "91-sv-own", tech: "Domain", part: "**phân trang** — thử `?page=2`",
-      method: "GET", path: "/api/products", query: { page: 2 }, auth: "none", status: "200 (khác trang 1) hoặc 400",
-      expect: "hoặc trả trang 2, hoặc 400 — không được trả y hệt như không phân trang",
-      basis: "FR-05 · spec §3.1 **im lặng** về phân trang, nên chỉ khẳng định phần suy được: phải phân biệt được có/không có tham số", src: "SV", audit: "VALID",
-      checks: [["statusIn", "200,400"],
-        ["raw", `pm.test("page=2 phải cho kết quả khác toàn bộ bảng, hoặc bị từ chối", () => {
-  if (pm.response.code === 400) return;
-  const n = pm.response.json().length, total = Number(pm.environment.get("total_products"));
-  pm.expect(n, "page=2 vẫn trả " + n + "/" + total + " dòng").to.not.eql(total);
+    { id: `${P}-202`, folder: "91-sv-own", tech: "Domain", part: "`?page=2` — ghi nhận hành vi, cùng lý do TC-201",
+      method: "GET", path: "/api/products", query: { page: 2 }, auth: "none", status: 200,
+      expect: "200 + mảng JSON. Spec §3.1 **im lặng** về phân trang → không khẳng định SUT sai",
+      basis: "spec §3.1 — characterization test", src: "SV",
+      audit: "INVALID: cùng lỗi với TC-201, đã sửa cùng cách.",
+      checks: [["status", 200], ["isArray"],
+        ["raw", `pm.test("ghi nhận: page=2 trả y hệt không phân trang", () => {
+  pm.expect(pm.response.json().length).to.eql(Number(pm.environment.get("total_products")));
 });`]] },
 
     { id: `${P}-203`, folder: "91-sv-own", tech: "Domain", part: "tìm chuỗi **chỉ có trong `description`**, không có trong `name`",
@@ -330,8 +329,8 @@ export default {
   ],
 
   ownWhyMissed: [
-    { id: `${P}-201`, missed: "không sinh case nào về **giới hạn số dòng / phân trang**", group: "prompt quality", why: "Prompt yêu cầu *domain partitions on every parameter*, và `limit`/`page` **không phải tham số trong spec** — nên chúng không có trong bảng tham số ở bước 1, và không bao giờ được phân hoạch. Chỗ thiếu này chỉ thấy được khi hỏi *API này còn thiếu tham số nào lẽ ra phải có*, chứ không phải *tham số đã có thì phân hoạch thế nào*." },
-    { id: `${P}-202`, missed: "cùng nhóm với 201", group: "prompt quality", why: "Sinh viên nêu bối cảnh AI không có: DB thật của SUT ở HW05 có ~900k sản phẩm, nên một endpoint trả toàn bộ bảng là vấn đề thật, không phải giả định." },
+    { id: `${P}-201`, missed: "không sinh case nào cho **tham số lẽ ra nên có nhưng spec không định nghĩa** (`limit`/`page`)", group: "prompt quality", why: "Prompt yêu cầu *domain partitions on every parameter*, và `limit`/`page` không phải tham số trong spec nên không có trong bảng tham số ở bước 1. **Lưu ý về kết luận:** case này chỉ **ghi nhận hành vi**; việc thiếu phân trang được nêu ở §12 như *đề xuất cải tiến*, không báo thành bug — vì không yêu cầu nào trong spec/FR đòi phân trang." },
+    { id: `${P}-202`, missed: "cùng nhóm với 201", group: "prompt quality", why: "Sinh viên nêu bối cảnh AI không có: DB thật của SUT ở HW05 có ~900k sản phẩm, nên một endpoint trả toàn bộ bảng là **rủi ro hiệu năng** đáng ghi lại — nhưng vẫn không phải vi phạm yêu cầu nào." },
     { id: `${P}-203`, missed: "không kiểm SUT có tìm **quá phạm vi** spec cho phép hay không", group: "model limitations", why: "AI sinh case theo hướng *tìm có ra kết quả đúng không*. Câu hỏi ngược — *có ra kết quả mà lẽ ra KHÔNG nên ra không* — cần nghĩ theo hướng phủ định phạm vi, và AI không tự đặt ra." },
     { id: `${P}-204`, missed: "chỉ đẩy độ dài tới **300 ký tự**, không tới biên thật của URL", group: "model limitations", why: "AI chọn 300 vì đó là con số 'trông đủ dài'. Biên thật nằm ở giới hạn URL của Node/Express (khoảng 8–16KB), tức phải chọn số theo **tầng dưới**, không theo cảm giác." },
     { id: `${P}-205`, missed: "không kiểm hệ quả sau case biên độ dài", group: "model limitations", why: "Cùng họ với việc AI kiểm SQLi bằng status code: case biên chỉ có nghĩa nếu chứng minh được hệ thống sau đó vẫn nguyên vẹn." },

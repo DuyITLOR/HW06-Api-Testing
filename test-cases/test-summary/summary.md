@@ -3,14 +3,14 @@
 > **Đừng sửa tay.** Sinh lại bằng `npm run summary`. Nguồn: `reports/newman/*.json`.
 > Mỗi api-slug lấy **lượt mới nhất**. Assertion đỏ ở đây là **kết quả mong đợi** khi test case bắt được bug thật.
 
-- Sinh lúc: `2026-08-23T10:43:31.387Z`
+- Sinh lúc: `2026-08-23T10:54:01.627Z`
 
 | API | Lượt chạy (UTC) | Iteration | Request | Assertion | Passed | **Failed** | Thời lượng |
 |---|---|---|---|---|---|---|---|
-| API-01 · Pool A · GET /api/products | 2026-08-23T10:27:07.895Z | 1 | 67 | 167 | 136 | **31** | 1.2s |
-| API-02 · Pool B · POST /api/cart | 2026-08-23T10:27:11.594Z | 1 | 61 | 98 | 65 | **33** | 0.9s |
-| API-03 · Pool C · PUT /api/products/:id | 2026-08-23T10:27:14.506Z | 1 | 64 | 103 | 70 | **33** | 1.1s |
-| **Tổng** | | | **192** | **368** | **271** | **97** | **3.2s** |
+| API-01 · Pool A · GET /api/products | 2026-08-23T10:51:00.632Z | 1 | 67 | 170 | 141 | **29** | 0.9s |
+| API-02 · Pool B · POST /api/cart | 2026-08-23T10:51:03.237Z | 1 | 61 | 99 | 68 | **31** | 0.9s |
+| API-03 · Pool C · PUT /api/products/:id | 2026-08-23T10:51:06.445Z | 1 | 64 | 103 | 70 | **33** | 0.9s |
+| **Tổng** | | | **192** | **372** | **279** | **93** | **2.7s** |
 
 ## Assertion đỏ theo từng API
 
@@ -18,7 +18,7 @@
 > là test case của mình viết sai. Không để dòng nào không có kết luận.
 
 ### API-01 · Pool A · GET /api/products
-Raw: `reports/newman/23127178_api-01-products-search_20260823-172706.json`
+Raw: `reports/newman/23127178_api-01-products-search_20260823-175059.json`
 
 | Request | Test | Thông báo |
 |---|---|---|
@@ -51,11 +51,9 @@ Raw: `reports/newman/23127178_api-01-products-search_20260823-172706.json`
 | TC-PRODLIST-105 · **response lỗi** phải là JSON và không lộ chi tiết engine | body không được chứa "<h1>" | expected '<h1>Database Error</h1><p>SQLITE_ERRO…' to not include '<h1>' |
 | TC-PRODLIST-107 · chi tiết **id chẵn** (id=2): price vẫn phải là number | price phải là number | expected '28000000' to be a number |
 | TC-PRODLIST-107 · chi tiết **id chẵn** (id=2): price vẫn phải là number | object đúng schema product (spec §3.1) | expected data to satisfy schema but found following errors:  data.price should be number |
-| TC-PRODLIST-201 · **không có cơ chế giới hạn số dòng** — thử ?limit=1 | hoặc giới hạn được số dòng, hoặc từ chối tham số | trả 11 dòng = toàn bộ bảng, ?limit bị bỏ qua: expected 11 to be below 11 |
-| TC-PRODLIST-202 · **phân trang** — thử ?page=2 | page=2 phải cho kết quả khác toàn bộ bảng, hoặc bị từ chối | page=2 vẫn trả 11/11 dòng: expected 11 to not deeply equal 11 |
 
 ### API-02 · Pool B · POST /api/cart
-Raw: `reports/newman/23127178_api-02-cart-add_20260823-172710.json`
+Raw: `reports/newman/23127178_api-02-cart-add_20260823-175102.json`
 
 | Request | Test | Thông báo |
 |---|---|---|
@@ -89,12 +87,10 @@ Raw: `reports/newman/23127178_api-02-cart-add_20260823-172710.json`
 | TC-CART-107 · **bất biến trạng thái giỏ** sau toàn bộ input sai ở trên | không dòng nào có quantity <= 0 | có 6 dòng quantity không hợp lệ: [{"id":"6","name":"HW06-Cart-Fixture","price":111000,"quantity":0},{"id":"6","name":"HW06-Cart-Fixture","price":111000,"quantit |
 | TC-CART-107 · **bất biến trạng thái giỏ** sau toàn bộ input sai ở trên | không dòng nào có name rỗng hoặc thiếu (hệ quả TC-021) | có 2 dòng không có tên: [{},{"id":"6","name":"","price":111000,"quantity":1}]: expected 2 to deeply equal +0 |
 | TC-CART-107 · **bất biến trạng thái giỏ** sau toàn bộ input sai ở trên | không dòng nào thiếu price (hệ quả TC-020) | có 2 dòng không có giá: [{},{"id":"6","name":"HW06-Cart-Fixture","quantity":1}]: expected 2 to deeply equal +0 |
-| TC-CART-203 · bước 3: **giá trong giỏ sau khi catalog đổi giá** | giỏ không được giữ giá cũ sau khi catalog đổi giá | có 19 dòng còn giá cũ 111000 dù catalog đã là 222000: expected 19 to deeply equal +0 |
-| TC-CART-205 · **hệ quả** TC-204: giỏ không được chứa thẻ script nguyên văn | giỏ không chứa thẻ <script> nguyên văn | có 1 dòng chứa thẻ script: expected 1 to deeply equal +0 |
 | TC-CART-209 · **hệ quả** TC-208: token cũ của user đã xoá còn dùng được không | status thuộc [401,403] | expected [ 401, 403 ] to include 200 |
 
 ### API-03 · Pool C · PUT /api/products/:id
-Raw: `reports/newman/23127178_api-03-product-update_20260823-172713.json`
+Raw: `reports/newman/23127178_api-03-product-update_20260823-175105.json`
 
 | Request | Test | Thông báo |
 |---|---|---|

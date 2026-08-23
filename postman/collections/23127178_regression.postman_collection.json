@@ -1163,6 +1163,56 @@
           "name": "91-sv-own",
           "item": [
             {
+              "name": "TC-PRODLIST-201 · ?limit=1 — **ghi nhận hành vi** với tham số spec không định nghĩa",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "// TC-PRODLIST-201 · Domain · ?limit=1 — **ghi nhận hành vi** với tham số spec không định nghĩa",
+                      "pm.test(\"status = 200\", () => pm.response.to.have.status(200));",
+                      "pm.test(\"body là mảng JSON\", () => pm.expect(pm.response.json()).to.be.an(\"array\"));",
+                      "pm.test(\"mảng đúng schema product (spec §3.1)\", () => pm.response.to.have.jsonSchema({\n  type: \"array\",\n  items: { type: \"object\", required: [\"id\",\"name\",\"price\"], properties: {\n    id: { type: \"integer\" }, name: { type: \"string\" }, price: { type: \"number\" },\n    description: { type: [\"string\",\"null\"] }, imageUrl: { type: [\"string\",\"null\"] },\n    category_id: { type: [\"integer\",\"null\"] } } }\n}));",
+                      "pm.test(\"ghi nhận: tham số lạ bị bỏ qua, trả toàn bộ bảng (không phải bug, xem §12)\", () => {",
+                      "  const n = pm.response.json().length, total = Number(pm.environment.get(\"total_products\"));",
+                      "  pm.expect(n).to.eql(total);",
+                      "});"
+                    ]
+                  }
+                }
+              ],
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": "{{base_url}}/api/products?limit=1"
+              }
+            },
+            {
+              "name": "TC-PRODLIST-202 · ?page=2 — ghi nhận hành vi, cùng lý do TC-201",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "// TC-PRODLIST-202 · Domain · ?page=2 — ghi nhận hành vi, cùng lý do TC-201",
+                      "pm.test(\"status = 200\", () => pm.response.to.have.status(200));",
+                      "pm.test(\"body là mảng JSON\", () => pm.expect(pm.response.json()).to.be.an(\"array\"));",
+                      "pm.test(\"ghi nhận: page=2 trả y hệt không phân trang\", () => {",
+                      "  pm.expect(pm.response.json().length).to.eql(Number(pm.environment.get(\"total_products\")));",
+                      "});"
+                    ]
+                  }
+                }
+              ],
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": "{{base_url}}/api/products?page=2"
+              }
+            },
+            {
               "name": "TC-PRODLIST-203 · tìm chuỗi **chỉ có trong description**, không có trong name",
               "event": [
                 {
@@ -2203,6 +2253,37 @@
               }
             },
             {
+              "name": "TC-CART-203 · bước 3: **giá trong giỏ sau khi catalog đổi giá**",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "// TC-CART-203 · State · bước 3: **giá trong giỏ sau khi catalog đổi giá**",
+                      "pm.test(\"status = 200\", () => pm.response.to.have.status(200));",
+                      "pm.test(\"ghi nhận: giỏ giữ giá lúc thêm (price snapshot) — xem câu hỏi Q-01 ở §12\", () => {",
+                      "  const pid = Number(pm.environment.get(\"product_id\"));",
+                      "  const rows = pm.response.json().filter(r => Number(r.id) === pid);",
+                      "  pm.expect(rows.length, \"phải có dòng của product_id\").to.be.above(0);",
+                      "  pm.expect(rows.some(r => Number(r.price) === 111000), \"giỏ giữ giá cũ\").to.be.true;",
+                      "});"
+                    ]
+                  }
+                }
+              ],
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{user_token}}"
+                  }
+                ],
+                "url": "{{base_url}}/api/cart"
+              }
+            },
+            {
               "name": "TC-CART-204 · **XSS**: name chứa <script> khi thêm vào giỏ",
               "event": [
                 {
@@ -2238,6 +2319,37 @@
                     }
                   }
                 }
+              }
+            },
+            {
+              "name": "TC-CART-205 · **hệ quả** TC-204: giỏ không được chứa thẻ script nguyên văn",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "// TC-CART-205 · Security SEC-04 · **hệ quả** TC-204: giỏ không được chứa thẻ script nguyên văn",
+                      "pm.test(\"status = 200\", () => pm.response.to.have.status(200));",
+                      "pm.test(\"Content-Type là application/json\", () => pm.expect(pm.response.headers.get(\"Content-Type\") || \"\").to.include(\"application/json\"));",
+                      "pm.test(\"ghi nhận: payload được lưu nguyên văn, trả về dưới dạng dữ liệu JSON (rủi ro R-02)\", () => {",
+                      "  const rows = pm.response.json().filter(r => String(r.name || \"\").includes(\"<script\"));",
+                      "  pm.expect(rows.length, \"số dòng chứa payload\").to.be.at.least(0);",
+                      "  pm.expect(pm.response.headers.get(\"Content-Type\") || \"\").to.include(\"application/json\");",
+                      "});"
+                    ]
+                  }
+                }
+              ],
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{user_token}}"
+                  }
+                ],
+                "url": "{{base_url}}/api/cart"
               }
             },
             {

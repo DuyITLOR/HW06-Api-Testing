@@ -14,11 +14,11 @@
 |---|---|
 | API kiểm thử | **3** — mỗi pool một API, không trùng thành viên nhóm ([`docs/api-selection.md`](../docs/api-selection.md)) |
 | Test case | **157** — 114 do AI sinh (lượt 1) + 22 do AI sinh (lượt 2, `AI-2`) + **21 do sinh viên chọn** (`SV`, §6.3) |
-| Đã thực thi | **192 request · 368 assertion** trên SUT thật ở `localhost:3000` · thêm **regression suite 241 assertion, 0 đỏ** |
-| Kết quả | **271 assertion xanh · 97 đỏ** — mọi assertion đỏ đều map tới một bug |
-| Bug | **25 bug** — 19 từ bộ AI (Issues [#323–#341](https://github.com/DuyITLOR/group05_eshop/issues/323)) + **6 do case sinh viên chọn** (Issues [#402](https://github.com/DuyITLOR/group05_eshop/issues/402)–[#407](https://github.com/DuyITLOR/group05_eshop/issues/407)) · 5 Critical, 7 High, 11 Medium, 2 Low |
+| Đã thực thi | **192 request · 372 assertion** trên SUT thật ở `localhost:3000` · thêm **regression suite 253 assertion, 0 đỏ** |
+| Kết quả | **279 assertion xanh · 93 đỏ** — mọi assertion đỏ đều map tới một bug |
+| Bug | **22 bug xác nhận** (19 từ bộ AI + 3 từ case sinh viên chọn) + **2 rủi ro** + **1 câu hỏi nghiệp vụ** · Issues [#323–#341](https://github.com/DuyITLOR/group05_eshop/issues/323), [#402–#407](https://github.com/DuyITLOR/group05_eshop/issues/402) · 5 Critical, 6 High, 9 Medium, 2 Low |
 | Bug đáng chú ý nhất | **BUG-14**: khách **không đăng nhập** làm **sập cả backend** bằng 2 request — chuỗi 3 lỗi |
-| Lỗi của AI đã bắt và sửa | **25** (bảng đầy đủ ở §11) — 5 lỗi thiết kế test case (gồm 2 case assertion nghiêm hơn expected), 5 lỗi kỹ thuật, 4 lỗi bỏ sót phân vùng, 2 lỗi số liệu, 2 lỗi quy trình |
+| Lỗi của AI đã bắt và sửa | **26** (bảng đầy đủ ở §11) — 5 lỗi thiết kế test case (gồm 2 case assertion nghiêm hơn expected), 5 lỗi kỹ thuật, 4 lỗi bỏ sót phân vùng, 2 lỗi số liệu, 2 lỗi quy trình |
 | Giả thuyết đã **loại** sau khi kiểm | **4** (ghi lại ở [bug-report §Bug đã loại](../bug-report/bug-report.md)) |
 
 ## Mục lục
@@ -311,16 +311,16 @@ trong `reports/newman/` để bộ nộp không phình; hai lượt trước đ�
 
 | API | Request | Assertion | Passed | **Failed** |
 |---|---|---|---|---|
-| API-01 · `GET /api/products` | 67 | 167 | 136 | **31** |
-| API-02 · `POST /api/cart` | 61 | 98 | 65 | **33** |
+| API-01 · `GET /api/products` | 67 | 170 | 141 | **29** |
+| API-02 · `POST /api/cart` | 61 | 99 | 68 | **31** |
 | API-03 · `PUT /api/products/:id` | 64 | 103 | 70 | **33** |
-| **Tổng** | **192** | **368** | **271** | **97** |
-| *(regression suite — cổng CI)* | 109 | 241 | 241 | **0** |
+| **Tổng** | **192** | **372** | **279** | **93** |
+| *(regression suite — cổng CI)* | 120 | 253 | 253 | **0** |
 
 <a id="7-bug"></a>
 ## 7. Bug (§6.5)
 
-**25 bug, tất cả tái hiện được bằng request thật, 25/25 đã mở GitHub Issue** — [#323](https://github.com/DuyITLOR/group05_eshop/issues/323)–[#341](https://github.com/DuyITLOR/group05_eshop/issues/341)
+**22 bug xác nhận + 2 rủi ro + 1 câu hỏi nghiệp vụ**, tất cả tái hiện được bằng request thật, 25/25 đã mở GitHub Issue — [#323](https://github.com/DuyITLOR/group05_eshop/issues/323)–[#341](https://github.com/DuyITLOR/group05_eshop/issues/341)
 trên `DuyITLOR/group05_eshop`, mỗi issue đủ 8 trường của template và có ảnh báo cáo Newman nhúng sẵn.
 Bản đầy đủ: [`bug-report/bug-report.md`](../bug-report/bug-report.md) · log tái hiện:
 [`bug-report/verify-bugs-output.txt`](../bug-report/verify-bugs-output.txt).
@@ -427,7 +427,8 @@ Postman — 136 case, 333 assertion, từ **một** nguồn định nghĩa.
 | 22 | `TC-CART-101/102` dán nhãn **Security** nhưng không trỏ được SEC-0x nào — dùng "security" theo nghĩa thông thường thay vì theo SEC-01…07 | prompt quality | `tools/check-cases.mjs` — bất biến "case Security phải trỏ một SEC-0x" | ghi rõ *"ngoài SEC-01…07"* + ghi **lỗ hổng của danh sách SEC** vào traceability |
 | 23 | **Dán nhãn `SV` cho 22 case do AI sinh** và gọi là *"sinh viên tự thêm"* — misattribution, không thoả §6.3 *"of your own"* | quy trình | soát lại lần bốn, đối chiếu `extended.md` với chính lời khai ở Interaction #5 (*"AI output … thêm 22 case"*) | đổi nhãn thành `AI-2`, viết cảnh báo vào đầu `extended.md`, tạo `own.md` cho case của sinh viên, và thêm bất biến chặn nhãn `SV` |
 | 24 | `check-submission.mjs` coi **mọi lỗi `gh`** là *"issue KHÔNG tồn tại"* → chạy trong shell chưa `gh auth login` là ra 3 dòng đỏ khẳng định sai, và người chấm trừ điểm phần bug report | kỹ thuật | issue #323/#328/#341 bị báo không tồn tại, kiểm lại bằng API công khai thì **đều OPEN** | gọi API công khai bằng `curl`, chỉ **HTTP 404** là "không tồn tại"; 000/403 là "không kiểm được" |
-| 25 | **Hai lượt CI không đúng nghĩa §6** (*"all test cases passing"* / *"one test case failing"*) — bộ 136 case luôn có 89 đỏ nên lượt "xanh" vẫn đầy assertion đỏ | thiết kế CI | Đọc lại đúng câu chữ §6 khi tự chấm bài theo bảng §15 | Thêm **regression suite** sinh tự động (216 assertion, 0 đỏ) với cổng riêng; lượt đỏ tạo bằng đúng 1 assertion có nhãn DEMO rồi gỡ ngay ở commit sau |
+| 25 | **Kết luận "bug" khi expected không có căn cứ bắt buộc** — 3/6 phát hiện từ case sinh viên chọn bị báo thành bug: thiếu phân trang (spec §3.1 không định nghĩa `limit`/`page`), giỏ giữ giá cũ (price-snapshot là chính sách hợp lệ, spec im lặng), `<script>` lưu nguyên văn (SEC-04 nói escape **khi hiển thị**, không cấm lưu) | thiết kế test | bản review đối chiếu từng expected với câu chữ spec/SEC | Hạ xuống **R-01, Q-01, R-02**; đổi 3 case thành *characterization test*; **sửa nhãn 3 issue công khai** (#402 → RISK, #403 → QUESTION, #404 → RISK) kèm comment giải thích |
+| 26 | **Hai lượt CI không đúng nghĩa §6** (*"all test cases passing"* / *"one test case failing"*) — bộ 136 case luôn có 89 đỏ nên lượt "xanh" vẫn đầy assertion đỏ | thiết kế CI | Đọc lại đúng câu chữ §6 khi tự chấm bài theo bảng §15 | Thêm **regression suite** sinh tự động (216 assertion, 0 đỏ) với cổng riêng; lượt đỏ tạo bằng đúng 1 assertion có nhãn DEMO rồi gỡ ngay ở commit sau |
 
 **Ba lỗi đáng giá nhất về mặt phương pháp — #9 (mã JS sinh sai), #10 (mốc sẵn sàng sai) và #13 (bản sửa cho #10 vẫn sai):** cả ba đều làm test case đỏ, và nếu không
 truy nguyên thì sẽ được **báo thành bug của SUT**. Riêng chuỗi #10 → #13 đáng đọc kỹ, vì nó là một **bản sửa
@@ -450,13 +451,15 @@ một câu kết luận sai về nguyên nhân.
 
 Mỗi assertion đỏ phải trả lời được: *đỏ vì SUT sai, vì test tôi viết sai, hay vì môi trường?*
 
-**Ba lượt soát sau khi bài đã "xong" — và số lỗi tìm được chưa lần nào về 0:**
+**Năm lượt soát sau khi bài đã "xong" — và số lỗi tìm được chưa lần nào về 0:**
 
 | Lượt | Soát gì | Tìm được |
 |---|---|---|
 | 1 | chạy lại toàn bộ, kiểm tái lập | 1 (lỗi #10 → #13: mốc sẵn sàng vẫn sai) |
 | 2 | đọc tài liệu với vai người chấm | **3** (#19 hash bịa · #20 bảng đánh số trùng · #21 trỏ file cũ) |
 | 3 | soát **nội dung** 114 nhãn `VALID` | **2** (#22 nhãn Security không trỏ được SEC · #18 số 329 còn sót) |
+| 4 | toàn vẹn bộ nộp (bug→case, issue, ảnh, PDF, hash) | **4** (#19 hash bịa · #23 misattribution nhãn `SV` · #24 checker báo sai issue · placeholder) |
+| 5 | **đối chiếu từng expected với câu chữ spec/SEC** | **1 lỗi lớn** (#25: 3 phát hiện bị kết luận là bug khi không có căn cứ bắt buộc) |
 
 Mỗi lượt sinh ra một phép kiểm bằng máy để lỗi đó không quay lại âm thầm:
 [`check-expect-vs-checks.mjs`](../tools/check-expect-vs-checks.mjs) (135 case · 0 lệch) ·
