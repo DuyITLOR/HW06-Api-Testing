@@ -27,6 +27,12 @@ printf -v GRADE3 '%03d' "$GRADE_NUM"   # §14: SelfAssessedGrade là số 3 ch�
 MSSV="23127178"
 NAME="${MSSV}_HW06_AI_API_${GRADE3}"
 
+# Điểm trong tên file phải khớp bảng tự chấm trong README, nếu không bộ nộp tự mâu thuẫn.
+README_SCORE="$(grep -oE '\*\*Tổng\*\* \| \*\*100\*\* \| \*\*[0-9]+\*\*' README.md 2>/dev/null | grep -oE '[0-9]+\*\*$' | tr -d '*')"
+if [ -n "${README_SCORE:-}" ] && [ "$README_SCORE" != "$GRADE_NUM" ]; then
+  echo "  [LUU Y] tên zip dùng điểm $GRADE_NUM nhưng README tự chấm $README_SCORE — sửa một trong hai."
+fi
+
 MISSING=0
 need() { if [ -e "$1" ]; then printf "  [OK]    %-52s %s\n" "$1" "$2"; else printf "  [THIEU] %-52s %s\n" "$1" "$2"; MISSING=$((MISSING+1)); fi; }
 needglob() { local n; n=$(ls -1 $1 2>/dev/null | wc -l | tr -d ' ');
@@ -96,6 +102,14 @@ fi
 [ "$CHECK" = "1" ] && exit 0
 
 echo "══ Dựng $NAME ═══════════════════════════════════════════════════════════"
+# Xoá MỌI bản đóng gói cũ, không chỉ bản cùng tên: một folder 23127178_HW06_AI_API_090/ còn sót từ lượt
+# trước là bản CŨ nhưng nhìn y như bản mới, và nộp nhầm nó thì mọi sửa đổi sau đó không được nộp.
+for old in 23127178_HW06_AI_API_*; do
+  [ -e "$old" ] || continue
+  [ "$old" = "$NAME" ] || [ "$old" = "$NAME.zip" ] && continue
+  echo "   [DON] xoá bản đóng gói cũ: $old"
+  rm -rf "$old"
+done
 rm -rf "$NAME" "$NAME.zip"
 mkdir -p "$NAME"
 for item in report ai-audit bug-report ci git-log TASKS.md README.md package.json \

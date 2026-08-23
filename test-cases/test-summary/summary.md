@@ -3,7 +3,7 @@
 > **Đừng sửa tay.** Sinh lại bằng `npm run summary`. Nguồn: `reports/newman/*.json`.
 > Mỗi api-slug lấy **lượt mới nhất**. Assertion đỏ ở đây là **kết quả mong đợi** khi test case bắt được bug thật.
 
-- Sinh lúc: `2026-08-23T10:06:37.490Z`
+- Sinh lúc: `2026-08-23T10:09:49.467Z`
 
 | API | Lượt chạy (UTC) | Iteration | Request | Assertion | Passed | **Failed** | Thời lượng |
 |---|---|---|---|---|---|---|---|

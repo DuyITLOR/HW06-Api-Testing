@@ -1,30 +1,49 @@
 # api-01-products-search · §6.3 — test case **do sinh viên tự viết**
 
-> **File này đang TRỐNG, và đó là trạng thái đúng cho tới khi sinh viên tự viết.**
+> Đề §6.3: *"Add at least **five** test cases of **your own** that the AI missed — and explain **why** the
+> AI missed them (prompt quality, model limitations, or characteristics of the API)."*
 >
-> Đề §6.3: *"Add at least **five** test cases of **your own** that the AI missed — and explain **why**
-> the AI missed them (prompt quality, model limitations, or characteristics of the API)."*
->
-> `extended.md` **không** thoả yêu cầu này: 7–8 case trong đó do **AI sinh ở lượt hai** (cột `Nguồn` =
-> `AI-2`), sau khi đọc source và dữ liệu thật. Chúng thoả phần *"mà AI bỏ sót"* nhưng không thoả phần
-> *"of your own"*. Trước đây chúng bị dán nhãn `SV` — đã sửa, và `tools/check-cases.mjs` giờ chặn nhãn đó.
+> `extended.md` **không** tính vào yêu cầu này: các case ở đó do AI sinh ở lượt hai (`Nguồn = AI-2`).
 
-## Cách viết (≈20 phút cho 5 case)
+## Trạng thái phủ hiện tại của GET /api/products
 
-1. `npm run gaps` — in ra ô còn trống: loại phân hoạch chưa dùng, mã SEC chưa chạm ở API này.
-2. Chọn 5 ô, tự nghĩ case. **Không** chép từ `extended.md`.
-3. Điền bảng dưới. Cột **Căn cứ** phải trỏ được vào `spec §…` / `FR-…` / `SEC-0…` / `server.js:dòng` —
-   không có căn cứ thì expected là suy đoán, và suy đoán sinh ra **bug giả**.
-4. Chạy thử bằng curl để xác nhận expected mình ghi là đúng, rồi `npm run verify`.
+- Tham số của API này: search (query)
+- Số case theo nhóm: **Domain 22 · State 5 · Security 7 · Schema 9**
+- SEC đã chạm ở API này: SEC-04, SEC-05
+- **SEC chưa chạm ở API này: SEC-01, SEC-02, SEC-03, SEC-06, SEC-07**
 
-## Bảng test case của sinh viên
+## Cách nghĩ ra 5 case trong ~15 phút
+
+Chọn 5 chỗ từ danh sách dưới, mỗi chỗ một case. Đây là **hướng để tìm**, không phải case sẵn:
+
+1. Một **mã SEC chưa chạm** ở trên — hỏi: yêu cầu đó nói gì, và endpoint này có vi phạm được không?
+2. Một **tham số** trong danh sách trên mà bạn thấy chưa bị đẩy tới cực trị (rỗng · thiếu hẳn · sai kiểu ·
+   rất dài · Unicode có dấu · ký tự đặc biệt của tầng dưới như `%` `_` `'`).
+3. Một **chuỗi trạng thái** chưa ai chạy: làm A rồi làm B rồi đọc lại — kết quả có còn hợp lý?
+4. Một **hệ quả** chưa được kiểm: request trả 200, nhưng dữ liệu trong CSDL/giỏ sau đó có đúng không?
+5. Một **route lân cận** cùng nhóm quyền với endpoint này (xem `eshop-sut/api_specification.md`).
+
+Với mỗi case, bắt buộc có **Căn cứ** trỏ được vào `spec §…` / `FR-…` / `SEC-0…` / `server.js:dòng`.
+Không có căn cứ thì expected là suy đoán — và suy đoán sinh ra **bug giả** (xem lỗi #1–#3 ở báo cáo §11).
+
+Xong thì tự chạy bằng `curl` để xác nhận expected, rồi `npm run check:own` và `npm run verify`.
+
+## Bảng test case của sinh viên (điền 5 dòng)
 
 | TC ID | Kỹ thuật | Tham số & phân vùng | Request | Auth | Query / Body | Expected status | Expected body / schema | Căn cứ | Nguồn | Audit | Kết quả |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| | | | | | | | | | SV | VALID | |
+| TC-PRODLIST-201 | | | `GET /api/products` | | | | | | SV | VALID | |
+| TC-PRODLIST-202 | | | `GET /api/products` | | | | | | SV | VALID | |
+| TC-PRODLIST-203 | | | `GET /api/products` | | | | | | SV | VALID | |
+| TC-PRODLIST-204 | | | `GET /api/products` | | | | | | SV | VALID | |
+| TC-PRODLIST-205 | | | `GET /api/products` | | | | | | SV | VALID | |
 
-## Vì sao AI bỏ sót (§6.3 đòi phân loại đúng 3 nhóm)
+## Vì sao AI bỏ sót (§6.3 — đúng 3 nhóm lý do)
 
 | TC ID | AI bỏ sót gì | Nhóm lý do | Giải thích |
 |---|---|---|---|
-| | | *(prompt quality / model limitations / characteristics of the API)* | |
+| TC-PRODLIST-201 | | | |
+| TC-PRODLIST-202 | | | |
+| TC-PRODLIST-203 | | | |
+| TC-PRODLIST-204 | | | |
+| TC-PRODLIST-205 | | | |

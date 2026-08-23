@@ -21,6 +21,8 @@
     "check:submission": "node tools/check-submission.mjs",
     "review": "node tools/mark-reviewed.mjs",
     "gaps": "node tools/coverage-gaps.mjs",
+    "prep:own": "node tools/prep-own.mjs",
+    "check:own": "node tools/check-own.mjs",
     "package": "bash tools/package.sh"
   },
   "devDependencies": {

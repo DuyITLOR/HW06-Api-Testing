@@ -128,7 +128,7 @@ done
 if ls generator/diagram/generator-flow-selfdrawn.png >/dev/null 2>&1; then p "sơ đồ generator TỰ VẼ (§11)"
 else f "chưa có generator/diagram/generator-flow-selfdrawn.png — §11 đòi sơ đồ TỰ VẼ; bản AI đã bị loại khỏi bộ nộp"; fi
 for s_ in api-01-products-search api-02-cart-add api-03-product-update; do
-  n=$(grep -cE '^\| *TC-' "test-cases/$s_/own.md" 2>/dev/null || echo 0)
+  n=$(grep -cE '^\| *TC-[A-Z]+-[0-9]+ *\|' "test-cases/$s_/own.md" 2>/dev/null | head -1 || echo 0)
   if [ "${n:-0}" -ge 5 ]; then p "$s_ — $n case do SINH VIÊN tự viết (§6.3 đòi ≥5)"
   else f "$s_ — own.md chỉ có ${n:-0} case của sinh viên; §6.3 đòi ≥5 *of your own* (extended.md là AI-2, không tính)"; fi
 done
