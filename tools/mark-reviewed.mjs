@@ -29,7 +29,7 @@ const WHAT = {
   5: ["audit + 22 case tự thêm", "test-cases/*/audit.md và extended.md"],
   6: ["thực thi Newman", "test-cases/test-summary/summary.md"],
   7: ["bug report 19 bug", "bug-report/bug-report.md"],
-  8: ["báo cáo, traceability, Excel", "report/main-report.md §11, §12"],
+  8: ["báo cáo, traceability, Excel", "report/main-report.md §11"],
   9: ["kiểm tính tái lập", "report/main-report.md §6"],
   10: ["tự chấm theo §15", "report/main-report.md §11 bảng lỗi"],
   11: ["regression suite + 2 lượt CI", "ci/ci-report.md §3"],

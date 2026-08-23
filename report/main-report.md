@@ -34,7 +34,6 @@
 9. [CI/CD](#9-cicd)
 10. [AI test generator](#10-generator)
 11. [Human review — AI sai và bỏ sót gì](#11-human-review)
-12. [Giới hạn của bài này](#12-giới-hạn)
 
 ---
 
@@ -423,7 +422,7 @@ Postman — 157 case, 372 assertion, từ **một** nguồn định nghĩa.
 | 18 | README + main-report còn ghi **329 assertion** (số thật 333) ở 3 chỗ | kỹ thuật | `tools/check-claims.mjs` soát mọi con số công bố so với raw JSON | sửa 3 chỗ; phép kiểm vào `npm run verify` mục 5b |
 | 19 | `ci-report.md` ghi **2 hash commit KHÔNG TỒN TẠI** — biết 1 hash thật rồi điền nốt 2 hash theo trí nhớ | model limitations | soát lần hai: `git log --format=%s -1 <hash>` trả rỗng | tra `git log` lấy hash thật; `check-claims.mjs` giờ kiểm hash bằng `git cat-file` |
 | 20 | Bảng §11 **đánh số trùng, sai thứ tự, thiếu 1 dòng** so với bảng trong AI audit | kỹ thuật | đếm lại dãy số | đánh số lại liên tục, thêm dòng thiếu, sửa 3 tham chiếu chéo |
-| 21 | §12 trỏ tới file lượt chạy **đã bị thay** | kỹ thuật | so tên file với `ls reports/newman/` | cập nhật theo lượt sinh viên tự chạy |
+| 21 | mục *Giới hạn* (bản trước) trỏ tới file lượt chạy **đã bị thay** | kỹ thuật | so tên file với `ls reports/newman/` | cập nhật theo lượt sinh viên tự chạy |
 | 22 | `TC-CART-101/102` dán nhãn **Security** nhưng không trỏ được SEC-0x nào — dùng "security" theo nghĩa thông thường thay vì theo SEC-01…07 | prompt quality | `tools/check-cases.mjs` — bất biến "case Security phải trỏ một SEC-0x" | ghi rõ *"ngoài SEC-01…07"* + ghi **lỗ hổng của danh sách SEC** vào traceability |
 | 23 | **Dán nhãn `SV` cho 22 case do AI sinh** và gọi là *"sinh viên tự thêm"* — misattribution, không thoả §6.3 *"of your own"* | quy trình | soát lại lần bốn, đối chiếu `extended.md` với chính lời khai ở Interaction #5 (*"AI output … thêm 22 case"*) | đổi nhãn thành `AI-2`, viết cảnh báo vào đầu `extended.md`, tạo `own.md` cho case của sinh viên, và thêm bất biến chặn nhãn `SV` |
 | 24 | `check-submission.mjs` coi **mọi lỗi `gh`** là *"issue KHÔNG tồn tại"* → chạy trong shell chưa `gh auth login` là ra 3 dòng đỏ khẳng định sai, và người chấm trừ điểm phần bug report | kỹ thuật | issue #323/#328/#341 bị báo không tồn tại, kiểm lại bằng API công khai thì **đều OPEN** | gọi API công khai bằng `curl`, chỉ **HTTP 404** là "không tồn tại"; 000/403 là "không kiểm được" |
@@ -471,7 +470,7 @@ Mỗi lượt sinh ra một phép kiểm bằng máy để lỗi đó không qua
 **3 lỗi tài liệu** mà không lượt nào trước đó thấy: (a) `ci/ci-report.md` ghi **2 hash commit không tồn
 tại** cho lượt CI đỏ — loại lỗi tệ nhất trong một báo cáo vì nó là chi tiết *kiểm được ngay* và sai;
 (b) bảng §11 bị **đánh số trùng** (…10, 16, 17, 12, 13…) và **thiếu một dòng** so với bảng trong AI audit;
-(c) §12 vẫn trỏ tới file lượt chạy **đã bị thay**. Đã sửa cả ba.
+(c) mục *Giới hạn* (bản trước) vẫn trỏ tới file lượt chạy **đã bị thay**. Đã sửa cả ba.
 
 Từ đó rút ra một phép kiểm mới, biến lỗi #11 thành **bất biến kiểm được bằng máy** thay vì trông vào mắt
 người: [`tools/check-expect-vs-checks.mjs`](../tools/check-expect-vs-checks.mjs) rút tập status code nêu ở
@@ -480,51 +479,3 @@ cột `status` của **mọi** case rồi so với tập status mà `checks` th�
 
 **Cách làm để trả lời được câu đó:** viết `bug-report/verify-bugs.sh` — tái hiện từng bug bằng `curl` độc
 lập với Postman. 19/19 bug tái hiện được; 4 giả thuyết **không** tái hiện được đã bị loại khỏi báo cáo.
-
-<a id="12-giới-hạn"></a>
-## 12. Giới hạn của bài này
-
-Ghi rõ vì một báo cáo không nêu giới hạn thì không kiểm chứng được:
-
-1. **SEC-06 và SEC-07 nằm ngoài phạm vi 3 API đã chọn.** SEC-06 (không cho client đổi `role`) thuộc
-   `PUT /api/users/me`; SEC-07 (entropy OTP) thuộc `POST /api/forgot-password` — cả hai đã có thành viên
-   khác đăng ký. Bài này chỉ kiểm SEC-06 ở dạng **mass assignment** trên đúng 3 API của mình (TC-CART-104,
-   TC-PRODUPD-035/036) và **không** khẳng định gì về SEC-06/07 ở phạm vi hệ thống.
-2. **BUG-19 (SEC-01) nằm ngoài 3 API**, phát hiện khi dựng setup login. Báo vì đề yêu cầu *"report any
-   genuine bugs you find"*, nhưng không tính vào phần kiểm thử của bất kỳ API nào.
-3. **Không kiểm được ràng buộc tồn kho** (FR-07): mô hình dữ liệu không có cột tồn kho. TC-CART-008 vẫn đỏ,
-   và lý do đỏ là *"không có tầng validate"*, chứ không phải *"bán quá tồn kho"*.
-4. **Giỏ hàng in-memory** (`server.js:284-295`): không kiểm được tính bền qua restart, và mọi assertion đếm
-   dòng phải dùng mốc tương đối. Cũng vì vậy không kiểm được hành vi khi chạy nhiều instance.
-5. **Chỉ một lượt chạy được nộp cho mỗi API**, trên một máy, một phiên bản SUT (`f0f3b7b`). Số liệu ổn định
-   qua các lượt vì DB được seed lại mỗi lần, nhưng bài **không** khẳng định gì về môi trường khác.
-6. **BUG-14 không nằm trong collection Postman** — có chủ ý (§5.5). Nghĩa là lượt Newman **không** chứng
-   minh được BUG-14; bằng chứng của nó nằm ở `verify-bugs.sh` + stack trace trong `.run-logs/sut.log`.
-7. **§6.3 chưa đạt phần *"of your own"*.** Đề đòi *"at least five test cases of **your own** that the AI
-   missed"*. 22 case trong `extended.md` **do AI sinh ở lượt hai** (cột `Nguồn` = `AI-2`, sau khi đọc
-   `server.js` và dữ liệu fixture) — chúng thoả phần *"mà lượt một bỏ sót"* và có bảng lý do bỏ sót, nhưng
-   **không** phải case sinh viên tự nghĩ. Bản trước dán nhãn `SV` và gọi là *"sinh viên tự thêm"* — đó là
-   **misattribution**, đã sửa, và `tools/check-cases.mjs` giờ chặn nhãn `SV` cho case không do sinh viên viết.
-   Case của sinh viên nằm ở `test-cases/*/own.md`, **hiện trống**. `npm run gaps` in ra ô phủ còn trống để
-   chọn mà viết.
-8. **Sơ đồ generator: nội dung là thiết kế của bài, phần dựng hình do sinh viên làm trên Lucidchart.**
-   Bản nộp là [`generator-flow-selfdrawn.png`](../generator/diagram/generator-flow-selfdrawn.png); tài liệu
-   gốc kèm `Revision history` link trong [`diagram/README.md`](../generator/diagram/README.md). Bản do AI
-   render trước đó **không nộp** (`tools/package.sh` loại nó). Ghi rõ như vậy thay vì gọn thành *self-drawn*,
-   vì AI có tham gia ở khâu viết bản nháp `DRAWING-SHEET.md` và lượt dựng đầu trên Lucid.
-9. **§5 không có vật chứng lưu trong repo, và đề không đòi.** §5 yêu cầu *selection không trùng* — một
-   ràng buộc phải thoả, không phải bằng chứng phải nộp; §11/§14 không nêu ảnh chat. Bảng đối chiếu 4 bộ API
-   của thành viên khác ở `docs/api-selection.md` là lời khai của sinh viên, kiểm được bằng cách hỏi nhóm.
-10. **Ảnh trong 19 GitHub Issue là ảnh báo cáo Newman**, không phải ảnh từng bước tái hiện. Mỗi issue có
-   lệnh `curl` chạy lại được và trỏ tới log `verify-bugs-output.txt`.
-11. **Bằng chứng `X-Student-Id` (§11) gồm ba ảnh, ba nguồn độc lập:**
-   `postman-console-gui.png` — **cửa sổ Postman Console thật** trong Postman GUI, 12 dòng
-   `[HW06] X-Student-Id = "23127178" | POST | /api/login | …` do pre-request script in ra, mỗi dòng kèm
-   request `POST http://localhost:3000/api/login → 200`; `console-x-student-id.png` — khối CONSOLE LOGS
-   trong báo cáo Newman của lượt nộp (`--reporter-htmlextra-logs`); `x-student-id-request-header.png` —
-   bảng REQUEST HEADERS cho thấy header **như đã gửi**. Ba ảnh này cũng phủ luôn yêu cầu hostname
-   `localhost` của §11.
-12. **Lượt chạy được nộp là lượt do chính sinh viên tự chạy** (`reports/newman/*_20260823-0009*.json` +
-   `*_regression_20260823-001211*`, trên `localhost:3000`), và cùng số đỏ 29/30/30 với lượt CI
-   `runs/32580345226` trên Ubuntu. Tổng cộng **8 lượt trên 2 hệ điều hành** cho cùng kết quả — nhưng bài
-   **không** khẳng định gì về môi trường ngoài hai môi trường đó.

@@ -189,15 +189,15 @@ audit, mọi danh sách case đỏ đều được đối chiếu với dữ li�
 - **AI tool:** Claude Code (Opus 5)
 - **Date & time:** 2026-08-19 00:40
 - **Prompt:** *(cùng lượt)*
-- **AI output (tóm tắt):** `report/main-report.md` (12 mục, bảng 11 lỗi của AI), traceability matrix (phủ
+- **AI output (tóm tắt):** `report/main-report.md` (12 mục lúc đó — bản nộp còn 11, mục *Giới hạn* đã bỏ theo yêu cầu của SV, bảng 11 lỗi của AI), traceability matrix (phủ
   FR-05…FR-15 + SEC-01…SEC-07, ghi rõ 2 ô ngoài phạm vi), `excel/23127178_HW06_TestCases.xlsx`, cập nhật
   README + danh sách Postman feature.
 - **AI sai / bỏ sót:** xuất Excel lần đầu ra **250 dòng** thay vì 136 — gộp cả `generated.md` lẫn
   `audit.md` nên mỗi case AI bị đếm hai lần. Phát hiện vì con số không khớp với `summary.md`.
 - **Vì sao bỏ sót:** **prompt quality** — `audit.md` là *bản cuối của cùng bộ case*, không phải bộ case
   mới; quy ước này không được nói rõ khi viết script.
-- **Human review:** ***(SV đã kiểm)*** — SV tự đọc `report/main-report.md §11, §12` và xác nhận ngày 23/08/2026. — **SV đã tự làm:** chạy `verify-bugs.sh 14/13/08` (3 bug Critical, tái hiện được cả 3), `npm run test:all` (29/30/30 — lượt này là bằng chứng nộp), và chạy collection trong **Postman GUI** rồi tự chụp console. **Phần đọc từng dòng tài liệu:** sinh viên đã tự đọc; ngoài ra AI cũng đã soát **4 lượt** với **4 phép kiểm bằng máy** (`check-cases` · `check-expect-vs-checks` · `check-claims` · `check-submission`, tổng 38 mục, 0 lỗi), tìm và sửa **25 lỗi** (bảng §11). AI Policy của bài là **Open**, nên trường này ghi rõ ai làm phần nào thay vì gộp thành 'đã kiểm hết'.
-  **Chi tiết soát cho lượt này:** **AI đã soát:** `check-claims.mjs` (18 con số công bố · link nội bộ · hash commit — 0 lệch) và lượt soát thứ hai tìm ra 3 lỗi tài liệu (#19 hash bịa, #20 bảng đánh số trùng, #21 trỏ file cũ). **Còn lại:** SV đọc `report/main-report.md` §11 (bảng 23 lỗi) và §12 (9 giới hạn) — `npm run review 8`.
+- **Human review:** ***(SV đã kiểm)*** — SV tự đọc `report/main-report.md §11` và xác nhận ngày 23/08/2026. — **SV đã tự làm:** chạy `verify-bugs.sh 14/13/08` (3 bug Critical, tái hiện được cả 3), `npm run test:all` (29/30/30 — lượt này là bằng chứng nộp), và chạy collection trong **Postman GUI** rồi tự chụp console. **Phần đọc từng dòng tài liệu:** sinh viên đã tự đọc; ngoài ra AI cũng đã soát **4 lượt** với **4 phép kiểm bằng máy** (`check-cases` · `check-expect-vs-checks` · `check-claims` · `check-submission`, tổng 38 mục, 0 lỗi), tìm và sửa **25 lỗi** (bảng §11). AI Policy của bài là **Open**, nên trường này ghi rõ ai làm phần nào thay vì gộp thành 'đã kiểm hết'.
+  **Chi tiết soát cho lượt này:** **AI đã soát:** `check-claims.mjs` (18 con số công bố · link nội bộ · hash commit — 0 lệch) và lượt soát thứ hai tìm ra 3 lỗi tài liệu (#19 hash bịa, #20 bảng đánh số trùng, #21 trỏ file cũ). **Còn lại:** SV đọc `report/main-report.md` §11 (bảng lỗi của AI) — `npm run review 8`.
 - **Commit:** `80965eb`
 
 ### Interaction #9
@@ -283,14 +283,14 @@ audit, mọi danh sách case đỏ đều được đối chiếu với dữ li�
   ```
   (mục 5–8 trong checklist human review) bạn tự xử lý giùm tui lun đi
   ```
-- **AI output (tóm tắt):** đọc lại 3 file `audit.md` + `report/main-report.md` §11/§12 và tìm thêm **3 lỗi
+- **AI output (tóm tắt):** đọc lại 3 file `audit.md` + `report/main-report.md` §11 và tìm thêm **3 lỗi
   tài liệu**:
   1. `ci/ci-report.md` ghi **2 hash commit không tồn tại** (`28f5296`, `4b3f60d`) cho lượt CI đỏ — hash
      thật là `e388146` và `4e2f302`. Đây là loại lỗi tệ nhất trong báo cáo: chi tiết **kiểm được ngay** mà
      lại sai, và nếu TA kiểm thì nó làm mất tin cậy cho cả những phần đúng.
   2. Bảng lỗi §11 bị **đánh số trùng và sai thứ tự** (…10, 16, 17, 12, 13…) và **thiếu một dòng** so với
      bảng trong file này (17 so với 18).
-  3. §12 vẫn trỏ tới file lượt chạy **đã bị thay** (`*_20260822-2217*` trong khi bộ nộp là `*_20260823-0009*`).
+  3. mục *Giới hạn* (bản trước) vẫn trỏ tới file lượt chạy **đã bị thay** (`*_20260822-2217*` trong khi bộ nộp là `*_20260823-0009*`).
   Đã sửa cả ba, và viết thêm `tools/check-expect-vs-checks.mjs` để biến lỗi #16 thành **bất biến kiểm được
   bằng máy**: rút tập status code ở cột `status` của mọi case rồi so với tập status mà `checks` thực sự nhận.
   Kết quả: **135 case · 0 case lệch**. Đã đưa vào `npm run verify` (mục 2b).
@@ -348,7 +348,7 @@ audit, mọi danh sách case đỏ đều được đối chiếu với dữ li�
      công khai, chỉ HTTP 404 mới là "không tồn tại".
   2. **Điểm 1 đúng và là lỗi nặng nhất** — 22 case bị dán nhãn `SV`. Đã đổi thành `AI-2`, viết cảnh báo vào
      đầu `extended.md`, tạo `own.md` trống cho case của sinh viên, thêm bất biến chặn nhãn `SV`, và ghi vào
-     §12 rằng **§6.3 chưa đạt phần *"of your own"***.
+     mục *Giới hạn* (bản trước) rằng **§6.3 chưa đạt phần *"of your own"*** — sau đó SV tự viết 42 case `own.md` nên nhận định đó hết đúng, và mục *Giới hạn* đã bỏ khỏi bản nộp.
   3. **Điểm 4 đúng** — gỡ hình AI khỏi bộ nộp, đổi tên `reference-layout-AI-KHONG-NOP.png`, `package.sh` đòi
      `generator-flow-selfdrawn.png`.
   4. **Điểm 5 đúng** — `api-selection.md` giờ nói thẳng §5 chỉ có lời khai, thiếu ảnh chat nhóm.
@@ -452,6 +452,42 @@ audit, mọi danh sách case đỏ đều được đối chiếu với dữ li�
   nội dung và prompt.
 - **Commit:** *(commit kế tiếp)*
 
+### Interaction #18
+- **API / Bước:** toàn bài — hình thức bộ nộp
+- **Bước trong quy trình:** report
+- **AI tool:** Claude Code (Opus 5)
+- **Date & time:** 2026-08-24 00:10
+- **Prompt:**
+  ```
+  bỏ tất cả icon trong bài nộp đi
+  → hãy chỉnh lại cái gitlog commit cho HW06 như cái hw02 đi
+  → bỏ cái phần này giùm tao đ  (kèm ảnh chụp mục 12 "Giới hạn của bài này")
+  ```
+- **Phân công:**
+  - **AI:** thay 12 dấu trạng thái dingbat (U+2705, U+274C, U+26A0) bằng chữ; đổi `commit-plan.sh log` sang dạng
+    `git log --graph --all --stat` giống HW02; xoá mục *Giới hạn* khỏi `report/main-report.md`
+    và sửa 10 chỗ trỏ tới mục đó ở `README.md`, `ai-audit-report.md`, `mark-reviewed.mjs`, 2 file `own.md`.
+  - **Sinh viên:** quyết định bỏ mục *Giới hạn*, chỉ định dạng log muốn dùng (lấy HW02 làm mẫu).
+- **AI sai / bỏ sót:** ba chỗ.
+  (a) `cwd` của AI trôi vào **trong folder nộp** nên lệnh xuất lại commit-log chạy trên bản copy thay vì
+      repo — lặp lại đúng lỗi #14 (ghi lầm file sang HW05); phát hiện khi `git add` báo *"paths are ignored"*.
+  (b) lượt thêm phép soát icon vào `check-claims.mjs` gọi hai hàm `P()`/`F()` **không tồn tại** trong file
+      (file dùng `ok++`/`bad++`), làm checker **crash** thay vì báo đỏ — chỉ lộ ra khi chạy thật.
+  (c) mục *Giới hạn* đang chứa 2 nhận định **đã hết đúng** mà không checker nào bắt được:
+      *"`own.md` hiện trống"* (thực tế đã có 42 case do SV viết) và *"lượt nộp là `*_20260823-0009*`"*
+      (bộ nộp hiện là `*_20260823-1750*`).
+- **Vì sao bỏ sót:** *(a)* AI không xác nhận `pwd` trước khi chạy lệnh ghi file — cùng nguyên nhân với #14;
+  *(b)* **prompt quality của chính AI với nó**: viết phép kiểm mới mà không đọc lại quy ước hàm sẵn có trong
+  file; *(c)* `check-claims.mjs` chỉ so **con số**, không so **câu khẳng định** — văn xuôi hết đúng thì máy
+  không thấy, đúng như hạn chế đã ghi ở lỗi #23.
+- **Không sửa (có chủ ý):** hai tên assertion trong collection còn chữ *"xem §12"*
+  (`TC-PRODLIST-201`, `TC-CART-203`). Sửa được, nhưng tên assertion nằm trong **báo cáo Newman của lượt
+  nộp** và trong ảnh `console-x-student-id.png`; sửa collection mà không chạy lại thì collection lệch bằng
+  chứng, còn chạy lại thì ảnh SV tự chụp không còn khớp lượt nào trong bộ nộp. Chọn để nguyên bằng chứng.
+  Nội dung R-01/Q-01/R-02 vẫn đọc được ở `bug-report/bug-report.md`.
+- **Human review:** *(chưa kiểm)* — `npm run review` để đánh dấu sau khi đọc.
+- **Commit:** *(commit kế tiếp)*
+
 <!-- NEW_INTERACTION_MARKER -->
 
 ---
@@ -470,10 +506,10 @@ cases"*, và 114 nhãn `VALID` hiện tại là nhãn **AI** đặt. Điền h�
 | 5 | Đọc `audit.md` của API-01, sửa chỗ không đồng ý | `test-cases/api-01-products-search/audit.md` | [ ] |
 | 6 | Đọc `audit.md` của API-02 (chú ý ghi chú về `price` và 2 case đã sửa) | `test-cases/api-02-cart-add/audit.md` | [ ] |
 | 7 | Đọc `audit.md` của API-03 (chú ý lý do loại chuỗi làm sập SUT khỏi collection) | `test-cases/api-03-product-update/audit.md` | [ ] |
-| 8 | Đọc §11 main-report (bảng 18 lỗi của AI) và §12 (giới hạn) | `report/main-report.md` | [ ] |
+| 8 | Đọc §11 main-report (bảng lỗi của AI) | `report/main-report.md` | [ ] |
 | 9 | Đổi *(phần đọc của SV: **chưa**)* → *(SV đã kiểm)* **chỉ ở lượt đã đọc thật** — bằng `npm run review <n>` | file này | **[x] một phần** — đã đổi 5 lượt (#3, #6, #7, #9, #11); còn #1, #2, #4, #5, #8, #10 giữ *chưa tự kiểm* vì phụ thuộc mục 5–8 dưới đây |
 
-**Mục 5–8 (đọc `audit.md` × 3 + §11/§12):** AI đã soát lại lần hai ngày 23/08 và tìm thêm 3 lỗi tài liệu
+**Mục 5–8 (đọc `audit.md` × 3 + §11):** AI đã soát lại lần hai ngày 23/08 và tìm thêm 3 lỗi tài liệu
 (Interaction #12, bảng lỗi #19–#21), rồi biến hai loại lỗi đó thành **phép kiểm bằng máy**:
 `tools/check-expect-vs-checks.mjs` (135 case · 0 lệch) và `tools/check-claims.mjs` (18 khớp · 0 lệch — soát
 mọi con số công bố, link nội bộ và hash commit). Cả hai đã vào `npm run verify` (mục 2b và 5b).
@@ -513,7 +549,7 @@ chạy folder `00-setup` bằng Collection Runner và chụp `bug-report/screens
 | 18 | #11 | Cổng baseline quét luôn `ci-regression.json` → build đỏ vì *"chưa có baseline"* | kỹ thuật | đọc log lượt CI đầu sau khi thêm regression | thu hẹp glob về `ci-api-*.json` |
 | 19 | #8/#12 | **`ci-report.md` ghi 2 hash commit KHÔNG TỒN TẠI** cho lượt CI đỏ — biết 1 hash thật rồi điền nốt 2 hash theo trí nhớ | model limitations | soát lại lần hai: `git log --format=%s -1 <hash>` trả về rỗng | tra `git log` lấy hash thật `e388146`, `4e2f302` |
 | 20 | #10/#12 | Bảng §11 **đánh số trùng, sai thứ tự** và **thiếu 1 dòng** so với bảng này | kỹ thuật | đếm lại dãy số trong bảng | đánh số lại liên tục 1..18, thêm dòng còn thiếu, sửa 3 tham chiếu chéo |
-| 21 | #11/#12 | §12 trỏ tới file lượt chạy **đã bị thay** | kỹ thuật | so tên file trong báo cáo với `ls reports/newman/` | cập nhật theo lượt sinh viên tự chạy |
+| 21 | #11/#12 | mục *Giới hạn* (bản trước) trỏ tới file lượt chạy **đã bị thay** | kỹ thuật | so tên file trong báo cáo với `ls reports/newman/` | cập nhật theo lượt sinh viên tự chạy |
 | 22 | #8/#12 | README + main-report còn ghi **329 assertion** (số thật 333) ở 3 chỗ | kỹ thuật | `tools/check-claims.mjs` — soát mọi con số công bố so với raw JSON | sửa 3 chỗ; phép kiểm vào `npm run verify` mục 5b |
 | 23 | #5/#14 | **Dán nhãn `SV` cho 22 case do AI sinh** và gọi là "sinh viên tự thêm" — không thoả §6.3 *"of your own"*; cùng họ với việc ghi "SV đã đọc" khi chưa đọc | prompt quality | bản review của người chấm đối chiếu `extended.md` với lời khai ở Interaction #5 | đổi nhãn `AI-2`, cảnh báo đầu file, tạo `own.md`, thêm bất biến chặn nhãn `SV` |
 | 24 | #12/#14 | `check-submission.mjs` coi mọi lỗi `gh` là "issue KHÔNG tồn tại" → báo sai 3 issue, người chấm trừ điểm oan | model limitations | kiểm lại bằng API công khai: cả 3 issue đều OPEN | dùng `curl` API công khai; chỉ HTTP 404 là thiếu |

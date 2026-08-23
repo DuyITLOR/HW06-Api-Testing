@@ -348,7 +348,7 @@ export default {
       method: "GET", path: "/api/cart", auth: "user", status: 200,
       expect: "**ghi nhận**: giỏ giữ giá lúc thêm (111000) dù catalog đã là 222000. Đây có thể là **chính sách price-snapshot** hợp lệ — case này ghi lại hành vi và nêu **câu hỏi nghiệp vụ**, không kết luận SUT sai",
       basis: "spec §4.1/§4.2 **không định nghĩa** giỏ tham chiếu hay chụp giá; FR-08 chỉ nói tính tiền từ giỏ → không suy ra được bên nào đúng", src: "SV",
-      audit: "INVALID: bản đầu khẳng định *'giỏ không được giữ giá cũ'* và báo thành BUG-21 mức High. Nhưng price-snapshot là chính sách phổ biến và hợp lệ; spec không nói bên nào. Đã hạ thành **characterization + câu hỏi nghiệp vụ Q-01** (báo cáo §12). Rủi ro thật vẫn còn nhưng nằm ở **BUG-08** (client tự đặt giá) — chỗ đó có căn cứ FR-08 rõ ràng.",
+      audit: "INVALID: bản đầu khẳng định *'giỏ không được giữ giá cũ'* và báo thành BUG-21 mức High. Nhưng price-snapshot là chính sách phổ biến và hợp lệ; spec không nói bên nào. Đã hạ thành **characterization + câu hỏi nghiệp vụ Q-01** (`bug-report/bug-report.md`). Rủi ro thật vẫn còn nhưng nằm ở **BUG-08** (client tự đặt giá) — chỗ đó có căn cứ FR-08 rõ ràng.",
       checks: [["status", 200],
         ["raw", `pm.test("ghi nhận: giỏ giữ giá lúc thêm (price snapshot) — xem câu hỏi Q-01 ở §12", () => {
   const pid = Number(pm.environment.get("product_id"));
@@ -366,7 +366,7 @@ export default {
       method: "GET", path: "/api/cart", auth: "user", status: 200,
       expect: "**ghi nhận**: payload được lưu và trả lại nguyên văn, `Content-Type: application/json`. SEC-04 đòi escape **khi hiển thị**, nên tầng API lưu nguyên văn **chưa tự nó** là vi phạm — rủi ro hiện thực hoá ở UI",
       basis: "SEC-04 *(dữ liệu người dùng khi **hiển thị** trên UI phải được escape, không dùng `innerHTML`)* — nguyên văn README SUT", src: "SV",
-      audit: "INVALID: bản đầu assert *'giỏ không được chứa thẻ script'* và báo BUG-22 vi phạm SEC-04. Đọc lại nguyên văn SEC-04: nó nói escape **khi hiển thị**, không nói cấm lưu. Đã hạ thành ghi nhận + **rủi ro R-02** (§12): không có tầng nào validate, nên toàn bộ trách nhiệm dồn lên UI.",
+      audit: "INVALID: bản đầu assert *'giỏ không được chứa thẻ script'* và báo BUG-22 vi phạm SEC-04. Đọc lại nguyên văn SEC-04: nó nói escape **khi hiển thị**, không nói cấm lưu. Đã hạ thành ghi nhận + **rủi ro R-02** (`bug-report/bug-report.md`): không có tầng nào validate, nên toàn bộ trách nhiệm dồn lên UI.",
       checks: [["status", 200], ["ctJson"],
         ["raw", `pm.test("ghi nhận: payload được lưu nguyên văn, trả về dưới dạng dữ liệu JSON (rủi ro R-02)", () => {
   const rows = pm.response.json().filter(r => String(r.name || "").includes("<script"));

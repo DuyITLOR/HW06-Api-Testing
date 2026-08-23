@@ -292,7 +292,7 @@ export default {
       method: "GET", path: "/api/products", query: { limit: 1 }, auth: "none", status: 200,
       expect: "200 + mảng JSON đúng schema. **Không** khẳng định phải honor `limit` hay phải trả 400: spec §3.1 chỉ định nghĩa `search`, và bỏ qua query param lạ là hành vi HTTP bình thường",
       basis: "spec §3.1 (chỉ `search` được định nghĩa) — case này là **characterization test**: ghi lại hành vi thật để lần sau đổi thì biết", src: "SV",
-      audit: "INVALID: bản đầu đặt expected *'phải honor limit hoặc trả 400'* và báo thành BUG-20. Không có yêu cầu nào trong spec/FR đòi phân trang, nên đó là **kết luận không có căn cứ bắt buộc** — đúng họ lỗi #1–#3 của bài. Đã hạ về ghi nhận hành vi; rủi ro hiệu năng chuyển sang mục **đề xuất cải tiến** ở báo cáo §12, không báo là bug.",
+      audit: "INVALID: bản đầu đặt expected *'phải honor limit hoặc trả 400'* và báo thành BUG-20. Không có yêu cầu nào trong spec/FR đòi phân trang, nên đó là **kết luận không có căn cứ bắt buộc** — đúng họ lỗi #1–#3 của bài. Đã hạ về ghi nhận hành vi; rủi ro hiệu năng chuyển sang **R-01** trong `bug-report/bug-report.md`, không báo là bug.",
       checks: [["status", 200], ["isArray"], ["schemaProductArray"],
         ["raw", `pm.test("ghi nhận: tham số lạ bị bỏ qua, trả toàn bộ bảng (không phải bug, xem §12)", () => {
   const n = pm.response.json().length, total = Number(pm.environment.get("total_products"));
@@ -329,7 +329,7 @@ export default {
   ],
 
   ownWhyMissed: [
-    { id: `${P}-201`, missed: "không sinh case nào cho **tham số lẽ ra nên có nhưng spec không định nghĩa** (`limit`/`page`)", group: "prompt quality", why: "Prompt yêu cầu *domain partitions on every parameter*, và `limit`/`page` không phải tham số trong spec nên không có trong bảng tham số ở bước 1. **Lưu ý về kết luận:** case này chỉ **ghi nhận hành vi**; việc thiếu phân trang được nêu ở §12 như *đề xuất cải tiến*, không báo thành bug — vì không yêu cầu nào trong spec/FR đòi phân trang." },
+    { id: `${P}-201`, missed: "không sinh case nào cho **tham số lẽ ra nên có nhưng spec không định nghĩa** (`limit`/`page`)", group: "prompt quality", why: "Prompt yêu cầu *domain partitions on every parameter*, và `limit`/`page` không phải tham số trong spec nên không có trong bảng tham số ở bước 1. **Lưu ý về kết luận:** case này chỉ **ghi nhận hành vi**; việc thiếu phân trang được nêu là **rủi ro R-01** trong `bug-report/bug-report.md`, không báo thành bug — vì không yêu cầu nào trong spec/FR đòi phân trang." },
     { id: `${P}-202`, missed: "cùng nhóm với 201", group: "prompt quality", why: "Sinh viên nêu bối cảnh AI không có: DB thật của SUT ở HW05 có ~900k sản phẩm, nên một endpoint trả toàn bộ bảng là **rủi ro hiệu năng** đáng ghi lại — nhưng vẫn không phải vi phạm yêu cầu nào." },
     { id: `${P}-203`, missed: "không kiểm SUT có tìm **quá phạm vi** spec cho phép hay không", group: "model limitations", why: "AI sinh case theo hướng *tìm có ra kết quả đúng không*. Câu hỏi ngược — *có ra kết quả mà lẽ ra KHÔNG nên ra không* — cần nghĩ theo hướng phủ định phạm vi, và AI không tự đặt ra." },
     { id: `${P}-204`, missed: "chỉ đẩy độ dài tới **300 ký tự**, không tới biên thật của URL", group: "model limitations", why: "AI chọn 300 vì đó là con số 'trông đủ dài'. Biên thật nằm ở giới hạn URL của Node/Express (khoảng 8–16KB), tức phải chọn số theo **tầng dưới**, không theo cảm giác." },

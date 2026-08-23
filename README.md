@@ -185,7 +185,7 @@ Khai rõ để người chấm không phải đoán:
 | Chạy toàn bộ bộ test (29/30/30) | **sinh viên** | lượt `*_20260823-0009*` chính là bằng chứng nộp |
 | Chạy collection trong Postman GUI + chụp console | **sinh viên** | `postman-console-gui.png` |
 | **Chọn 21 case §6.3** (kiểm gì, ở đâu) | **sinh viên** | `test-cases/*/own.md` — tìm ra **3 bug + 2 rủi ro + 1 câu hỏi nghiệp vụ** |
-| Đọc 3 file `audit.md` + báo cáo §11/§12 | **sinh viên** | khai trong [ai-audit](ai-audit/ai-audit-report.md) — 8 lượt đánh dấu ngày 23/08 bằng `npm run review` |
+| Đọc 3 file `audit.md` + báo cáo §11 | **sinh viên** | khai trong [ai-audit](ai-audit/ai-audit-report.md) — 8 lượt đánh dấu ngày 23/08 bằng `npm run review` |
 | Soát tài liệu bằng máy (song song) | **AI** | 4 lượt soát · 4 phép kiểm (38 mục, 0 lỗi) · 25 lỗi đã tìm và sửa (§11) |
 
 AI Policy của bài là **Open** nên bảng trên ghi đúng ai làm gì. Số liệu để người chấm tự đánh giá phần soát
