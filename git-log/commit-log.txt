@@ -1,9 +1,11 @@
 Git commit log — HW06 API Testing · SV Lê Nhựt Duy 23127178
-Xuất lúc: 2026-08-23 17:17:17 +0700
+Xuất lúc: 2026-08-23 17:32:25 +0700
 Repo: https://github.com/DuyITLOR/HW06-Api-Testing.git
-Số commit: 62
+Số commit: 64
 
 ═══ Ngắn gọn ══════════════════════════════════════════════════════════
+95f2d32 2026-08-23 test: 21 cases the student chose, and they found six new bugs
+3d81fd9 2026-08-23 docs: refresh the commit log
 a48f670 2026-08-23 test: skeleton and validator for the student's own cases, plus stale-package guard
 9b34e78 2026-08-23 docs: refresh the commit log
 b1724dc 2026-08-23 fix: correct the misattribution and remove the section 11 violation
@@ -68,6 +70,44 @@ b0bb70c 2026-08-19 test(api-01): audit AI-generated cases, 35 VALID and 1 correc
 96f011e 2026-08-18 Initial commit
 
 ═══ Đầy đủ (kèm body) ═════════════════════════════════════════════════
+commit 95f2d322e5cdef4a3daf7634e68117b7f3823c39
+Author: DuyITLOR <153221271+DuyITLOR@users.noreply.github.com>
+Date:   Sun Aug 23 17:32:25 2026 +0700
+
+test: 21 cases the student chose, and they found six new bugs
+
+The student asked to be interviewed rather than handed content, which is the honest way to satisfy section
+6.3. So the split is explicit and recorded in the audit at Interaction #15: npm run gaps printed the
+uncovered cells per API, the student picked what to test - pagination, searching description instead of
+name, an 8000-character search, price changing after an item is already in the cart, XSS into the cart, the
+cart of a deleted user, the admin's cart, a javascript: imageUrl, a category_id pointing at a deleted
+category, SEC-01 field leakage - and also decided how to label them. I formatted the rows, looked up the
+basis in the spec, and wrote the assertions.
+
+They found six bugs the 136 AI-generated cases had missed:
+
+  BUG-20  GET /api/products ignores ?limit and ?page, always returns the whole table
+  BUG-21  the cart keeps the old price after the catalogue price changes (FR-08, money)
+  BUG-22  <script> payload stored verbatim in the cart (SEC-04)
+  BUG-23  a deleted user's token still opens their cart - authenticateToken never checks the users table
+  BUG-24  imageUrl: javascript:alert(1) stored as-is (SEC-04)
+  BUG-25  category_id pointing at a deleted category is accepted (FR-14)
+
+Four of the six sit on the time axis of the data - price changed after, user deleted after, category deleted
+after - which is exactly the axis parameter partitioning cannot reach. That is the argument for why section
+6.3 exists, and it is now in the report with evidence rather than as a claim.
+
+Totals: 157 cases, 368 assertions, 97 failing, 25 bugs; regression suite 241/0; baseline updated to
+31/33/33. Self-assessment 94, the remaining six being the self-drawn diagram.
+
+---
+commit 3d81fd970fcb52fc40ccbeff1606c0f0e4034fe5
+Author: DuyITLOR <153221271+DuyITLOR@users.noreply.github.com>
+Date:   Sun Aug 23 17:17:17 2026 +0700
+
+docs: refresh the commit log
+
+---
 commit a48f670e0ab786fe212c04cd0f179b3da7883836
 Author: DuyITLOR <153221271+DuyITLOR@users.noreply.github.com>
 Date:   Sun Aug 23 17:17:17 2026 +0700
