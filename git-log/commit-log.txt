@@ -1,9 +1,26 @@
 Git commit log — HW06 API Testing · SV Lê Nhựt Duy 23127178
-Xuất lúc: 2026-08-24 00:18:27 +0700
+Xuất lúc: 2026-08-24 00:24:49 +0700
 Repo: https://github.com/DuyITLOR/HW06-Api-Testing.git
-Số commit: 83
+Số commit: 85
 
 ═══ Graph + thống kê file ═════════════════════════════════════════════
+* d3f3fb5 | 2026-08-24 | DuyITLOR | docs(report): bỏ mục 'Giới hạn của bài này' khỏi main-report| 
+|  README.md                                  |   2 +-
+|  ai-audit/ai-audit-report.md                |  54 ++++++++++++++++++++++-----
+|  ai-audit/ai-audit-report.pdf               | Bin 875248 -> 921785 bytes
+|  generator/specs/api-01-products-search.mjs |   4 +-
+|  generator/specs/api-02-cart-add.mjs        |   4 +-
+|  report/main-report.md                      |  53 +-------------------------
+|  report/main-report.pdf                     | Bin 799840 -> 744358 bytes
+|  test-cases/api-01-products-search/own.md   |   4 +-
+|  test-cases/api-02-cart-add/own.md          |   4 +-
+|  tools/mark-reviewed.mjs                    |   2 +-
+|  10 files changed, 57 insertions(+), 70 deletions(-)
+
+* 06d6eb3 | 2026-08-24 | DuyITLOR | chore: cập nhật commit-log| 
+|  git-log/commit-log.txt | 28 ++++++++++++++++++++++++++--
+|  1 file changed, 26 insertions(+), 2 deletions(-)
+
 * 64680f5 | 2026-08-24 | DuyITLOR | chore(git-log): xuất commit-log dạng graph + --stat như HW02| 
 |  git-log/commit-log.txt | 948 ++++++++++++++++++++++++++++++++++++++++++-----
 |  tools/commit-plan.sh   |   7 +-
@@ -861,6 +878,40 @@ Số commit: 83
 
 
 ═══ Đầy đủ (kèm body) ═════════════════════════════════════════════════
+commit d3f3fb5cb3b935053c6352e91a1390cc14321931
+Author: DuyITLOR <153221271+DuyITLOR@users.noreply.github.com>
+Date:   Mon Aug 24 00:24:49 2026 +0700
+
+docs(report): bỏ mục 'Giới hạn của bài này' khỏi main-report
+
+SV yêu cầu bỏ. Đề không đòi mục này — soát docs/2026.HW06.API Testing_En.pdf chỉ
+có §11 'Anti-AI-Cheat Constraints', không có mục giới hạn — nên bỏ không mất điểm.
+
+Kéo theo 10 chỗ trỏ tới mục vừa xoá, sửa hết để không còn tham chiếu chết:
+  - mục lục main-report + 2 dòng bảng lỗi §11 (đổi thành 'mục Giới hạn (bản trước)')
+  - README bảng phân công, ai-audit 7 chỗ, tools/mark-reviewed.mjs mục 8
+  - 4 dòng văn xuôi trong own.md: trỏ thẳng sang R-01/Q-01/R-02 ở bug-report,
+    là nơi nội dung đó thật sự nằm (sửa ở generator/specs nên collection không đổi)
+
+Nội dung mất đi không có gì độc quyền ở mục này: ba ảnh X-Student-Id đã tả ở §6,
+xuất xứ sơ đồ ở generator/diagram/README.md, R-01/Q-01/R-02 ở bug-report.
+
+Ghi nhận Interaction #18 kèm 3 lỗi AI của lượt này (cwd trôi vào folder nộp,
+checker gọi hàm không tồn tại, 2 câu trong mục Giới hạn đã hết đúng mà máy
+không bắt được).
+
+Co-Authored-By: Claude Opus 5 (1M context) <noreply@anthropic.com>
+
+---
+commit 06d6eb37efc906e2b253207261344b6d3fd9116f
+Author: DuyITLOR <153221271+DuyITLOR@users.noreply.github.com>
+Date:   Mon Aug 24 00:18:28 2026 +0700
+
+chore: cập nhật commit-log
+
+Co-Authored-By: Claude Opus 5 (1M context) <noreply@anthropic.com>
+
+---
 commit 64680f5e2be037811bfcfc1eb5405bb5c9dc7e18
 Author: DuyITLOR <153221271+DuyITLOR@users.noreply.github.com>
 Date:   Mon Aug 24 00:18:27 2026 +0700
