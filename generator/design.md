@@ -5,7 +5,8 @@
   [`.claude/skills/api-test-design/SKILL.md`](../.claude/skills/api-test-design/SKILL.md)
 - **Đã dùng thật:** toàn bộ **136 test case / 329 assertion** của bài này do generator sinh ra.
 - **Sơ đồ:** [`diagram/generator-flow-selfdrawn.png`](diagram/generator-flow-selfdrawn.png) — sinh viên dựng
-  trên **Lucidchart**. Xuất xứ ghi chi tiết ở [`diagram/README.md`](diagram/README.md).
+  trên **Lucidchart**: [tài liệu gốc](https://lucid.app/lucidchart/7eec813a-2306-4d53-8fc0-0649ec4b5c06/view) *(mở `File → Revision history` để xem lịch sử chỉnh)*.
+  Xuất xứ ghi chi tiết ở [`diagram/README.md`](diagram/README.md).
 
 ## 1. Bài toán
 
@@ -45,6 +46,8 @@ làm cho những chỗ đó trở thành đầu ra hiển thị, thay vì bị l
 ## 4. Sơ đồ
 
 ![Luồng generator 6 giai đoạn](diagram/generator-flow-selfdrawn.png)
+
+**Tài liệu Lucidchart gốc:** https://lucid.app/lucidchart/7eec813a-2306-4d53-8fc0-0649ec4b5c06/view — mở `File → Revision history` để thấy từng lần chỉnh.
 
 **Xuất xứ — ghi đúng cách đã làm, không ghi gọn thành "self-drawn":** nội dung sơ đồ là **thiết kế của bài**
 (6 giai đoạn ở §3, ba nhánh ở §5), được viết ra thành bản nháp [`diagram/DRAWING-SHEET.md`](diagram/DRAWING-SHEET.md)

@@ -26,6 +26,21 @@ Quy trình thực tế:
 Ghi như vậy vì ghi gọn thành *"tôi tự vẽ 100%"* là không đúng, còn nộp hình AI render mà nói self-drawn thì
 vi phạm §11 — bản trước đã bị trừ điểm vì đúng chuyện đó (xem `../../report/main-report.md` §11 lỗi tương ứng).
 
+## Bằng chứng sinh viên dựng hình
+
+**Tài liệu Lucidchart:** https://lucid.app/lucidchart/7eec813a-2306-4d53-8fc0-0649ec4b5c06/view
+
+Mở link này, người chấm kiểm được hai thứ mà file PNG không cho thấy:
+
+1. **`File → Revision history`** — lịch sử sửa của tài liệu: lượt dựng đầu, rồi từng lần sinh viên chỉnh
+   (đổi màu 11 hộp, kéo `3d Schema validation` lên hàng 3a-3b-3c và nối mũi xuống Giai đoạn 4, kéo hai hộp
+   nhánh cam/đỏ sang cột phải, gom hàng phân loại, vẽ lại mũi vòng lặp nét đứt, thêm phụ đề).
+2. **Từng hộp là shape thật** có thể click, chọn, sửa — không phải ảnh dán vào.
+
+> **Trước khi gửi link cho TA:** trong Lucid bấm `Share → Anyone with the link → **Can view**`. Link ở trên là
+> link *view*; đừng dán link `/edit?...invitationId=...` vào repo hay báo cáo — ai đọc được cũng sửa/xoá được
+> tài liệu.
+
 ## Ba nhánh trong hình — người chấm tìm đúng chúng
 
 | Nhánh | Ý nghĩa | Bằng chứng trong bài |
