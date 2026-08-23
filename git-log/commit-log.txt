@@ -1,9 +1,11 @@
 Git commit log — HW06 API Testing · SV Lê Nhựt Duy 23127178
-Xuất lúc: 2026-08-23 17:55:33 +0700
+Xuất lúc: 2026-08-23 18:16:54 +0700
 Repo: https://github.com/DuyITLOR/HW06-Api-Testing.git
-Số commit: 70
+Số commit: 72
 
 ═══ Ngắn gọn ══════════════════════════════════════════════════════════
+ddec465 2026-08-23 docs: drawing sheet so the student can draw the diagram themselves
+f7d1880 2026-08-23 docs: refresh the commit log
 9a2cf46 2026-08-23 fix: three findings were not bugs - downgraded, including the public issues
 61ff69a 2026-08-23 docs: refresh the commit log
 f75ae87 2026-08-23 docs: stop treating a group-chat screenshot as a missing requirement
@@ -76,6 +78,29 @@ b0bb70c 2026-08-19 test(api-01): audit AI-generated cases, 35 VALID and 1 correc
 96f011e 2026-08-18 Initial commit
 
 ═══ Đầy đủ (kèm body) ═════════════════════════════════════════════════
+commit ddec465f70a76cf292f3fe95f786683db7d03ae8
+Author: DuyITLOR <153221271+DuyITLOR@users.noreply.github.com>
+Date:   Sun Aug 23 18:03:32 2026 +0700
+
+docs: drawing sheet so the student can draw the diagram themselves
+
+Section 11 requires the diagram to be self-drawn, so what the student needs is not a picture but the
+content: 18 boxes with their exact text and colour, 13 arrows with labels and styles, canvas size, and the
+Lucidchart steps to lay it out in about 25 minutes.
+
+The three branches are called out separately as mandatory, each with the evidence behind it - spec silence
+becoming a question for a human (three expected values downgraded, three findings reclassified from bug to
+risk), the service-killing case filtered out of the collection, and the three-way classification of every
+red assertion. Those are the design decisions a grader looks for; the rest is layout.
+
+---
+commit f7d1880206e418ed8daff07b58a21464493afcc2
+Author: DuyITLOR <153221271+DuyITLOR@users.noreply.github.com>
+Date:   Sun Aug 23 17:55:33 2026 +0700
+
+docs: refresh the commit log
+
+---
 commit 9a2cf462225d0592973a0d9992e04db93f6891fc
 Author: DuyITLOR <153221271+DuyITLOR@users.noreply.github.com>
 Date:   Sun Aug 23 17:55:33 2026 +0700

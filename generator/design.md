@@ -4,9 +4,8 @@
 - **Bản hiện thực chạy được:** [`tools/gen-artifacts.mjs`](../tools/gen-artifacts.mjs) +
   [`.claude/skills/api-test-design/SKILL.md`](../.claude/skills/api-test-design/SKILL.md)
 - **Đã dùng thật:** toàn bộ **136 test case / 329 assertion** của bài này do generator sinh ra.
-- **Sơ đồ:** **chưa có bản nộp.** §11 đòi sơ đồ *self-drawn*; bản do AI dựng đã bị **loại khỏi bộ nộp** và
-  chỉ giữ trong repo làm bản tham chiếu (`diagram/reference-layout-AI-KHONG-NOP.png`). Hướng dẫn vẽ + 3 nhánh
-  bắt buộc: [`diagram/README.md`](diagram/README.md).
+- **Sơ đồ:** [`diagram/generator-flow-selfdrawn.png`](diagram/generator-flow-selfdrawn.png) — sinh viên dựng
+  trên **Lucidchart**. Xuất xứ ghi chi tiết ở [`diagram/README.md`](diagram/README.md).
 
 ## 1. Bài toán
 
@@ -45,12 +44,14 @@ làm cho những chỗ đó trở thành đầu ra hiển thị, thay vì bị l
 
 ## 4. Sơ đồ
 
-*(Sau khi vẽ, chèn dòng ảnh trỏ tới `diagram/generator-flow-selfdrawn.png` vào đây.)*
+![Luồng generator 6 giai đoạn](diagram/generator-flow-selfdrawn.png)
 
-**Trạng thái:** chưa có bản tự vẽ. §11 cấm sơ đồ do AI sinh, nên bản AI đã bị loại khỏi bộ nộp
-(`tools/package.sh` không copy nó) và đổi tên thành `reference-layout-AI-KHONG-NOP.png` để không ai nhầm.
-Nội dung cần vẽ — 6 giai đoạn ở §3 và ba nhánh dưới đây — là **thiết kế của bài**, không phải của AI;
-chỉ phần trình bày cần do sinh viên vẽ.
+**Xuất xứ — ghi đúng cách đã làm, không ghi gọn thành "self-drawn":** nội dung sơ đồ là **thiết kế của bài**
+(6 giai đoạn ở §3, ba nhánh ở §5), được viết ra thành bản nháp [`diagram/DRAWING-SHEET.md`](diagram/DRAWING-SHEET.md)
+— 18 hộp kèm chữ và màu, 13 mũi nối kèm nhãn. **Sinh viên** dựng hình trên **Lucidchart** từ bản nháp đó:
+lượt đầu bố cục sai ở 5 chỗ (mất màu, `3d` lạc xuống đáy, hai hộp nhánh nằm sai hàng, hàng phân loại bị xé,
+thiếu phụ đề), sinh viên chỉnh từng chỗ rồi export. Bản do AI render trước đó **không nộp** và đổi tên thành
+`reference-layout-AI-KHONG-NOP.png`.
 
 **Ba nhánh trong hình là ba quyết định thiết kế, không phải trang trí:**
 

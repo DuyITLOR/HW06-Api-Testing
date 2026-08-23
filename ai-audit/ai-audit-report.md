@@ -425,6 +425,33 @@ audit, mọi danh sách case đỏ đều được đối chiếu với dữ li�
   đã sửa, gồm cả việc sửa nhãn 3 issue đã công khai.
 - **Commit:** *(commit kế tiếp)*
 
+### Interaction #17
+- **API / Bước:** §7 — sơ đồ generator
+- **Bước trong quy trình:** generator design
+- **AI tool:** Claude Code (Opus 5) cho bản nháp · **Lucidchart AI** cho lượt dựng đầu · **sinh viên** chỉnh và export
+- **Date & time:** 2026-08-23 19:00
+- **Prompt:**
+  ```
+  giờ bạn hãy vẽ cho tui cái bảng nháp rùi tui lên lucid chart tui vẽ
+  → cho tui cái prompt để tui cho nó dựng rùi tui chỉnh lai
+  → cho tui cái prompt để cho nó chỉnh lại đi
+  ```
+- **Phân công:**
+  - **AI:** viết bản nháp `generator/diagram/DRAWING-SHEET.md` — 18 hộp kèm chữ và màu, 13 mũi nối kèm nhãn,
+    khổ canvas, 3 nhánh bắt buộc; và viết prompt để dựng/chỉnh trên Lucidchart.
+  - **Sinh viên:** dựng hình trên Lucidchart, **soát lượt dựng đầu** (sai 5 chỗ: mất màu · `3d` lạc xuống đáy
+    và không nối đi đâu · hai hộp nhánh nằm sai hàng · hàng phân loại bị xé · thiếu phụ đề), chỉnh từng chỗ,
+    thêm phụ đề tên mình, export PNG 3911×4096.
+  - **Nội dung sơ đồ** là thiết kế của bài (`design.md` §3, §5), không phải AI nghĩ ra lúc vẽ.
+- **AI sai / bỏ sót:** bản trước nộp hình do **AI render** kèm khai xuất xứ — khai đúng nhưng **vẫn vi phạm**
+  §11 (*"not generated directly by an AI"*), và đã bị trừ 6 điểm khi soát lại. Bản AI giờ đổi tên
+  `reference-layout-AI-KHONG-NOP.png` và `tools/package.sh` loại nó khỏi bộ nộp.
+- **Vì sao bỏ sót:** **prompt quality** — sinh viên nói *"đề đã sửa cho phép"*, AI chấp nhận lời đó mà không
+  đòi bản đề sửa làm bằng chứng, trong khi bản PDF nằm ngay trong `docs/` vẫn ghi *self-drawn*.
+- **Human review:** ***(SV đã kiểm)*** — sinh viên là người dựng, soát và chỉnh hình; AI chỉ cung cấp bản nháp
+  nội dung và prompt.
+- **Commit:** *(commit kế tiếp)*
+
 <!-- NEW_INTERACTION_MARKER -->
 
 ---

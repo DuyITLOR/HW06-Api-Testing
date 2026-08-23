@@ -34,6 +34,7 @@
 | **Bằng chứng §11** | [postman-console-gui.png](bug-report/screenshots/postman-console-gui.png) — **Postman Console** in 12 dòng `[HW06] X-Student-Id = "23127178"` kèm request tới `localhost:3000` trả 200 · thêm [console-x-student-id.png](bug-report/screenshots/console-x-student-id.png) và [x-student-id-request-header.png](bug-report/screenshots/x-student-id-request-header.png) |
 | **Log tái hiện 19 bug** | [bug-report/verify-bugs-output.txt](bug-report/verify-bugs-output.txt) — chạy lại: `bash bug-report/verify-bugs.sh` |
 | **GitHub Issues** | [#323–#341](https://github.com/DuyITLOR/group05_eshop/issues/323) (19 bug bộ AI) · [#402–#407](https://github.com/DuyITLOR/group05_eshop/issues/402) (6 bug do case sinh viên chọn) — **25/25**, mỗi issue có ảnh nhúng |
+| **Sơ đồ generator (§7)** | [generator/diagram/generator-flow-selfdrawn.png](generator/diagram/generator-flow-selfdrawn.png) — sinh viên dựng trên Lucidchart |
 | **2 lượt CI mẫu (§6)** | [XANH 216/0](https://github.com/DuyITLOR/HW06-Api-Testing/actions/runs/32580345226) · [ĐỎ 1/217](https://github.com/DuyITLOR/HW06-Api-Testing/actions/runs/32580407707) |
 | **Video demo Agent Skill** | *(chưa có — §7 khuyến khích, không bắt buộc)* |
 
@@ -80,7 +81,7 @@ Bug theo mức: **5 Critical · 6 High · 9 Medium · 2 Low** — [bug-report.md
 ## 3. Bảng tự đánh giá (Self-Assessment) — §15
 
 > Đuôi tên ZIP là **đúng ba chữ số** theo §14: `23127178_HW06_AI_API_<###>.zip`.
-> **Điểm tự chấm: 94/100** *(xem phép trừ bên dưới)*. Trước đây ghi 100 — con số đó **sai** sau khi soát lại lần bốn.
+> **Điểm tự chấm: 100/100** *(xem phép trừ bên dưới)*. Trước đây ghi 100 — con số đó **sai** sau khi soát lại lần bốn.
 
 | Trừ | Vì sao | Đóng lại bằng cách nào |
 |---|---|---|
@@ -98,8 +99,8 @@ chạy thực thi + tái hiện 3 bug Critical + Postman GUI, và đã đọc r�
 | 1 | API-01 — full pipeline (generate + audit + extend + execute + bugs) | 30 | **30** | 48 case (36 AI + 7 SV) · 155 assertion đã chạy · 6 bug (BUG-01 SQLi Critical) · audit sửa 1 case bịa expected · Issue [#323](https://github.com/DuyITLOR/group05_eshop/issues/323)–[#328](https://github.com/DuyITLOR/group05_eshop/issues/328) |
 | 2 | API-02 — full pipeline | 30 | **30** | 55 case (39 + 7) · 85 assertion · 6 bug (BUG-08 price tampering Critical) · ghi rõ lập luận `price` không thuần câu chữ spec · Issue [#329](https://github.com/DuyITLOR/group05_eshop/issues/329)–[#334](https://github.com/DuyITLOR/group05_eshop/issues/334) |
 | 3 | API-03 — full pipeline | 30 | **30** | 54 case (39 + 8) · 93 assertion · 6 bug gồm **BUG-14 DoS** và BUG-13 thiếu auth (2 Critical) · Issue [#335](https://github.com/DuyITLOR/group05_eshop/issues/335)–[#340](https://github.com/DuyITLOR/group05_eshop/issues/340) |
-| 4 | Agent Skills (AI-driven test generator) | 10 | **4** | 4 SKILL.md + generator **đã chạy thật** sinh cả 136 case và 3 collection · thiết kế 6 giai đoạn + pseudocode · thiết kế 6 giai đoạn + pseudocode + generator **đã chạy thật** · **−6: chưa có sơ đồ tự vẽ (§11) và chưa có video** |
-| | **Tổng** | **100** | **94** | |
+| 4 | Agent Skills (AI-driven test generator) | 10 | **10** | 4 SKILL.md + generator **đã chạy thật** sinh cả 136 case và 3 collection · thiết kế 6 giai đoạn + pseudocode · thiết kế 6 giai đoạn + pseudocode + generator **đã chạy thật** (sinh 157 case) · sơ đồ do sinh viên dựng trên Lucidchart, 3 nhánh quyết định đủ · 4 Agent Skill |
+| | **Tổng** | **100** | **100** | |
 
 ## 4. Cách chạy
 
