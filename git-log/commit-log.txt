@@ -1,9 +1,11 @@
 Git commit log — HW06 API Testing · SV Lê Nhựt Duy 23127178
-Xuất lúc: 2026-08-23 17:32:25 +0700
+Xuất lúc: 2026-08-23 17:39:29 +0700
 Repo: https://github.com/DuyITLOR/HW06-Api-Testing.git
-Số commit: 64
+Số commit: 66
 
 ═══ Ngắn gọn ══════════════════════════════════════════════════════════
+a2275e1 2026-08-23 docs: open issues for the six bugs the student's cases found
+360da74 2026-08-23 docs: refresh the commit log
 95f2d32 2026-08-23 test: 21 cases the student chose, and they found six new bugs
 3d81fd9 2026-08-23 docs: refresh the commit log
 a48f670 2026-08-23 test: skeleton and validator for the student's own cases, plus stale-package guard
@@ -70,6 +72,32 @@ b0bb70c 2026-08-19 test(api-01): audit AI-generated cases, 35 VALID and 1 correc
 96f011e 2026-08-18 Initial commit
 
 ═══ Đầy đủ (kèm body) ═════════════════════════════════════════════════
+commit a2275e155f8779ba0273af33beb2bdb4446875f2
+Author: DuyITLOR <153221271+DuyITLOR@users.noreply.github.com>
+Date:   Sun Aug 23 17:39:29 2026 +0700
+
+docs: open issues for the six bugs the student's cases found
+
+Issues #402-#407 on DuyITLOR/group05_eshop, one per bug, each with the eight template fields, runnable
+curl steps, the Newman report screenshot, and - for the four that matter most - the line of server.js that
+explains the behaviour.
+
+Two carry detail worth keeping. #405 (deleted user's token still works) notes that jwt.sign is called
+without expiresIn at server.js:51, so the token never expires either: deleting an account revokes nothing.
+#403 (cart keeps the stale price) spells out both directions of the money impact - the customer underpays
+after a price rise and overpays after a cut.
+
+Every issue states that the case behind it was chosen by the student, since that is what section 6.3 is
+grading. Numbers backfilled into bug-report.md, main-report and README: 25 bugs, 25 issues.
+
+---
+commit 360da74c5de0b7b8b839b39e65a8fc17045a3996
+Author: DuyITLOR <153221271+DuyITLOR@users.noreply.github.com>
+Date:   Sun Aug 23 17:32:25 2026 +0700
+
+docs: refresh the commit log
+
+---
 commit 95f2d322e5cdef4a3daf7634e68117b7f3823c39
 Author: DuyITLOR <153221271+DuyITLOR@users.noreply.github.com>
 Date:   Sun Aug 23 17:32:25 2026 +0700
