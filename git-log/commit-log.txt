@@ -1,9 +1,11 @@
 Git commit log — HW06 API Testing · SV Lê Nhựt Duy 23127178
-Xuất lúc: 2026-08-23 17:39:29 +0700
+Xuất lúc: 2026-08-23 17:44:08 +0700
 Repo: https://github.com/DuyITLOR/HW06-Api-Testing.git
-Số commit: 66
+Số commit: 68
 
 ═══ Ngắn gọn ══════════════════════════════════════════════════════════
+f75ae87 2026-08-23 docs: stop treating a group-chat screenshot as a missing requirement
+f75cd03 2026-08-23 docs: refresh the commit log
 a2275e1 2026-08-23 docs: open issues for the six bugs the student's cases found
 360da74 2026-08-23 docs: refresh the commit log
 95f2d32 2026-08-23 test: 21 cases the student chose, and they found six new bugs
@@ -72,6 +74,35 @@ b0bb70c 2026-08-19 test(api-01): audit AI-generated cases, 35 VALID and 1 correc
 96f011e 2026-08-18 Initial commit
 
 ═══ Đầy đủ (kèm body) ═════════════════════════════════════════════════
+commit f75ae87f24e0d006f07fc8f06ad9f383c66492ec
+Author: DuyITLOR <153221271+DuyITLOR@users.noreply.github.com>
+Date:   Sun Aug 23 17:44:08 2026 +0700
+
+docs: stop treating a group-chat screenshot as a missing requirement
+
+Section 5 says only: ensure your selection is not duplicated among the members of your group, no two
+members may choose the same three APIs. That is a constraint to satisfy, not an artefact to submit -
+section 11 names three pieces of evidence and a chat screenshot is not one of them, and section 14's
+contents list does not mention it either.
+
+The screenshot idea was carried over from HW05's conventions and I wrote it into api-selection.md as an
+unchecked box, which made the submission look like it was missing something the assignment never asked for.
+Also worth noting: the chat contains other people's messages, and there is no requirement to redistribute
+that.
+
+api-selection.md now quotes section 5 verbatim, states what it does and does not require, and marks the
+constraint as satisfied - the comparison table against the four other members' selections is the record,
+verifiable by asking the group. Same correction applied in the report's limitations, README's deduction
+table, TASKS.md and verify-all's manual checklist.
+
+---
+commit f75cd0327d9239fab78686673f18b7be95406f61
+Author: DuyITLOR <153221271+DuyITLOR@users.noreply.github.com>
+Date:   Sun Aug 23 17:39:30 2026 +0700
+
+docs: refresh the commit log
+
+---
 commit a2275e155f8779ba0273af33beb2bdb4446875f2
 Author: DuyITLOR <153221271+DuyITLOR@users.noreply.github.com>
 Date:   Sun Aug 23 17:39:29 2026 +0700
