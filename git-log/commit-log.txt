@@ -1,9 +1,11 @@
 Git commit log — HW06 API Testing · SV Lê Nhựt Duy 23127178
-Xuất lúc: 2026-08-23 17:44:08 +0700
+Xuất lúc: 2026-08-23 17:55:33 +0700
 Repo: https://github.com/DuyITLOR/HW06-Api-Testing.git
-Số commit: 68
+Số commit: 70
 
 ═══ Ngắn gọn ══════════════════════════════════════════════════════════
+9a2cf46 2026-08-23 fix: three findings were not bugs - downgraded, including the public issues
+61ff69a 2026-08-23 docs: refresh the commit log
 f75ae87 2026-08-23 docs: stop treating a group-chat screenshot as a missing requirement
 f75cd03 2026-08-23 docs: refresh the commit log
 a2275e1 2026-08-23 docs: open issues for the six bugs the student's cases found
@@ -74,6 +76,44 @@ b0bb70c 2026-08-19 test(api-01): audit AI-generated cases, 35 VALID and 1 correc
 96f011e 2026-08-18 Initial commit
 
 ═══ Đầy đủ (kèm body) ═════════════════════════════════════════════════
+commit 9a2cf462225d0592973a0d9992e04db93f6891fc
+Author: DuyITLOR <153221271+DuyITLOR@users.noreply.github.com>
+Date:   Sun Aug 23 17:55:33 2026 +0700
+
+fix: three findings were not bugs - downgraded, including the public issues
+
+The review was right on all three counts, and this is error #25: concluding 'bug' from an expected value
+that is an inference rather than a requirement. Worse than the earlier instances because these had already
+been filed as public issues on the group's repo.
+
+R-01 (no pagination): spec 3.1 defines exactly one parameter, search. Ignoring an unknown query parameter is
+normal HTTP behaviour, and nothing in the spec or FR-05 requires pagination. The performance risk is real -
+the SUT's database in HW05 held ~900k products - so it stays as an improvement suggestion.
+
+Q-01 (cart keeps the price from add-time): price snapshot is a legitimate and common policy. Spec 4.1/4.2
+says nothing about whether the cart references products or snapshots the price, so neither side can be
+derived. It is a business question. The actual money bug remains BUG-08, where the client sets the price and
+FR-07/FR-08 back it up.
+
+R-02 (<script> stored verbatim): SEC-04 reads 'Moi du lieu tu user nhap vao khi hien thi tren UI phai duoc
+escape' - when displaying. It does not forbid storing. I had used SEC-04 to indict the storage layer while
+the qualifying clause sat in the middle of the sentence.
+
+All three cases are now characterization tests that record behaviour instead of asserting a requirement that
+does not exist, and issues #402, #403 and #404 were retitled RISK/QUESTION/RISK with a comment explaining
+the downgrade - leaving a wrong severity on someone else's repo is not an option.
+
+Totals: 372 assertions, 93 failing, 22 confirmed bugs plus 2 risks and 1 question; regression suite 253/0;
+baseline 29/31/33.
+
+---
+commit 61ff69a6af2164a0065833860649be4492015112
+Author: DuyITLOR <153221271+DuyITLOR@users.noreply.github.com>
+Date:   Sun Aug 23 17:44:08 2026 +0700
+
+docs: refresh the commit log
+
+---
 commit f75ae87f24e0d006f07fc8f06ad9f383c66492ec
 Author: DuyITLOR <153221271+DuyITLOR@users.noreply.github.com>
 Date:   Sun Aug 23 17:44:08 2026 +0700
