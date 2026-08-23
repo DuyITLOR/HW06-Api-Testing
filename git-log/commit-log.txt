@@ -1,9 +1,11 @@
 Git commit log — HW06 API Testing · SV Lê Nhựt Duy 23127178
-Xuất lúc: 2026-08-23 18:44:45 +0700
+Xuất lúc: 2026-08-23 23:48:12 +0700
 Repo: https://github.com/DuyITLOR/HW06-Api-Testing.git
-Số commit: 74
+Số commit: 76
 
 ═══ Ngắn gọn ══════════════════════════════════════════════════════════
+44ce458 2026-08-23 docs: clear the nine residual inconsistencies a re-read found
+8406ec4 2026-08-23 docs: link the Lucidchart document as evidence the student built the diagram
 52cce6a 2026-08-23 docs: refresh the commit log
 1743e6c 2026-08-23 docs: the diagram is in, drawn by the student on Lucidchart
 ddec465 2026-08-23 docs: drawing sheet so the student can draw the diagram themselves
@@ -80,6 +82,52 @@ b0bb70c 2026-08-19 test(api-01): audit AI-generated cases, 35 VALID and 1 correc
 96f011e 2026-08-18 Initial commit
 
 ═══ Đầy đủ (kèm body) ═════════════════════════════════════════════════
+commit 44ce4589a351223afc3263407ffa0d0cd509b5d4
+Author: DuyITLOR <153221271+DuyITLOR@users.noreply.github.com>
+Date:   Sun Aug 23 23:48:12 2026 +0700
+
+docs: clear the nine residual inconsistencies a re-read found
+
+All nine were real.
+
+README carried 136 and 157 simultaneously, still said the human review and the diagram were missing, still
+told the reader 'as-is → 94' next to a self-assessment of 100, and still called #402-#407 six bugs after
+three of them had been downgraded. Per-API rows also had stale assertion counts and bug counts (now 6/7/8).
+
+The report's limitations section still said the diagram had no submitted version. postman/README, design.md
+and the 25 issue markdown files still quoted 136 cases / 329 assertions / 89 failures - the issue template no
+longer quotes counts at all, so it cannot drift again. Traceability still called R-02 'BUG-22' and credited
+FR-08 with BUG-21; both now read as the risk and the question they were downgraded to.
+
+The characterization tests were showing FAIL because gen-artifacts had last run before the final Newman
+execution: 201, 202, 203 and 205 now read Pass, which is what the reclassification intended.
+
+summary.md was dirtying git on every verify run because it stamped its own generation time. The per-run
+timestamps in its table already cover that, so the line is gone and regenerating is idempotent - verify now
+diffs the whole file instead of filtering that line out.
+
+check-claims gained twelve string guards for exactly these stale values, plus a wider notion of what counts
+as a historical mention, since the audit legitimately recounts earlier numbers. 29 claims checked, 0
+mismatches.
+
+---
+commit 8406ec47c1199adde2af80837b8fff5dadfe6e9c
+Author: DuyITLOR <153221271+DuyITLOR@users.noreply.github.com>
+Date:   Sun Aug 23 18:44:45 2026 +0700
+
+docs: link the Lucidchart document as evidence the student built the diagram
+
+The link is attached in three places - README's link table, design.md section 4, and diagram/README.md -
+because it shows two things the exported PNG cannot: the revision history, which records each of the
+student's fixes to the first pass, and the fact that every box is a real editable shape rather than a pasted
+image.
+
+The URL was trimmed to the /view form. The link the student sent was an /edit URL carrying an invitationId,
+and pasting that into a public repository hands edit and delete rights over their document to anyone who
+reads the repo. diagram/README.md tells them to set Share to 'anyone with the link, can view' so the
+trimmed URL opens for a grader.
+
+---
 commit 52cce6a08c68ab114f0e1c42a1b585445e091e5a
 Author: DuyITLOR <153221271+DuyITLOR@users.noreply.github.com>
 Date:   Sun Aug 23 18:17:12 2026 +0700
