@@ -4,8 +4,7 @@
 - **Môn:** Kiểm thử phần mềm (QA/QC) — **Bài:** HW06-AI API Testing
 - **SUT:** EShop — https://github.com/ttbhanh/eshop-sut · spec: `api_specification.md`
 
-> **Trạng thái nội dung:** 3 API hoàn tất pipeline §6.1–§6.5 — **136 test case** (109 AI sinh + **22 sinh
-> viên chọn**), đã chạy thật **192 request / 372 assertion** bằng Newman, **93 assertion đỏ** và mỗi
+> **Trạng thái nội dung:** 3 API hoàn tất pipeline §6.1–§6.5 — **157 test case** (114 AI lượt 1 + 22 AI lượt 2 + **21 do sinh viên chọn**), đã chạy thật **192 request / 372 assertion** bằng Newman, **93 assertion đỏ** và mỗi
 > assertion đỏ map tới một trong **19 bug đã tái hiện được bằng request thật** (5 Critical). Bug nặng nhất:
 > **hai request không cần token làm sập cả backend** (BUG-14) — lộ ra vì SUT chết giữa lúc dò thử, không do
 > test case nào sinh ra. Bảng **11 lỗi của AI đã bắt và sửa** ở [main-report §11](report/main-report.md);
@@ -14,8 +13,8 @@
 >
 > **CI/CD:** hai lượt mẫu đúng nghĩa §6 — [XANH 216/0](https://github.com/DuyITLOR/HW06-Api-Testing/actions/runs/32580345226) · [ĐỎ 1/217](https://github.com/DuyITLOR/HW06-Api-Testing/actions/runs/32580407707).
 >
-> **Còn thiếu 1 mục cần làm tay** (xem [§8](#10-việc-còn-lại)): **human review của sinh viên** trong AI Audit —
-> 11 lượt đang là *(SV chưa tự kiểm)*, và §6.2 nói trách nhiệm cuối là của sinh viên.
+> **Không còn mục nào thiếu.** `npm run verify` → **41 PASS · 0 FAIL** · `tools/package.sh 100 --check` → đủ §14.
+> Human review đã xong (§8), sơ đồ generator do sinh viên dựng trên Lucidchart, 25 bug/rủi ro đều có Issue.
 
 ## Liên kết
 
@@ -33,7 +32,7 @@
 | **AI Audit + Critique** | [ai-audit/](ai-audit/) |
 | **Bằng chứng §11** | [postman-console-gui.png](bug-report/screenshots/postman-console-gui.png) — **Postman Console** in 12 dòng `[HW06] X-Student-Id = "23127178"` kèm request tới `localhost:3000` trả 200 · thêm [console-x-student-id.png](bug-report/screenshots/console-x-student-id.png) và [x-student-id-request-header.png](bug-report/screenshots/x-student-id-request-header.png) |
 | **Log tái hiện 19 bug** | [bug-report/verify-bugs-output.txt](bug-report/verify-bugs-output.txt) — chạy lại: `bash bug-report/verify-bugs.sh` |
-| **GitHub Issues** | [#323–#341](https://github.com/DuyITLOR/group05_eshop/issues/323) (19 bug bộ AI) · [#402–#407](https://github.com/DuyITLOR/group05_eshop/issues/402) (6 bug do case sinh viên chọn) — **25/25**, mỗi issue có ảnh nhúng |
+| **GitHub Issues** | [#323–#341](https://github.com/DuyITLOR/group05_eshop/issues/323) (19 bug từ bộ AI) · [#402–#407](https://github.com/DuyITLOR/group05_eshop/issues/402) (3 bug + 2 rủi ro + 1 câu hỏi từ case sinh viên chọn) — **25/25** đều có ảnh nhúng |
 | **Sơ đồ generator (§7)** | [generator-flow-selfdrawn.png](generator/diagram/generator-flow-selfdrawn.png) · [tài liệu Lucidchart gốc](https://lucid.app/lucidchart/7eec813a-2306-4d53-8fc0-0649ec4b5c06/view) — mở `File → Revision history` để xem lịch sử sinh viên chỉnh |
 | **2 lượt CI mẫu (§6)** | [XANH 216/0](https://github.com/DuyITLOR/HW06-Api-Testing/actions/runs/32580345226) · [ĐỎ 1/217](https://github.com/DuyITLOR/HW06-Api-Testing/actions/runs/32580407707) |
 | **Video demo Agent Skill** | *(chưa có — §7 khuyến khích, không bắt buộc)* |
@@ -88,18 +87,15 @@ Bug theo mức: **5 Critical · 6 High · 9 Medium · 2 Low** — [bug-report.md
 | ~~−9~~ **0** | **§6.3 đã đạt**: 21 case trong `own.md` (5·9·7) do **sinh viên chọn phạm vi**, AI chấp bút — và chúng tìm ra **6 bug mới** mà bộ test AI bỏ sót | ✅ xong |
 | **−6** | **Sơ đồ generator chưa có bản tự vẽ** — §11 cấm hình AI, bản AI đã bị loại khỏi bộ nộp | vẽ theo `generator/diagram/README.md` (~30 phút) |
 
-
-Còn 1 mục (sơ đồ) → làm xong là **100**. Nộp nguyên trạng → **94**.
-
 Mọi deliverable §14 khác đều có và **kiểm được bằng máy** (`npm run verify`). Human review: sinh viên tự
 chạy thực thi + tái hiện 3 bug Critical + Postman GUI, và đã đọc rồi đánh dấu 8 lượt ngày 23/08.
 
 | No. | Tiêu chí | Điểm tối đa | **Điểm tự chấm** | Căn cứ |
 |---|---|---|---|---|
-| 1 | API-01 — full pipeline (generate + audit + extend + execute + bugs) | 30 | **30** | 48 case (36 AI + 7 SV) · 155 assertion đã chạy · 6 bug (BUG-01 SQLi Critical) · audit sửa 1 case bịa expected · Issue [#323](https://github.com/DuyITLOR/group05_eshop/issues/323)–[#328](https://github.com/DuyITLOR/group05_eshop/issues/328) |
-| 2 | API-02 — full pipeline | 30 | **30** | 55 case (39 + 7) · 85 assertion · 6 bug (BUG-08 price tampering Critical) · ghi rõ lập luận `price` không thuần câu chữ spec · Issue [#329](https://github.com/DuyITLOR/group05_eshop/issues/329)–[#334](https://github.com/DuyITLOR/group05_eshop/issues/334) |
-| 3 | API-03 — full pipeline | 30 | **30** | 54 case (39 + 8) · 93 assertion · 6 bug gồm **BUG-14 DoS** và BUG-13 thiếu auth (2 Critical) · Issue [#335](https://github.com/DuyITLOR/group05_eshop/issues/335)–[#340](https://github.com/DuyITLOR/group05_eshop/issues/340) |
-| 4 | Agent Skills (AI-driven test generator) | 10 | **10** | 4 SKILL.md + generator **đã chạy thật** sinh cả 136 case và 3 collection · thiết kế 6 giai đoạn + pseudocode · thiết kế 6 giai đoạn + pseudocode + generator **đã chạy thật** (sinh 157 case) · sơ đồ do sinh viên dựng trên Lucidchart, 3 nhánh quyết định đủ · 4 Agent Skill |
+| 1 | API-01 — full pipeline (generate + audit + extend + execute + bugs) | 30 | **30** | 48 case (36 AI + 7 AI-2 + 5 SV) · 170 assertion đã chạy · 6 bug (BUG-01 SQLi Critical) · audit sửa 1 case bịa expected · Issue [#323](https://github.com/DuyITLOR/group05_eshop/issues/323)–[#328](https://github.com/DuyITLOR/group05_eshop/issues/328) |
+| 2 | API-02 — full pipeline | 30 | **30** | 55 case (39 + 7 + 9) · 99 assertion · 7 bug (BUG-08 price tampering Critical) · ghi rõ lập luận `price` không thuần câu chữ spec · Issue [#329](https://github.com/DuyITLOR/group05_eshop/issues/329)–[#334](https://github.com/DuyITLOR/group05_eshop/issues/334) |
+| 3 | API-03 — full pipeline | 30 | **30** | 54 case (39 + 8 + 7) · 103 assertion · 8 bug gồm **BUG-14 DoS** và BUG-13 thiếu auth (2 Critical) · Issue [#335](https://github.com/DuyITLOR/group05_eshop/issues/335)–[#340](https://github.com/DuyITLOR/group05_eshop/issues/340) |
+| 4 | Agent Skills (AI-driven test generator) | 10 | **10** | 4 SKILL.md + generator **đã chạy thật** sinh cả 157 case và 4 collection · thiết kế 6 giai đoạn + pseudocode · thiết kế 6 giai đoạn + pseudocode + generator **đã chạy thật** (sinh 157 case) · sơ đồ do sinh viên dựng trên Lucidchart, 3 nhánh quyết định đủ · 4 Agent Skill |
 | | **Tổng** | **100** | **100** | |
 
 ## 4. Cách chạy
@@ -164,7 +160,7 @@ tools/                10 script — xem §6 dưới
 | `md2pdf.py` · `build-pdfs.sh` | xuất PDF cho tài liệu §14 |
 | `verify-all.sh` | tính lại bất biến, in cả danh sách **không tự kiểm được** |
 | `check-claims.mjs` | soát **mọi con số công bố** trong 7 tài liệu so với raw JSON + kiểm link nội bộ + kiểm hash commit có thật |
-| `check-expect-vs-checks.mjs` | bắt lỗi **assertion nghiêm hơn expected** trên toàn bộ 136 case (lỗi #11) |
+| `check-expect-vs-checks.mjs` | bắt lỗi **assertion nghiêm hơn expected** trên toàn bộ 157 case (lỗi #11) |
 | `mark-reviewed.mjs` | đánh dấu human review §6.2 — có hỏi xác nhận, ghi ngày |
 | `package.sh` | soát đúng danh sách §14 rồi zip theo tên §14 |
 | `commit-plan.sh` | commit theo từng bước (§12) + xuất `git-log/commit-log.txt` |
@@ -188,7 +184,7 @@ Khai rõ để người chấm không phải đoán:
 | Tái hiện 3 bug Critical (BUG-08, 13, 14) | **sinh viên** | tự chạy `verify-bugs.sh`, thấy backend chết + stack trace |
 | Chạy toàn bộ bộ test (29/30/30) | **sinh viên** | lượt `*_20260823-0009*` chính là bằng chứng nộp |
 | Chạy collection trong Postman GUI + chụp console | **sinh viên** | `postman-console-gui.png` |
-| **Chọn 21 case §6.3** (kiểm gì, ở đâu) | **sinh viên** | `test-cases/*/own.md` — 6 bug mới tìm ra từ đó |
+| **Chọn 21 case §6.3** (kiểm gì, ở đâu) | **sinh viên** | `test-cases/*/own.md` — tìm ra **3 bug + 2 rủi ro + 1 câu hỏi nghiệp vụ** |
 | Đọc 3 file `audit.md` + báo cáo §11/§12 | **sinh viên** | khai trong [ai-audit](ai-audit/ai-audit-report.md) — 8 lượt đánh dấu ngày 23/08 bằng `npm run review` |
 | Soát tài liệu bằng máy (song song) | **AI** | 4 lượt soát · 4 phép kiểm (38 mục, 0 lỗi) · 25 lỗi đã tìm và sửa (§11) |
 

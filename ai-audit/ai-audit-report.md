@@ -113,7 +113,7 @@ audit, mọi danh sách case đỏ đều được đối chiếu với dữ li�
 - **AI tool:** Claude Code (Opus 5)
 - **Date & time:** 2026-08-19 00:05
 - **Prompt:** *(cùng lượt #3 — AI tự chia thành các bước theo skill `api-test-design`)*
-- **AI output (tóm tắt):** 3 file `generator/specs/*.mjs` định nghĩa **136 test case** (109 AI + 22 SV +
+- **AI output (tóm tắt):** 3 file `generator/specs/*.mjs` định nghĩa **136 test case** *(số lúc đó; hiện 157 sau khi thêm 21 case sinh viên chọn)* (109 AI + 22 AI-2 +
   24 setup/teardown) theo 4 nhóm §6.1, kèm cột `Căn cứ` cho từng case; và `tools/gen-artifacts.mjs` sinh
   ra bảng Markdown 12 cột + collection Postman từ cùng nguồn.
 - **AI sai / bỏ sót:**
@@ -127,7 +127,7 @@ audit, mọi danh sách case đỏ đều được đối chiếu với dữ li�
   **model limitations** — sinh mã bằng nội suy chuỗi mà không tự chạy thử; (3) **characteristics of the
   API** — không lường được một test case có thể giết cả SUT.
 - **Human review:** ***(SV đã kiểm)*** — SV tự đọc `test-cases/*/generated.md` và xác nhận ngày 23/08/2026. — **SV đã tự làm:** chạy `verify-bugs.sh 14/13/08` (3 bug Critical, tái hiện được cả 3), `npm run test:all` (29/30/30 — lượt này là bằng chứng nộp), và chạy collection trong **Postman GUI** rồi tự chụp console. **Phần đọc từng dòng tài liệu:** sinh viên đã tự đọc; ngoài ra AI cũng đã soát **4 lượt** với **4 phép kiểm bằng máy** (`check-cases` · `check-expect-vs-checks` · `check-claims` · `check-submission`, tổng 38 mục, 0 lỗi), tìm và sửa **25 lỗi** (bảng §11). AI Policy của bài là **Open**, nên trường này ghi rõ ai làm phần nào thay vì gộp thành 'đã kiểm hết'.
-  **Chi tiết soát cho lượt này:** **AI đã soát:** `check-cases.mjs` (136 case · 7 bất biến nội dung · 0 vấn đề) và `check-expect-vs-checks.mjs` (135 case có assert status · 0 case lệch). **SV đã làm:** chạy toàn bộ 3 collection và tự thấy 29/30/30. **Còn lại:** SV đọc `test-cases/*/generated.md` — `npm run review 4`.
+  **Chi tiết soát cho lượt này:** **AI đã soát:** `check-cases.mjs` (157 case · 8 bất biến nội dung · 0 vấn đề) và `check-expect-vs-checks.mjs` (135 case có assert status · 0 case lệch). **SV đã làm:** chạy toàn bộ 3 collection và tự thấy 29/30/30. **Còn lại:** SV đọc `test-cases/*/generated.md` — `npm run review 4`.
 - **Commit:** `29ef95c`
 
 ### Interaction #5
@@ -235,8 +235,8 @@ audit, mọi danh sách case đỏ đều được đối chiếu với dữ li�
 - **AI output (tóm tắt):** chấm 92/100 và liệt kê 6 mục bị trừ. Hai mục là **lỗi thật trong bài** chưa ai
   thấy: (1) `TC-CART-020`/`021` có assertion `400/422` **nghiêm hơn** cột expected của chính nó
   (*"từ chối, hoặc lấy giá/tên từ catalog"*) — đỏ oan thì sẽ bị báo thành bug của SUT; (2) hai lượt CI
-  **không đúng nghĩa** §6 đòi (*"all test cases passing"* / *"one test case failing"*) vì bộ 136 case luôn
-  có 89 assertion đỏ.
+  **không đúng nghĩa** §6 đòi (*"all test cases passing"* / *"one test case failing"*) vì bộ test chính luôn
+  có assertion đỏ *(lúc đó 89, hiện 93)*.
 - **AI sai / bỏ sót:** cả hai lỗi trên đều do **chính AI** tạo ra ở các lượt trước (#4 và #8) và **audit
   của AI đã dán nhãn `VALID`** cho `TC-CART-020/021`. Tức lượt tự audit ở #5 không bắt được lỗi của chính
   nó — đúng hạn chế đã ghi ở #5.
@@ -381,13 +381,13 @@ audit, mọi danh sách case đỏ đều được đối chiếu với dữ li�
   - **AI làm tiếp:** định dạng thành bảng 12 cột, tra **căn cứ** từ spec §/FR/SEC, viết assertion, và viết
     cột *"vì sao AI bỏ sót"* theo 3 nhóm §6.3.
 - **AI output (tóm tắt):** 21 case (5 · 9 · 7) vào `test-cases/*/own.md`, chạy thật → **6 bug mới**:
-  BUG-20 không có phân trang · BUG-21 giỏ giữ giá cũ sau khi catalog đổi giá (FR-08) · BUG-22 XSS lưu
-  nguyên trong giỏ (SEC-04) · BUG-23 **token của user đã bị xoá vẫn dùng được** (SEC-02) · BUG-24
+  *(số lúc đó — lượt #16 sau đó hạ 3 mục xuống rủi ro/câu hỏi)* thiếu phân trang · giỏ giữ giá cũ · XSS lưu
+  nguyên trong giỏ · BUG-23 **token của user đã bị xoá vẫn dùng được** (SEC-02) · BUG-24
   `imageUrl: javascript:` được lưu (SEC-04) · BUG-25 `category_id` trỏ danh mục đã xoá (FR-14).
-  Số liệu sau khi thêm: **157 case · 368 assertion · 97 đỏ**; regression suite 241/0.
+  Số liệu sau khi thêm: **157 case · 368 assertion · 97 đỏ** *(số lúc đó; sau lượt #16 còn 372 assertion · 93 đỏ)*; regression suite 241/0.
 - **AI sai / bỏ sót:** 4/6 bug mới thuộc loại AI **không thể** tìm bằng cách phân hoạch tham số — chúng
   nằm trên **trục thời gian của dữ liệu** (giá đổi *sau khi* vào giỏ · người dùng bị xoá *sau khi* có token ·
-  danh mục bị xoá *sau khi* được gán). Toàn bộ 136 case AI sinh trước đó không có case nào loại này.
+  danh mục bị xoá *sau khi* được gán). Toàn bộ 136 case AI sinh trước đó *(số lúc đó)* không có case nào loại này.
 - **Vì sao bỏ sót:** **prompt quality** (prompt khoanh state transition vào một endpoint, nên AI không nối
   hai feature khác pool thành một tình huống nghiệp vụ) và **characteristics of the API** (giỏ lưu bản chụp;
   `authenticateToken` không đối chiếu bảng `users`; SQLite không bật khoá ngoại — cả ba chỉ thấy khi đọc source).
@@ -509,7 +509,7 @@ chạy folder `00-setup` bằng Collection Runner và chụp `bug-report/screens
 | 14 | #9 | **bản sửa cho lỗi #10 vẫn sai**: "login admin được" không phải mốc SUT đã seed xong | characteristics of the API | chạy lại để kiểm tái lập: API-02 ra 34 thay vì 30; tái hiện thủ công 3/3 lần | mốc sẵn sàng = **ghi rồi kiểm chứng bản ghi còn sống**; seed thất bại thì chặn lượt chạy |
 | 15 | #8 | `verify-all.sh` đếm dòng thay vì TC ID duy nhất (50 thay vì 43) | kỹ thuật | số không khớp `summary.md` | đếm `sort -u` trên TC ID |
 | 16 | #4/#10 | **`TC-CART-020`/`021`: assertion nghiêm hơn expected của chính nó** — và lượt tự audit #5 vẫn dán nhãn `VALID` | thiết kế test | soát chéo cột `expect` với cột `checks` khi tự chấm lại bài | chuyển phần khẳng định sang `TC-CART-107`, nơi cả hai hành vi hợp lệ đều cho cùng kết luận kiểm được |
-| 17 | #8/#10 | Hai lượt CI **không đúng nghĩa** §6 (*all passing* / *one failing*) vì bộ 136 case luôn có 89 đỏ | thiết kế CI | đọc lại đúng câu chữ §6 khi tự chấm | thêm **regression suite** sinh tự động (216 assertion, 0 đỏ) với cổng riêng; lượt đỏ tạo bằng đúng 1 assertion có nhãn DEMO rồi gỡ ngay |
+| 17 | #8/#10 | Hai lượt CI **không đúng nghĩa** §6 (*all passing* / *one failing*) vì bộ test chính luôn có assertion đỏ *(số thật lúc đó 89)* | thiết kế CI | đọc lại đúng câu chữ §6 khi tự chấm | thêm **regression suite** sinh tự động (216 assertion, 0 đỏ) với cổng riêng; lượt đỏ tạo bằng đúng 1 assertion có nhãn DEMO rồi gỡ ngay |
 | 18 | #11 | Cổng baseline quét luôn `ci-regression.json` → build đỏ vì *"chưa có baseline"* | kỹ thuật | đọc log lượt CI đầu sau khi thêm regression | thu hẹp glob về `ci-api-*.json` |
 | 19 | #8/#12 | **`ci-report.md` ghi 2 hash commit KHÔNG TỒN TẠI** cho lượt CI đỏ — biết 1 hash thật rồi điền nốt 2 hash theo trí nhớ | model limitations | soát lại lần hai: `git log --format=%s -1 <hash>` trả về rỗng | tra `git log` lấy hash thật `e388146`, `4e2f302` |
 | 20 | #10/#12 | Bảng §11 **đánh số trùng, sai thứ tự** và **thiếu 1 dòng** so với bảng này | kỹ thuật | đếm lại dãy số trong bảng | đánh số lại liên tục 1..18, thêm dòng còn thiếu, sửa 3 tham chiếu chéo |

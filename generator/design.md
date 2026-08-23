@@ -3,7 +3,7 @@
 - **Sinh viên:** Lê Nhựt Duy — **MSSV:** 23127178
 - **Bản hiện thực chạy được:** [`tools/gen-artifacts.mjs`](../tools/gen-artifacts.mjs) +
   [`.claude/skills/api-test-design/SKILL.md`](../.claude/skills/api-test-design/SKILL.md)
-- **Đã dùng thật:** toàn bộ **136 test case / 329 assertion** của bài này do generator sinh ra.
+- **Đã dùng thật:** toàn bộ **157 test case / 372 assertion** của bài này do generator sinh ra (114 case lượt 1 · 22 lượt 2 · 21 do sinh viên chọn).
 - **Sơ đồ:** [`diagram/generator-flow-selfdrawn.png`](diagram/generator-flow-selfdrawn.png) — sinh viên dựng
   trên **Lucidchart**: [tài liệu gốc](https://lucid.app/lucidchart/7eec813a-2306-4d53-8fc0-0649ec4b5c06/view) *(mở `File → Revision history` để xem lịch sử chỉnh)*.
   Xuất xứ ghi chi tiết ở [`diagram/README.md`](diagram/README.md).

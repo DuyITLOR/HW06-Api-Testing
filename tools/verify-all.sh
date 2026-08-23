@@ -83,7 +83,9 @@ if ls reports/newman/*.json >/dev/null 2>&1; then
     # Sinh lại vào file tạm rồi so — summary.md phải là output của script, không phải văn bản viết tay.
     cp test-cases/test-summary/summary.md /tmp/hw06-summary-before.md
     if node tools/summarize-newman.mjs >/dev/null 2>&1; then
-      if diff -q <(grep -v '^- Sinh lúc:' /tmp/hw06-summary-before.md) <(grep -v '^- Sinh lúc:' test-cases/test-summary/summary.md) >/dev/null; then
+      # summary.md không còn ghi timestamp (xem summarize-newman.mjs), nên so được nguyên file:
+      # sinh lại phải ra y hệt, không thì có người sửa tay.
+      if diff -q /tmp/hw06-summary-before.md test-cases/test-summary/summary.md >/dev/null; then
         p "summary.md khớp raw JSON (sinh lại cho kết quả y hệt)"
       else
         f "summary.md KHÁC bản sinh lại từ raw JSON — có ai sửa tay"

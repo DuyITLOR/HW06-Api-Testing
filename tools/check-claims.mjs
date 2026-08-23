@@ -21,7 +21,7 @@ const check = (what, actual, ...files) => {
 // Bỏ qua dòng đang **kể lại** một số liệu cũ (bảng lỗi §11 ghi "… 329 assertion (số thật 333)").
 // Không có ngoại lệ này thì checker tự báo đỏ vì chính phần tài liệu hoá lỗi — đúng họ lỗi #11:
 // phép kiểm nghiêm hơn ý định. Marker: dòng có "(số thật" hoặc "số thật là".
-const isHistory = (line) => /\(số thật|số thật là/.test(line);
+const isHistory = (line) => /\(số thật|số thật là|số lúc đó|lúc đó|bản trước|hạ 3 mục|Interaction #/.test(line);
 const forbid = (what, wrong, ...files) => {
   const hit = files.filter((f) => read(f).split("\n").some((L) => L.includes(String(wrong)) && !isHistory(L)));
   if (hit.length) { console.log(`  [LECH] ${what}: còn dấu vết cũ "${wrong}" trong ${hit.join(", ")}`); bad++; }
@@ -61,6 +61,21 @@ forbid("assertion cũ", "329 assertion", R, RM);
 forbid("passed cũ", "240 assertion xanh", R, RM);
 forbid("API-02 cũ", "81 assertion", R, RM);
 forbid("file lượt chạy cũ", "20260822-2217", R, RM, "ci/ci-report.md");
+// Bộ chuỗi số cũ mà lượt soát thứ sáu bắt được — mỗi tài liệu nhắc số phải nhắc số HIỆN TẠI.
+const DOCS = [R, RM, SUM, "postman/README.md", "generator/design.md", "generator/diagram/README.md",
+              "ci/ci-report.md", "TASKS.md", "test-cases/test-summary/traceability-matrix.md",
+              "ai-audit/ai-audit-report.md", "bug-report/bug-report.md"];
+forbid("tổng case cũ (136)", "136 case", ...DOCS);
+forbid("tổng case cũ (136 test case)", "136 test case", ...DOCS);
+forbid("assertion cũ (333)", "333 assertion", ...DOCS);
+forbid("assertion cũ (368)", "368 assertion", ...DOCS);
+forbid("đỏ cũ (89)", "89 assertion đỏ", ...DOCS);
+forbid("đỏ cũ (97)", "97 assertion đỏ", ...DOCS);
+forbid("nhãn cũ BUG-20", "BUG-20", ...DOCS);
+forbid("nhãn cũ BUG-21", "BUG-21", ...DOCS);
+forbid("nhãn cũ BUG-22", "BUG-22", ...DOCS);
+forbid("tự chấm cũ (94)", "nguyên trạng → **94**", RM);
+forbid("câu 'chưa có bản nộp' (sơ đồ)", "chưa có bản nộp", R, RM, "generator/design.md", "generator/diagram/README.md");
 
 console.log("\n── File được tài liệu trỏ tới có tồn tại không ───────────────────────────");
 const refs = [...read(R).matchAll(/\((\.\.\/[^)]+?)\)/g)].map((m) => m[1].replace("../", ""))

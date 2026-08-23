@@ -454,7 +454,7 @@ TPL = """## Found by Test Case
 - Bug report đầy đủ: [`bug-report/bug-report.md`]({repo}/bug-report/bug-report.md) · Test case: [`test-cases/`]({repo}/test-cases)
 - Repo bài kiểm thử: https://github.com/DuyITLOR/HW06-Api-Testing
 
-<sub>Báo bởi Lê Nhựt Duy — 23127178 · HW06 API Testing · bộ 136 test case / 329 assertion, 89 assertion đỏ.</sub>
+<sub>Báo bởi Lê Nhựt Duy — 23127178 · HW06 API Testing. Số liệu bộ test cập nhật tại `test-cases/test-summary/summary.md` trong repo bài làm (không nhắc con số ở đây để khỏi lệch khi bộ test thay đổi).</sub>
 """
 
 out = pathlib.Path("bug-report/issues"); out.mkdir(exist_ok=True)

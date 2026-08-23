@@ -75,7 +75,7 @@ Sau đó là bước audit (§6.2) và bước tự thêm case (§6.3) — làm 
 spec, nhưng **chỗ spec và code lệch nhau chính là bug** — chỉ đọc một nguồn thì không thấy chỗ lệch.
 Cột `Căn cứ` của mỗi test case ghi rõ expected đến từ đâu (`spec §3.1`, `SEC-05`, `FR-07`, `server.js:161`).
 
-**Một nguồn sự thật cho cả bảng lẫn collection.** 136 test case được định nghĩa trong
+**Một nguồn sự thật cho cả bảng lẫn collection.** 157 test case được định nghĩa trong
 `generator/specs/<api>.mjs`; `tools/gen-artifacts.mjs` sinh ra **cả** bảng Markdown 12 cột **và** collection
 Postman từ cùng định nghĩa đó. Viết tay hai chỗ thì bảng và collection lệch nhau ngay lần sửa đầu, và không
 ai phát hiện — người chấm đọc bảng, Newman chạy collection. Đây cũng là bản hiện thực của generator ở §10.
@@ -285,7 +285,7 @@ báo cáo Newman) và [`x-student-id-request-header.png`](../bug-report/screensh
 
 **Vì sao runner tự khởi động lại SUT trước mỗi collection.** `backend/database.js:15-20` **DROP rồi seed
 lại toàn bộ bảng** mỗi lần start. Đó vừa là ràng buộc vừa là công cụ: khởi động lại là cách duy nhất có
-**trạng thái đầu vào xác định**. Chạy lượt thứ hai trên CSDL đã bị 136 test case sửa thì số liệu hai lượt
+**trạng thái đầu vào xác định**. Chạy lượt thứ hai trên CSDL đã bị 157 test case sửa thì số liệu hai lượt
 không so được với nhau. Runner chỉ kill tiến trình **do chính nó khởi động** (PID trong `.run-logs/sut.pid`),
 không `pkill` theo tên — máy có thể đang chạy backend của bài khác.
 
@@ -350,7 +350,7 @@ sự xoá bảng, SQLi ở `:id`) — ghi lại trong bug report để không nh
 | 2 | Environment + biến | `HW06-local-23127178`, 17 biến |
 | 3 | Biến **secret** | `admin_password`, `user_password`, `user2_password` |
 | 4 | **Pre-request script cấp collection** | header `X-Student-Id` cho **mọi** request (§6.4) |
-| 5 | Test script `pm.test` | 333 assertion (+216 ở regression suite) |
+| 5 | Test script `pm.test` | 372 assertion (+253 ở regression suite) |
 | 6 | **JSON schema validation** | `pm.response.to.have.jsonSchema` — folder `40-schema` của cả 3 API |
 | 7 | Biến động giữa request | `pm.environment.set` cho token, `product_id`, `total_products`, `cart_before` |
 | 8 | **`pm.sendRequest`** | dọn fixture ở `00-setup` và `99-teardown` (giữ mỗi lượt độc lập) |
@@ -372,7 +372,7 @@ Cấu hình và hai lượt mẫu: [`ci/ci-report.md`](../ci/ci-report.md).
 Pipeline: [`.github/workflows/api-tests.yml`](../.github/workflows/api-tests.yml).
 
 **Hai bộ test, hai cổng, hai vai trò.** Đề đòi một lượt *tất cả test case pass* và một lượt *có một test
-fail*. Bộ 136 case không đáp ứng được theo nghĩa chữ, nên pipeline có thêm **regression suite** — tập con
+fail*. Bộ test chính không đáp ứng được theo nghĩa chữ, nên pipeline có thêm **regression suite** — tập con
 các case đang xanh, **sinh tự động** bởi `tools/gen-regression.mjs`, giữ nguyên expected, cổng **0 đỏ**.
 Hai lượt mẫu: [XANH 216/0](https://github.com/DuyITLOR/HW06-Api-Testing/actions/runs/32580345226) ·
 [ĐỎ 1/217](https://github.com/DuyITLOR/HW06-Api-Testing/actions/runs/32580407707).
@@ -393,7 +393,7 @@ Thiết kế, sơ đồ và pseudocode: [`generator/design.md`](../generator/des
 Điểm khác biệt so với một bản thiết kế trên giấy: generator này **đã chạy và sinh ra chính bộ test của bài
 này**. `tools/gen-artifacts.mjs` đọc `generator/specs/<api>.mjs` rồi sinh: `generated.md` (case AI),
 `audit.md` (case AI + nhãn audit), `extended.md` (case sinh viên + bảng "vì sao AI bỏ sót"), và collection
-Postman — 136 case, 333 assertion, từ **một** nguồn định nghĩa.
+Postman — 157 case, 372 assertion, từ **một** nguồn định nghĩa.
 
 <a id="11-human-review"></a>
 ## 11. Human review — AI sai và bỏ sót gì
@@ -428,7 +428,7 @@ Postman — 136 case, 333 assertion, từ **một** nguồn định nghĩa.
 | 23 | **Dán nhãn `SV` cho 22 case do AI sinh** và gọi là *"sinh viên tự thêm"* — misattribution, không thoả §6.3 *"of your own"* | quy trình | soát lại lần bốn, đối chiếu `extended.md` với chính lời khai ở Interaction #5 (*"AI output … thêm 22 case"*) | đổi nhãn thành `AI-2`, viết cảnh báo vào đầu `extended.md`, tạo `own.md` cho case của sinh viên, và thêm bất biến chặn nhãn `SV` |
 | 24 | `check-submission.mjs` coi **mọi lỗi `gh`** là *"issue KHÔNG tồn tại"* → chạy trong shell chưa `gh auth login` là ra 3 dòng đỏ khẳng định sai, và người chấm trừ điểm phần bug report | kỹ thuật | issue #323/#328/#341 bị báo không tồn tại, kiểm lại bằng API công khai thì **đều OPEN** | gọi API công khai bằng `curl`, chỉ **HTTP 404** là "không tồn tại"; 000/403 là "không kiểm được" |
 | 25 | **Kết luận "bug" khi expected không có căn cứ bắt buộc** — 3/6 phát hiện từ case sinh viên chọn bị báo thành bug: thiếu phân trang (spec §3.1 không định nghĩa `limit`/`page`), giỏ giữ giá cũ (price-snapshot là chính sách hợp lệ, spec im lặng), `<script>` lưu nguyên văn (SEC-04 nói escape **khi hiển thị**, không cấm lưu) | thiết kế test | bản review đối chiếu từng expected với câu chữ spec/SEC | Hạ xuống **R-01, Q-01, R-02**; đổi 3 case thành *characterization test*; **sửa nhãn 3 issue công khai** (#402 → RISK, #403 → QUESTION, #404 → RISK) kèm comment giải thích |
-| 26 | **Hai lượt CI không đúng nghĩa §6** (*"all test cases passing"* / *"one test case failing"*) — bộ 136 case luôn có 89 đỏ nên lượt "xanh" vẫn đầy assertion đỏ | thiết kế CI | Đọc lại đúng câu chữ §6 khi tự chấm bài theo bảng §15 | Thêm **regression suite** sinh tự động (216 assertion, 0 đỏ) với cổng riêng; lượt đỏ tạo bằng đúng 1 assertion có nhãn DEMO rồi gỡ ngay ở commit sau |
+| 26 | **Hai lượt CI không đúng nghĩa §6** (*"all test cases passing"* / *"one test case failing"*) — bộ test chính luôn có assertion đỏ (lúc đó 89) nên lượt "xanh" vẫn đầy assertion đỏ | thiết kế CI | Đọc lại đúng câu chữ §6 khi tự chấm bài theo bảng §15 | Thêm **regression suite** sinh tự động (216 assertion, 0 đỏ) với cổng riêng; lượt đỏ tạo bằng đúng 1 assertion có nhãn DEMO rồi gỡ ngay ở commit sau |
 
 **Ba lỗi đáng giá nhất về mặt phương pháp — #9 (mã JS sinh sai), #10 (mốc sẵn sàng sai) và #13 (bản sửa cho #10 vẫn sai):** cả ba đều làm test case đỏ, và nếu không
 truy nguyên thì sẽ được **báo thành bug của SUT**. Riêng chuỗi #10 → #13 đáng đọc kỹ, vì nó là một **bản sửa
@@ -464,7 +464,7 @@ Mỗi assertion đỏ phải trả lời được: *đỏ vì SUT sai, vì test 
 Mỗi lượt sinh ra một phép kiểm bằng máy để lỗi đó không quay lại âm thầm:
 [`check-expect-vs-checks.mjs`](../tools/check-expect-vs-checks.mjs) (135 case · 0 lệch) ·
 [`check-claims.mjs`](../tools/check-claims.mjs) (18 khớp · 0 lệch — gồm kiểm hash commit bằng `git cat-file`) ·
-[`check-cases.mjs`](../tools/check-cases.mjs) (136 case · 7 bất biến nội dung). Cả ba nằm trong `npm run verify`
+[`check-cases.mjs`](../tools/check-cases.mjs) (157 case · 8 bất biến nội dung). Cả bốn nằm trong `npm run verify`
 (**37 PASS · 0 FAIL**).
 
 **Lượt soát lần hai (23/08/2026):** đọc lại toàn bộ với vai người chấm và tìm thêm
@@ -507,9 +507,11 @@ Ghi rõ vì một báo cáo không nêu giới hạn thì không kiểm chứng 
    **misattribution**, đã sửa, và `tools/check-cases.mjs` giờ chặn nhãn `SV` cho case không do sinh viên viết.
    Case của sinh viên nằm ở `test-cases/*/own.md`, **hiện trống**. `npm run gaps` in ra ô phủ còn trống để
    chọn mà viết.
-8. **Sơ đồ generator chưa có bản nộp.** §11 đòi *self-drawn*; bản do AI dựng đã bị **loại khỏi bộ nộp**
-   (`tools/package.sh` không copy) và giữ lại trong repo tên `reference-layout-AI-KHONG-NOP.png`. Bản trước
-   nộp kèm hình AI **có khai rõ xuất xứ** — khai đúng nhưng vẫn vi phạm ràng buộc, nên đã gỡ.
+8. **Sơ đồ generator: nội dung là thiết kế của bài, phần dựng hình do sinh viên làm trên Lucidchart.**
+   Bản nộp là [`generator-flow-selfdrawn.png`](../generator/diagram/generator-flow-selfdrawn.png); tài liệu
+   gốc kèm `Revision history` link trong [`diagram/README.md`](../generator/diagram/README.md). Bản do AI
+   render trước đó **không nộp** (`tools/package.sh` loại nó). Ghi rõ như vậy thay vì gọn thành *self-drawn*,
+   vì AI có tham gia ở khâu viết bản nháp `DRAWING-SHEET.md` và lượt dựng đầu trên Lucid.
 9. **§5 không có vật chứng lưu trong repo, và đề không đòi.** §5 yêu cầu *selection không trùng* — một
    ràng buộc phải thoả, không phải bằng chứng phải nộp; §11/§14 không nêu ảnh chat. Bảng đối chiếu 4 bộ API
    của thành viên khác ở `docs/api-selection.md` là lời khai của sinh viên, kiểm được bằng cách hỏi nhóm.

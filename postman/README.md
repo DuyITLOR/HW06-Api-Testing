@@ -37,7 +37,7 @@ collections/23127178_regression.postman_collection.json        ← sinh tự đ�
 | 3 | Environment + biến | `HW06-local-23127178`, 17 biến | [x] đã tạo |
 | 4 | Biến **secret** | `admin_password`, `user_password` đặt type `secret` | [x] đã tạo |
 | 5 | Collection-level **pre-request script** | header `X-Student-Id` (§6.4) | [x] đã viết |
-| 6 | Test script (`pm.test`) | 329 assertion trên 171 request | [x] |
+| 6 | Test script (`pm.test`) | 372 assertion trên 192 request (+253 ở regression suite) | [x] |
 | 7 | **JSON schema validation** (`pm.response.to.have.jsonSchema`) | folder `40-schema` của cả 3 API | [x] |
 | 8 | **Data-driven** với Collection Runner + file CSV | `postman/data/*.csv` (sinh bằng `npm run seed:api`) | [x] |
 | 16 | **Collection sinh tự động từ một nguồn** | `tools/gen-artifacts.mjs` + `tools/gen-regression.mjs` — bảng test case và collection không thể lệch nhau | [x] |

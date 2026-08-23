@@ -66,7 +66,8 @@ md.push("");
 md.push("> **Đừng sửa tay.** Sinh lại bằng `npm run summary`. Nguồn: `reports/newman/*.json`.");
 md.push("> Mỗi api-slug lấy **lượt mới nhất**. Assertion đỏ ở đây là **kết quả mong đợi** khi test case bắt được bug thật.");
 md.push("");
-md.push(`- Sinh lúc: \`${new Date().toISOString()}\``);
+// KHÔNG ghi thời điểm sinh file: nó làm `git status` bẩn sau MỖI lần chạy verify (verifier sinh lại
+// summary.md để so với bản trong repo). Mốc thời gian của từng lượt chạy đã có trong bảng bên dưới.
 md.push("");
 md.push("| API | Lượt chạy (UTC) | Iteration | Request | Assertion | Passed | **Failed** | Thời lượng |");
 md.push("|---|---|---|---|---|---|---|---|");
