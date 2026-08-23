@@ -1,9 +1,14 @@
 Git commit log — HW06 API Testing · SV Lê Nhựt Duy 23127178
-Xuất lúc: 2026-08-24 00:18:03 +0700
+Xuất lúc: 2026-08-24 00:18:27 +0700
 Repo: https://github.com/DuyITLOR/HW06-Api-Testing.git
-Số commit: 82
+Số commit: 83
 
 ═══ Graph + thống kê file ═════════════════════════════════════════════
+* 64680f5 | 2026-08-24 | DuyITLOR | chore(git-log): xuất commit-log dạng graph + --stat như HW02| 
+|  git-log/commit-log.txt | 948 ++++++++++++++++++++++++++++++++++++++++++-----
+|  tools/commit-plan.sh   |   7 +-
+|  2 files changed, 868 insertions(+), 87 deletions(-)
+
 * fa38eeb | 2026-08-23 | DuyITLOR | chore: cập nhật commit-log sau lượt bỏ icon| 
 |  git-log/commit-log.txt | 23 ++++++++++++++---------
 |  1 file changed, 14 insertions(+), 9 deletions(-)
@@ -856,6 +861,25 @@ Số commit: 82
 
 
 ═══ Đầy đủ (kèm body) ═════════════════════════════════════════════════
+commit 64680f5e2be037811bfcfc1eb5405bb5c9dc7e18
+Author: DuyITLOR <153221271+DuyITLOR@users.noreply.github.com>
+Date:   Mon Aug 24 00:18:27 2026 +0700
+
+chore(git-log): xuất commit-log dạng graph + --stat như HW02
+
+Dạng cũ chỉ có 'hash ngày tiêu đề', người chấm không thấy commit nào sinh ra
+artefact nào. Dạng graph kèm --stat cho từng commit ĐÚNG danh sách file nó sửa
+và số dòng +/-, nên đọc file log là thấy được lịch sử làm bài, không cần clone.
+
+Cùng lệnh HW02 dùng:
+  git log --graph --all --stat --date=short --pretty=format:'%h | %ad | %an | %s'
+
+Giữ tiếp phần 'Đầy đủ (kèm body)' phía sau vì commit body của HW06 chứa lý do
+kỹ thuật mà §11/§12 dẫn lại; HW02 không có phần này.
+
+Co-Authored-By: Claude Opus 5 (1M context) <noreply@anthropic.com>
+
+---
 commit fa38eebf5fd24b5dddc326192aafa9f96c929e4a
 Author: DuyITLOR <153221271+DuyITLOR@users.noreply.github.com>
 Date:   Sun Aug 23 23:58:41 2026 +0700
