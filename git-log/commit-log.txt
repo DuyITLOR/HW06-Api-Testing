@@ -1,9 +1,10 @@
 Git commit log — HW06 API Testing · SV Lê Nhựt Duy 23127178
-Xuất lúc: 2026-08-23 18:16:54 +0700
+Xuất lúc: 2026-08-23 18:17:12 +0700
 Repo: https://github.com/DuyITLOR/HW06-Api-Testing.git
-Số commit: 72
+Số commit: 73
 
 ═══ Ngắn gọn ══════════════════════════════════════════════════════════
+1743e6c 2026-08-23 docs: the diagram is in, drawn by the student on Lucidchart
 ddec465 2026-08-23 docs: drawing sheet so the student can draw the diagram themselves
 f7d1880 2026-08-23 docs: refresh the commit log
 9a2cf46 2026-08-23 fix: three findings were not bugs - downgraded, including the public issues
@@ -78,6 +79,28 @@ b0bb70c 2026-08-19 test(api-01): audit AI-generated cases, 35 VALID and 1 correc
 96f011e 2026-08-18 Initial commit
 
 ═══ Đầy đủ (kèm body) ═════════════════════════════════════════════════
+commit 1743e6c036fd138f4c2e943fe395e43693490c1c
+Author: DuyITLOR <153221271+DuyITLOR@users.noreply.github.com>
+Date:   Sun Aug 23 18:17:12 2026 +0700
+
+docs: the diagram is in, drawn by the student on Lucidchart
+
+generator-flow-selfdrawn.png, 3911x4096, embedded in design.md section 4 and now required by
+package.sh - the AI-rendered layout stays in the repo as reference-layout-AI-KHONG-NOP.png and is excluded
+from the submission.
+
+Provenance is written out rather than compressed into 'self-drawn', because neither short answer would be
+true. The content is the assignment's own design (six phases, three decision branches), written into
+DRAWING-SHEET.md as 18 boxes with their text and colour and 13 arrows with labels. The student built it on
+Lucidchart from that sheet, caught five layout faults in the first pass - all colour lost, 3d Schema
+validation stranded at the bottom with no outgoing arrow, both branch boxes dumped below instead of beside
+their phase, the classification row split in two, no subtitle - fixed each one, added their name and id, and
+exported.
+
+Self-assessment goes to 100: section 6.3 satisfied by the 21 student-chosen cases, the diagram present, the
+human review done. verify is 41 PASS, 0 FAIL.
+
+---
 commit ddec465f70a76cf292f3fe95f786683db7d03ae8
 Author: DuyITLOR <153221271+DuyITLOR@users.noreply.github.com>
 Date:   Sun Aug 23 18:03:32 2026 +0700
