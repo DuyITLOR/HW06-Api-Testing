@@ -1,19 +1,26 @@
-# API-03 — Pool C · PUT /api/products/:id · bước 3 (§6.3): test case sinh viên tự thêm
+# API-03 — Pool C · PUT /api/products/:id · bước 3 (§6.3): test case bổ sung ở LƯỢT HAI
 
-- **8 case** (đề đòi ≥5).
+- **8 case**, cột `Nguồn` = **AI-2**: do AI sinh ở **lượt thứ hai**, sau khi đọc `server.js` và
+  dữ liệu fixture thật — khác lượt một chỉ đọc `api_specification.md`.
+
+> **Đọc kỹ chỗ này — nó ảnh hưởng cách chấm §6.3.** Đề đòi *"Add at least five test cases of **your own**
+> that the AI missed"*. Các case dưới đây **KHÔNG** phải do sinh viên tự nghĩ ra: chúng do AI sinh ở lượt hai.
+> Chúng thoả phần *"mà AI (lượt một) bỏ sót"* và có bảng lý do bỏ sót, nhưng **không** thoả phần *"of your own"*.
+> Ghi đúng như vậy ở đây thay vì dán nhãn `SV`: bản trước ghi `SV` và gọi là "sinh viên tự thêm" — đó là
+> misattribution, và §11 phạt đúng loại đó. Case do sinh viên tự viết (nếu có) nằm ở `own.md`.
 
 | TC ID | Kỹ thuật | Tham số & phân vùng | Request | Auth | Query / Body | Expected status | Expected body / schema | Căn cứ | Nguồn | Audit | Kết quả |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| TC-PRODUPD-101 | Security SEC-02 | **hệ quả** của PUT không token: dữ liệu có bị đổi thật không | `GET /api/products/{{product_id}}` | không có header | – | 200 | `name ≠ HW06-NoAuth-Attempt` — request không token ở TC-031 **không được** ghi vào CSDL | SEC-02 — kiểm **tác động**, không chỉ status code | SV | VALID | **Pass** (2/2) |
-| TC-PRODUPD-102 | Security SEC-03 | **hệ quả** của PUT bằng token user thường | `PUT /api/products/{{product_id}}` | user thường | `{"name":"HW06-EscalationProof","price":777,"description":"d","imageUrl":"http://x/i.png","` | 403 | 403; nếu 200 thì TC-103 chứng minh dữ liệu đã bị đổi | SEC-03 | SV | VALID | **FAIL** (1/1 đỏ) |
-| TC-PRODUPD-103 | Security SEC-03 | **verify**: user thường có sửa được dữ liệu thật không | `GET /api/products/{{product_id}}` | không có header | – | 200 | `name ≠ HW06-EscalationProof` | SEC-03 — role escalation chỉ được coi là bug khi chứng minh được dữ liệu đổi | SV | VALID | **FAIL** (1/2 đỏ) |
-| TC-PRODUPD-104 | Domain | **partial update**: body chỉ có `name` | `PUT /api/products/{{product_id}}` | admin | `{"name":"HW06-Partial-Only-Name"}` | 200/400 | hoặc 400 (đòi đủ field), hoặc 200 nhưng **giữ nguyên** các field khác | FR-15 — cập nhật một field không được **xoá** dữ liệu các field khác | SV | VALID | **Pass** (1/1) |
-| TC-PRODUPD-105 | Domain | **verify** TC-104: các field khác không bị ghi NULL | `GET /api/products/{{product_id}}` | không có header | – | 200 | `price`, `description`, `category_id` **không null** | FR-15 — mất dữ liệu im lặng là lỗi nặng hơn cả từ chối request | SV | VALID | **FAIL** (3/4 đỏ) |
-| TC-PRODUPD-106 | State | PUT vào `:id` không tồn tại **không được tạo hàng mới** | `GET /api/products` | không có header | – | 200 | số sản phẩm ≤ mốc `total_products` (TC-020 không được tạo hàng mới) | spec §3.3 — PUT là *cập nhật*, không phải upsert | SV | VALID | **Pass** (3/3) |
-| TC-PRODUPD-107 | Security SEC-02 | **route lân cận**: `POST /api/products` cũng không đòi token? | `POST /api/products` | không có header | `{"name":"HW06-NoAuth-Create","price":200000,"description":"d","imageUrl":"http://x/i.png",` | 401 | 401 — *Thêm sản phẩm* cũng là API admin | SEC-02 · spec §3.3 *(Dành cho Admin)* | SV | VALID | **FAIL** (1/1 đỏ) |
-| TC-PRODUPD-108 | Security SEC-02 | **route lân cận**: `DELETE /api/products/:id` không đòi token? | `DELETE /api/products/999999` | không có header | – | 401/404 | 401 (hoặc 404 nếu đã kiểm quyền trước) — không được 200 | SEC-02 · spec §3.3 | SV | VALID | **FAIL** (1/1 đỏ) |
+| TC-PRODUPD-101 | Security SEC-02 | **hệ quả** của PUT không token: dữ liệu có bị đổi thật không | `GET /api/products/{{product_id}}` | không có header | – | 200 | `name ≠ HW06-NoAuth-Attempt` — request không token ở TC-031 **không được** ghi vào CSDL | SEC-02 — kiểm **tác động**, không chỉ status code | AI-2 | VALID | **Pass** (2/2) |
+| TC-PRODUPD-102 | Security SEC-03 | **hệ quả** của PUT bằng token user thường | `PUT /api/products/{{product_id}}` | user thường | `{"name":"HW06-EscalationProof","price":777,"description":"d","imageUrl":"http://x/i.png","` | 403 | 403; nếu 200 thì TC-103 chứng minh dữ liệu đã bị đổi | SEC-03 | AI-2 | VALID | **FAIL** (1/1 đỏ) |
+| TC-PRODUPD-103 | Security SEC-03 | **verify**: user thường có sửa được dữ liệu thật không | `GET /api/products/{{product_id}}` | không có header | – | 200 | `name ≠ HW06-EscalationProof` | SEC-03 — role escalation chỉ được coi là bug khi chứng minh được dữ liệu đổi | AI-2 | VALID | **FAIL** (1/2 đỏ) |
+| TC-PRODUPD-104 | Domain | **partial update**: body chỉ có `name` | `PUT /api/products/{{product_id}}` | admin | `{"name":"HW06-Partial-Only-Name"}` | 200/400 | hoặc 400 (đòi đủ field), hoặc 200 nhưng **giữ nguyên** các field khác | FR-15 — cập nhật một field không được **xoá** dữ liệu các field khác | AI-2 | VALID | **Pass** (1/1) |
+| TC-PRODUPD-105 | Domain | **verify** TC-104: các field khác không bị ghi NULL | `GET /api/products/{{product_id}}` | không có header | – | 200 | `price`, `description`, `category_id` **không null** | FR-15 — mất dữ liệu im lặng là lỗi nặng hơn cả từ chối request | AI-2 | VALID | **FAIL** (3/4 đỏ) |
+| TC-PRODUPD-106 | State | PUT vào `:id` không tồn tại **không được tạo hàng mới** | `GET /api/products` | không có header | – | 200 | số sản phẩm ≤ mốc `total_products` (TC-020 không được tạo hàng mới) | spec §3.3 — PUT là *cập nhật*, không phải upsert | AI-2 | VALID | **Pass** (3/3) |
+| TC-PRODUPD-107 | Security SEC-02 | **route lân cận**: `POST /api/products` cũng không đòi token? | `POST /api/products` | không có header | `{"name":"HW06-NoAuth-Create","price":200000,"description":"d","imageUrl":"http://x/i.png",` | 401 | 401 — *Thêm sản phẩm* cũng là API admin | SEC-02 · spec §3.3 *(Dành cho Admin)* | AI-2 | VALID | **FAIL** (1/1 đỏ) |
+| TC-PRODUPD-108 | Security SEC-02 | **route lân cận**: `DELETE /api/products/:id` không đòi token? | `DELETE /api/products/999999` | không có header | – | 401/404 | 401 (hoặc 404 nếu đã kiểm quyền trước) — không được 200 | SEC-02 · spec §3.3 | AI-2 | VALID | **FAIL** (1/1 đỏ) |
 
-## Vì sao AI bỏ sót (§6.3)
+## Vì sao lượt một bỏ sót (§6.3)
 
 | TC ID | AI bỏ sót gì | Nhóm lý do | Giải thích |
 |---|---|---|---|

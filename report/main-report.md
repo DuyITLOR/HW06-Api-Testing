@@ -18,7 +18,7 @@
 | Kết quả | **244 assertion xanh · 89 đỏ** — mọi assertion đỏ đều map tới một bug đã tái hiện được |
 | Bug | **19 bug, 19/19 tái hiện được** — 5 Critical, 5 High, 7 Medium, 2 Low · Issues [#323–#341](https://github.com/DuyITLOR/group05_eshop/issues/323) |
 | Bug đáng chú ý nhất | **BUG-14**: khách **không đăng nhập** làm **sập cả backend** bằng 2 request — chuỗi 3 lỗi |
-| Lỗi của AI đã bắt và sửa | **23** (bảng đầy đủ ở §11) — 5 lỗi thiết kế test case (gồm 2 case assertion nghiêm hơn expected), 5 lỗi kỹ thuật, 4 lỗi bỏ sót phân vùng, 2 lỗi số liệu, 2 lỗi quy trình |
+| Lỗi của AI đã bắt và sửa | **25** (bảng đầy đủ ở §11) — 5 lỗi thiết kế test case (gồm 2 case assertion nghiêm hơn expected), 5 lỗi kỹ thuật, 4 lỗi bỏ sót phân vùng, 2 lỗi số liệu, 2 lỗi quy trình |
 | Giả thuyết đã **loại** sau khi kiểm | **4** (ghi lại ở [bug-report §Bug đã loại](../bug-report/bug-report.md)) |
 
 ## Mục lục
@@ -424,7 +424,9 @@ Postman — 136 case, 333 assertion, từ **một** nguồn định nghĩa.
 | 20 | Bảng §11 **đánh số trùng, sai thứ tự, thiếu 1 dòng** so với bảng trong AI audit | kỹ thuật | đếm lại dãy số | đánh số lại liên tục, thêm dòng thiếu, sửa 3 tham chiếu chéo |
 | 21 | §12 trỏ tới file lượt chạy **đã bị thay** | kỹ thuật | so tên file với `ls reports/newman/` | cập nhật theo lượt sinh viên tự chạy |
 | 22 | `TC-CART-101/102` dán nhãn **Security** nhưng không trỏ được SEC-0x nào — dùng "security" theo nghĩa thông thường thay vì theo SEC-01…07 | prompt quality | `tools/check-cases.mjs` — bất biến "case Security phải trỏ một SEC-0x" | ghi rõ *"ngoài SEC-01…07"* + ghi **lỗ hổng của danh sách SEC** vào traceability |
-| 23 | **Hai lượt CI không đúng nghĩa §6** (*"all test cases passing"* / *"one test case failing"*) — bộ 136 case luôn có 89 đỏ nên lượt "xanh" vẫn đầy assertion đỏ | thiết kế CI | Đọc lại đúng câu chữ §6 khi tự chấm bài theo bảng §15 | Thêm **regression suite** sinh tự động (216 assertion, 0 đỏ) với cổng riêng; lượt đỏ tạo bằng đúng 1 assertion có nhãn DEMO rồi gỡ ngay ở commit sau |
+| 23 | **Dán nhãn `SV` cho 22 case do AI sinh** và gọi là *"sinh viên tự thêm"* — misattribution, không thoả §6.3 *"of your own"* | quy trình | soát lại lần bốn, đối chiếu `extended.md` với chính lời khai ở Interaction #5 (*"AI output … thêm 22 case"*) | đổi nhãn thành `AI-2`, viết cảnh báo vào đầu `extended.md`, tạo `own.md` cho case của sinh viên, và thêm bất biến chặn nhãn `SV` |
+| 24 | `check-submission.mjs` coi **mọi lỗi `gh`** là *"issue KHÔNG tồn tại"* → chạy trong shell chưa `gh auth login` là ra 3 dòng đỏ khẳng định sai, và người chấm trừ điểm phần bug report | kỹ thuật | issue #323/#328/#341 bị báo không tồn tại, kiểm lại bằng API công khai thì **đều OPEN** | gọi API công khai bằng `curl`, chỉ **HTTP 404** là "không tồn tại"; 000/403 là "không kiểm được" |
+| 25 | **Hai lượt CI không đúng nghĩa §6** (*"all test cases passing"* / *"one test case failing"*) — bộ 136 case luôn có 89 đỏ nên lượt "xanh" vẫn đầy assertion đỏ | thiết kế CI | Đọc lại đúng câu chữ §6 khi tự chấm bài theo bảng §15 | Thêm **regression suite** sinh tự động (216 assertion, 0 đỏ) với cổng riêng; lượt đỏ tạo bằng đúng 1 assertion có nhãn DEMO rồi gỡ ngay ở commit sau |
 
 **Ba lỗi đáng giá nhất về mặt phương pháp — #9 (mã JS sinh sai), #10 (mốc sẵn sàng sai) và #13 (bản sửa cho #10 vẫn sai):** cả ba đều làm test case đỏ, và nếu không
 truy nguyên thì sẽ được **báo thành bug của SUT**. Riêng chuỗi #10 → #13 đáng đọc kỹ, vì nó là một **bản sửa
@@ -494,16 +496,28 @@ Ghi rõ vì một báo cáo không nêu giới hạn thì không kiểm chứng 
    qua các lượt vì DB được seed lại mỗi lần, nhưng bài **không** khẳng định gì về môi trường khác.
 6. **BUG-14 không nằm trong collection Postman** — có chủ ý (§5.5). Nghĩa là lượt Newman **không** chứng
    minh được BUG-14; bằng chứng của nó nằm ở `verify-bugs.sh` + stack trace trong `.run-logs/sut.log`.
-7. **Ảnh trong 19 GitHub Issue là ảnh báo cáo Newman**, không phải ảnh từng bước tái hiện. Mỗi issue có
+7. **§6.3 chưa đạt phần *"of your own"*.** Đề đòi *"at least five test cases of **your own** that the AI
+   missed"*. 22 case trong `extended.md` **do AI sinh ở lượt hai** (cột `Nguồn` = `AI-2`, sau khi đọc
+   `server.js` và dữ liệu fixture) — chúng thoả phần *"mà lượt một bỏ sót"* và có bảng lý do bỏ sót, nhưng
+   **không** phải case sinh viên tự nghĩ. Bản trước dán nhãn `SV` và gọi là *"sinh viên tự thêm"* — đó là
+   **misattribution**, đã sửa, và `tools/check-cases.mjs` giờ chặn nhãn `SV` cho case không do sinh viên viết.
+   Case của sinh viên nằm ở `test-cases/*/own.md`, **hiện trống**. `npm run gaps` in ra ô phủ còn trống để
+   chọn mà viết.
+8. **Sơ đồ generator chưa có bản nộp.** §11 đòi *self-drawn*; bản do AI dựng đã bị **loại khỏi bộ nộp**
+   (`tools/package.sh` không copy) và giữ lại trong repo tên `reference-layout-AI-KHONG-NOP.png`. Bản trước
+   nộp kèm hình AI **có khai rõ xuất xứ** — khai đúng nhưng vẫn vi phạm ràng buộc, nên đã gỡ.
+9. **§5 chỉ có lời khai, chưa có vật chứng.** Bảng 4 bộ API của thành viên khác lập từ ảnh chat nhóm, nhưng
+   ảnh **chưa lưu vào repo** — xem `docs/api-selection.md`.
+10. **Ảnh trong 19 GitHub Issue là ảnh báo cáo Newman**, không phải ảnh từng bước tái hiện. Mỗi issue có
    lệnh `curl` chạy lại được và trỏ tới log `verify-bugs-output.txt`.
-8. **Bằng chứng `X-Student-Id` (§11) gồm ba ảnh, ba nguồn độc lập:**
+11. **Bằng chứng `X-Student-Id` (§11) gồm ba ảnh, ba nguồn độc lập:**
    `postman-console-gui.png` — **cửa sổ Postman Console thật** trong Postman GUI, 12 dòng
    `[HW06] X-Student-Id = "23127178" | POST | /api/login | …` do pre-request script in ra, mỗi dòng kèm
    request `POST http://localhost:3000/api/login → 200`; `console-x-student-id.png` — khối CONSOLE LOGS
    trong báo cáo Newman của lượt nộp (`--reporter-htmlextra-logs`); `x-student-id-request-header.png` —
    bảng REQUEST HEADERS cho thấy header **như đã gửi**. Ba ảnh này cũng phủ luôn yêu cầu hostname
    `localhost` của §11.
-9. **Lượt chạy được nộp là lượt do chính sinh viên tự chạy** (`reports/newman/*_20260823-0009*.json` +
+12. **Lượt chạy được nộp là lượt do chính sinh viên tự chạy** (`reports/newman/*_20260823-0009*.json` +
    `*_regression_20260823-001211*`, trên `localhost:3000`), và cùng số đỏ 29/30/30 với lượt CI
    `runs/32580345226` trên Ubuntu. Tổng cộng **8 lượt trên 2 hệ điều hành** cho cùng kết quả — nhưng bài
    **không** khẳng định gì về môi trường ngoài hai môi trường đó.

@@ -175,7 +175,7 @@ for (const slug of slugs) {
   const res = loadResults(slug);
   const all = [...spec.setup, ...spec.cases, ...(spec.teardown || [])];
   const ai = spec.cases.filter((c) => c.src === "AI");
-  const sv = spec.cases.filter((c) => c.src === "SV");
+  const sv = spec.cases.filter((c) => c.src === "AI-2");
 
   // ── 1. generated.md ───────────────────────────────────────────────────────
   const g = [`# ${spec.label} · bước 1 (§6.1): test case do AI sinh`, "",
@@ -203,10 +203,16 @@ for (const slug of slugs) {
   writeFileSync(`test-cases/${slug}/audit.md`, a.join("\n"), "utf8");
 
   // ── 3. extended.md ────────────────────────────────────────────────────────
-  const e = [`# ${spec.label} · bước 3 (§6.3): test case sinh viên tự thêm`, "",
-    `- **${sv.length} case** (đề đòi ≥5).`, "",
+  const e = [`# ${spec.label} · bước 3 (§6.3): test case bổ sung ở LƯỢT HAI`, "",
+    `- **${sv.length} case**, cột \`Nguồn\` = **AI-2**: do AI sinh ở **lượt thứ hai**, sau khi đọc \`server.js\` và`,
+    `  dữ liệu fixture thật — khác lượt một chỉ đọc \`api_specification.md\`.`, "",
+    `> **Đọc kỹ chỗ này — nó ảnh hưởng cách chấm §6.3.** Đề đòi *"Add at least five test cases of **your own**`,
+    `> that the AI missed"*. Các case dưới đây **KHÔNG** phải do sinh viên tự nghĩ ra: chúng do AI sinh ở lượt hai.`,
+    `> Chúng thoả phần *"mà AI (lượt một) bỏ sót"* và có bảng lý do bỏ sót, nhưng **không** thoả phần *"of your own"*.`,
+    `> Ghi đúng như vậy ở đây thay vì dán nhãn \`SV\`: bản trước ghi \`SV\` và gọi là "sinh viên tự thêm" — đó là`,
+    `> misattribution, và §11 phạt đúng loại đó. Case do sinh viên tự viết (nếu có) nằm ở \`own.md\`.`, "",
     HEADER, SEP, ...sv.map((c) => row(c, res, true)), "",
-    `## Vì sao AI bỏ sót (§6.3)`, "",
+    `## Vì sao lượt một bỏ sót (§6.3)`, "",
     "| TC ID | AI bỏ sót gì | Nhóm lý do | Giải thích |", "|---|---|---|---|",
     ...spec.whyMissed.map((w) => `| ${w.id} | ${w.missed} | **${w.group}** | ${w.why} |`), ""];
   writeFileSync(`test-cases/${slug}/extended.md`, e.join("\n"), "utf8");

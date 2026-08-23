@@ -330,6 +330,38 @@ audit, mọi danh sách case đỏ đều được đối chiếu với dữ li�
   **Chi tiết soát cho lượt này:** **AI đã soát:** lượt thứ ba (soát nội dung nhãn `VALID`, tìm lỗi #22). **Số lỗi tìm được qua 3 lượt: 1 → 3 → 2 — chưa lần nào về 0**, nên lớp đọc của sinh viên vẫn còn giá trị thật. **Còn lại:** SV đọc `traceability-matrix.md` mục *Lỗ hổng trong chính danh sách yêu cầu* — `npm run review 13`.
 - **Commit:** `fef7773`
 
+### Interaction #14
+- **API / Bước:** sửa 5 điểm bị trừ trong bản review của người chấm
+- **Bước trong quy trình:** review
+- **AI tool:** Claude Code (Opus 5)
+- **Date & time:** 2026-08-23 01:15
+- **Prompt:**
+  ```
+  (bản review chấm 5 lỗi: 22 case "SV tự thêm" thực tế do AI tạo · human audit chưa thuyết phục ·
+   GitHub Issues chưa xác minh được · sơ đồ generator vi phạm PDF · bằng chứng không trùng API chưa xong)
+  hãy sửa lại giùm tui đi
+  ```
+- **AI output (tóm tắt):**
+  1. **Điểm 3 của bản review là SAI SỰ THẬT** — issue #323/#328/#341 đều **OPEN** và truy cập được không cần
+     đăng nhập. Nhưng nguyên nhân là **lỗi của AI**: `check-submission.mjs` coi mọi lỗi `gh` là *"issue không
+     tồn tại"*, nên chạy trong shell chưa `gh auth login` là ra 3 dòng đỏ khẳng định sai. Đã sửa: dùng API
+     công khai, chỉ HTTP 404 mới là "không tồn tại".
+  2. **Điểm 1 đúng và là lỗi nặng nhất** — 22 case bị dán nhãn `SV`. Đã đổi thành `AI-2`, viết cảnh báo vào
+     đầu `extended.md`, tạo `own.md` trống cho case của sinh viên, thêm bất biến chặn nhãn `SV`, và ghi vào
+     §12 rằng **§6.3 chưa đạt phần *"of your own"***.
+  3. **Điểm 4 đúng** — gỡ hình AI khỏi bộ nộp, đổi tên `reference-layout-AI-KHONG-NOP.png`, `package.sh` đòi
+     `generator-flow-selfdrawn.png`.
+  4. **Điểm 5 đúng** — `api-selection.md` giờ nói thẳng §5 chỉ có lời khai, thiếu ảnh chat nhóm.
+- **AI sai / bỏ sót:** hai lỗi mới ghi vào bảng: **#23** (misattribution nhãn `SV` — cùng họ với việc ghi
+  "SV đã đọc" khi chưa đọc, mà AI đã từ chối làm ở chỗ khác nhưng lại tự làm ở đây) và **#24** (checker báo
+  sai khiến người chấm trừ điểm oan).
+- **Vì sao bỏ sót:** #23 — **prompt quality**: prompt của đề gọi nhóm case đó là *"your own"*, AI chép nguyên
+  cách gọi đó vào nhãn thay vì hỏi *ai thực sự viết*. #24 — **model limitations**: viết checker mà không phân
+  biệt "kiểm ra sai" với "không kiểm được".
+- **Human review:** ***(SV đã kiểm)*** — chính sinh viên đưa bản review chỉ ra 5 điểm này; 3/5 điểm đúng,
+  1 điểm sai sự thật nhưng do lỗi tool của AI, 1 điểm (human audit) là nhận định về quy trình.
+- **Commit:** *(commit kế tiếp)*
+
 <!-- NEW_INTERACTION_MARKER -->
 
 ---
@@ -393,7 +425,9 @@ chạy folder `00-setup` bằng Collection Runner và chụp `bug-report/screens
 | 20 | #10/#12 | Bảng §11 **đánh số trùng, sai thứ tự** và **thiếu 1 dòng** so với bảng này | kỹ thuật | đếm lại dãy số trong bảng | đánh số lại liên tục 1..18, thêm dòng còn thiếu, sửa 3 tham chiếu chéo |
 | 21 | #11/#12 | §12 trỏ tới file lượt chạy **đã bị thay** | kỹ thuật | so tên file trong báo cáo với `ls reports/newman/` | cập nhật theo lượt sinh viên tự chạy |
 | 22 | #8/#12 | README + main-report còn ghi **329 assertion** (số thật 333) ở 3 chỗ | kỹ thuật | `tools/check-claims.mjs` — soát mọi con số công bố so với raw JSON | sửa 3 chỗ; phép kiểm vào `npm run verify` mục 5b |
-| 23 | #5/#13 | `TC-CART-101/102` dán nhãn **Security** nhưng không trỏ được SEC-0x nào — dùng chữ "security" theo nghĩa thông thường thay vì theo SEC-01…07 | prompt quality | `tools/check-cases.mjs` — bất biến "case Security phải trỏ một SEC-0x" | ghi rõ *"ngoài SEC-01…07"* + ghi **lỗ hổng của danh sách SEC** vào traceability, kèm đề nghị thêm mục SEC về toàn vẹn giá |
+| 23 | #5/#14 | **Dán nhãn `SV` cho 22 case do AI sinh** và gọi là "sinh viên tự thêm" — không thoả §6.3 *"of your own"*; cùng họ với việc ghi "SV đã đọc" khi chưa đọc | prompt quality | bản review của người chấm đối chiếu `extended.md` với lời khai ở Interaction #5 | đổi nhãn `AI-2`, cảnh báo đầu file, tạo `own.md`, thêm bất biến chặn nhãn `SV` |
+| 24 | #12/#14 | `check-submission.mjs` coi mọi lỗi `gh` là "issue KHÔNG tồn tại" → báo sai 3 issue, người chấm trừ điểm oan | model limitations | kiểm lại bằng API công khai: cả 3 issue đều OPEN | dùng `curl` API công khai; chỉ HTTP 404 là thiếu |
+| 25 | #5/#13 | `TC-CART-101/102` dán nhãn **Security** nhưng không trỏ được SEC-0x nào — dùng chữ "security" theo nghĩa thông thường thay vì theo SEC-01…07 | prompt quality | `tools/check-cases.mjs` — bất biến "case Security phải trỏ một SEC-0x" | ghi rõ *"ngoài SEC-01…07"* + ghi **lỗ hổng của danh sách SEC** vào traceability, kèm đề nghị thêm mục SEC về toàn vẹn giá |
 
 **Bốn lỗi đáng giá nhất về phương pháp là #9, #10, #14 và #16.** Riêng #16 đáng đọc vì nó là **lỗi mà chính
 lượt tự audit của AI đã dán nhãn `VALID`** — bằng chứng cụ thể cho hạn chế đã ghi ở Interaction #5: AI không

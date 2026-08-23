@@ -52,7 +52,10 @@ for (const slug of SLUGS) {
     if (/^10-|^11-|^12-|^13-/.test(f) && !/Domain|Security|Schema|State/.test(t)) issues.push(`[FOLDER/TECH LỆCH] ${c.id}: ${f} vs ${t}`);
   }
   // 6. whyMissed: đủ mỗi case SV, và nhóm lý do đúng 3 loại
-  const sv = spec.cases.filter(c=>c.src==="SV").map(c=>c.id);
+  // Bất biến chống misattribution: nhãn `SV` chỉ được dùng cho case sinh viên TỰ VIẾT (file own.md).
+  // Case do AI sinh ở lượt hai phải là `AI-2`. Bản trước gán `SV` cho 22 case do AI sinh.
+  const sv = spec.cases.filter(c=>c.src==="AI-2").map(c=>c.id);
+  for (const c of spec.cases) if (c.src === "SV") issues.push(`[NHÃN SV CHO CASE KHÔNG DO SV VIẾT] ${c.id} — dùng "AI-2" hoặc chuyển sang own.md`);
   const wm = new Map((spec.whyMissed||[]).map(w=>[w.id,w]));
   for (const id of sv) if (!wm.has(id)) issues.push(`[THIẾU LÝ DO AI BỎ SÓT] ${id}`);
   for (const [id,w] of wm) {

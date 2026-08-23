@@ -32,13 +32,23 @@ const ghost = [...new Set(cited)].filter((t) => !allTc.has(t));
 ghost.length ? F(`bug-report trỏ ${ghost.length} test case không tồn tại: ${ghost.join(", ")}`)
              : P(`bug-report trỏ ${new Set(cited).size} test case, đều tồn tại`);
 
-// 2. issue number có thật
+// 2. issue number có thật — phân biệt "issue không tồn tại" với "không kiểm được"
+//
+//    Bản trước dùng `gh issue view` rồi coi MỌI lỗi là "issue KHÔNG tồn tại". Chạy trong shell chưa
+//    `gh auth login` (hoặc mất mạng) là ra ngay 3 dòng đỏ khẳng định issue không có — và một người
+//    chấm đọc dòng đó sẽ trừ điểm phần bug report. Chính checker tạo ra kết luận sai.
+//    Giờ: gọi **API công khai của GitHub bằng curl** (repo public nên không cần token), chỉ coi
+//    **HTTP 404** là "không tồn tại"; mọi mã khác (000 mất mạng, 403 rate-limit) là "không kiểm được".
 const issues = [...new Set([...read("README.md").matchAll(/issues\/(\d+)/g)].map((m) => m[1]))].slice(0, 4);
 for (const n of issues) {
+  let code = "000";
   try {
-    const st = execSync(`gh issue view ${n} --repo DuyITLOR/group05_eshop --json state -q .state 2>/dev/null`, { encoding: "utf8" }).trim();
-    st ? P(`issue #${n} tồn tại (${st})`) : F(`issue #${n} không đọc được`);
-  } catch { F(`issue #${n} KHÔNG tồn tại trên GitHub`); }
+    code = execSync(`curl -s -o /dev/null -w '%{http_code}' --max-time 8 https://api.github.com/repos/DuyITLOR/group05_eshop/issues/${n}`,
+      { encoding: "utf8" }).trim();
+  } catch { code = "000"; }
+  if (code === "200") P(`issue #${n} tồn tại và truy cập được KHÔNG cần đăng nhập (public)`);
+  else if (code === "404") F(`issue #${n} KHÔNG tồn tại (HTTP 404)`);
+  else console.log(`  [BO QUA] issue #${n}: không kiểm được (HTTP ${code} — mất mạng hoặc rate-limit), KHÔNG phải bằng chứng issue thiếu`);
 }
 
 // 3. ảnh được trỏ tới

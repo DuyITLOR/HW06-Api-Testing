@@ -21,9 +21,10 @@ validation, nên API quá ít tham số sẽ không đủ chất liệu cho ≥3
 | SV #3 | `POST /api/login` (FR-02) | `POST /api/apply-coupon` (FR-09) | `PUT /api/admin/orders/:id/status` (FR-18) |
 | SV #4 | `POST /api/register` (FR-01) | `POST /api/apply-coupon` (FR-09) | `POST /api/products` (FR-15) |
 
-> Ảnh chụp chat nhóm làm bằng chứng: `bug-report/screenshots/` → `group-api-registration-*.png`
-> (mục **cần bổ sung** — xem checklist cuối file). Đây là mục **không thể tự động kiểm** được bằng
-> script, giống §5 của HW05.
+> **BẰNG CHỨNG CÒN THIẾU — nói rõ để người chấm không phải đoán.** Bảng trên được lập từ 4 ảnh chat nhóm
+> mà sinh viên đã xem, nhưng **ảnh chưa được lưu vào repo**, nên §5 hiện chỉ có *lời khai*, không có vật
+> chứng. Cách đóng lại (2 phút): lưu 4 ảnh vào `bug-report/screenshots/group-api-registration-1..4.png`.
+> Đây là mục **không script nào kiểm thay được** — nó là ảnh chụp cuộc trao đổi của nhóm.
 
 ## 2. Bộ 3 API của tôi
 
@@ -87,5 +88,7 @@ yêu cầu tách cả FR, đổi API-03 sang `DELETE /api/admin/users/:id` theo 
 - [x] 3 API, mỗi pool 1 API (A / B / C)
 - [x] Không trùng endpoint chính với 4 thành viên đã đăng ký
 - [x] Lý do chọn rút từ source code thật, có số dòng
-- [ ] Ảnh chụp chat nhóm (bằng chứng đăng ký) lưu vào `bug-report/screenshots/`
-- [ ] Xác nhận lại với nhóm trước khi bắt đầu bước 1 (§6.1)
+- [ ] **Ảnh chụp chat nhóm** → `bug-report/screenshots/group-api-registration-*.png` — **CHƯA CÓ**, và đây
+      là bằng chứng duy nhất cho §5 *"not duplicated among the members of your group"*
+- [x] Đã đối chiếu 4 bộ API của thành viên khác (qua chat nhóm ngày 18/08) trước khi chốt — bảng §1 là
+      kết quả đối chiếu đó

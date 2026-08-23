@@ -20,6 +20,7 @@
     "check:cases": "node tools/check-cases.mjs",
     "check:submission": "node tools/check-submission.mjs",
     "review": "node tools/mark-reviewed.mjs",
+    "gaps": "node tools/coverage-gaps.mjs",
     "package": "bash tools/package.sh"
   },
   "devDependencies": {

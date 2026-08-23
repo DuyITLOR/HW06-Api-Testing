@@ -1,18 +1,25 @@
-# API-02 — Pool B · POST /api/cart · bước 3 (§6.3): test case sinh viên tự thêm
+# API-02 — Pool B · POST /api/cart · bước 3 (§6.3): test case bổ sung ở LƯỢT HAI
 
-- **7 case** (đề đòi ≥5).
+- **7 case**, cột `Nguồn` = **AI-2**: do AI sinh ở **lượt thứ hai**, sau khi đọc `server.js` và
+  dữ liệu fixture thật — khác lượt một chỉ đọc `api_specification.md`.
+
+> **Đọc kỹ chỗ này — nó ảnh hưởng cách chấm §6.3.** Đề đòi *"Add at least five test cases of **your own**
+> that the AI missed"*. Các case dưới đây **KHÔNG** phải do sinh viên tự nghĩ ra: chúng do AI sinh ở lượt hai.
+> Chúng thoả phần *"mà AI (lượt một) bỏ sót"* và có bảng lý do bỏ sót, nhưng **không** thoả phần *"of your own"*.
+> Ghi đúng như vậy ở đây thay vì dán nhãn `SV`: bản trước ghi `SV` và gọi là "sinh viên tự thêm" — đó là
+> misattribution, và §11 phạt đúng loại đó. Case do sinh viên tự viết (nếu có) nằm ở `own.md`.
 
 | TC ID | Kỹ thuật | Tham số & phân vùng | Request | Auth | Query / Body | Expected status | Expected body / schema | Căn cứ | Nguồn | Audit | Kết quả |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| TC-CART-101 | Security (ngoài SEC-01…07) | **price tampering**: gửi giá 1 đồng cho sản phẩm 111.000 | `POST /api/cart` | user thường | `{"id":"{{product_id}}","name":"HW06-Cart-Fixture","price":1,"quantity":1}` | 400/422 | từ chối; nếu nhận thì TC-102 phải chứng minh giá bị ghi đè | FR-07/FR-08 — client không được quyết định giá. **Không thuộc SEC-01…07**: danh sách SEC của SUT không có mục nào về toàn vẹn giá/tiền — đó là một lỗ hổng của chính danh sách yêu cầu, ghi lại ở traceability | SV | VALID | **FAIL** (1/1 đỏ) |
-| TC-CART-102 | Security (ngoài SEC-01…07) | **hệ quả** của price tampering: giỏ không được chứa giá 1 đồng | `GET /api/cart` | user thường | – | 200 | không dòng nào của `product_id` có `price ≠ 111000` | FR-08 — kiểm **tác động**, không chỉ status code. Cùng lý do với TC-101: nằm ngoài SEC-01…07 | SV | VALID | **FAIL** (1/2 đỏ) |
-| TC-CART-103 | State | **checkout lần hai** ngay sau lần một — không được tạo đơn trùng | `POST /api/checkout` | user thường | `{"total_amount":111000,"shipping_address":"123 Le Loi, Q1, TP.HCM"}` | 400/409 | từ chối vì giỏ đã rỗng sau lần checkout đầu | FR-07 + FR-08 — giỏ rỗng thì không có gì để đặt | SV | VALID | **FAIL** (1/1 đỏ) |
-| TC-CART-104 | Security | **hệ quả** của mass assignment: giỏ không được chứa field lạ | `GET /api/cart` | user thường | – | 200 | không dòng nào có field `role` / `isAdmin` | SEC-06 — field ngoài đặc tả không được đi vào state phía server | SV | VALID | **FAIL** (1/2 đỏ) |
-| TC-CART-105 | Domain | thêm sản phẩm **đã bị xoá khỏi catalog** (bước 1: xoá) | `DELETE /api/products/{{product_id}}` | admin | – | 200 | 200 — sản phẩm biến mất khỏi catalog | spec §3.3 | SV | VALID | **Pass** (1/1) |
-| TC-CART-106 | Domain | bước 2: thêm sản phẩm **vừa bị xoá** vào giỏ | `POST /api/cart` | user thường | `{"id":"{{product_id}}","name":"HW06-Cart-Fixture","price":111000,"quantity":1}` | 400/404 | từ chối — sản phẩm không còn tồn tại | FR-07 (giỏ chỉ chứa sản phẩm đang bán) | SV | VALID | **FAIL** (1/1 đỏ) |
-| TC-CART-107 | Schema | **bất biến trạng thái giỏ** sau toàn bộ input sai ở trên | `GET /api/cart` | user thường | – | 200 | không dòng nào có `quantity ≤ 0`, `name` rỗng/thiếu, hoặc `price` thiếu — **bất kể** SUT chọn cách từ chối hay cách lấy dữ liệu từ catalog | FR-07 — trạng thái giỏ phải luôn hợp lệ, kể cả sau khi bị bơm input sai | SV | VALID | **FAIL** (3/4 đỏ) |
+| TC-CART-101 | Security (ngoài SEC-01…07) | **price tampering**: gửi giá 1 đồng cho sản phẩm 111.000 | `POST /api/cart` | user thường | `{"id":"{{product_id}}","name":"HW06-Cart-Fixture","price":1,"quantity":1}` | 400/422 | từ chối; nếu nhận thì TC-102 phải chứng minh giá bị ghi đè | FR-07/FR-08 — client không được quyết định giá. **Không thuộc SEC-01…07**: danh sách SEC của SUT không có mục nào về toàn vẹn giá/tiền — đó là một lỗ hổng của chính danh sách yêu cầu, ghi lại ở traceability | AI-2 | VALID | **FAIL** (1/1 đỏ) |
+| TC-CART-102 | Security (ngoài SEC-01…07) | **hệ quả** của price tampering: giỏ không được chứa giá 1 đồng | `GET /api/cart` | user thường | – | 200 | không dòng nào của `product_id` có `price ≠ 111000` | FR-08 — kiểm **tác động**, không chỉ status code. Cùng lý do với TC-101: nằm ngoài SEC-01…07 | AI-2 | VALID | **FAIL** (1/2 đỏ) |
+| TC-CART-103 | State | **checkout lần hai** ngay sau lần một — không được tạo đơn trùng | `POST /api/checkout` | user thường | `{"total_amount":111000,"shipping_address":"123 Le Loi, Q1, TP.HCM"}` | 400/409 | từ chối vì giỏ đã rỗng sau lần checkout đầu | FR-07 + FR-08 — giỏ rỗng thì không có gì để đặt | AI-2 | VALID | **FAIL** (1/1 đỏ) |
+| TC-CART-104 | Security | **hệ quả** của mass assignment: giỏ không được chứa field lạ | `GET /api/cart` | user thường | – | 200 | không dòng nào có field `role` / `isAdmin` | SEC-06 — field ngoài đặc tả không được đi vào state phía server | AI-2 | VALID | **FAIL** (1/2 đỏ) |
+| TC-CART-105 | Domain | thêm sản phẩm **đã bị xoá khỏi catalog** (bước 1: xoá) | `DELETE /api/products/{{product_id}}` | admin | – | 200 | 200 — sản phẩm biến mất khỏi catalog | spec §3.3 | AI-2 | VALID | **Pass** (1/1) |
+| TC-CART-106 | Domain | bước 2: thêm sản phẩm **vừa bị xoá** vào giỏ | `POST /api/cart` | user thường | `{"id":"{{product_id}}","name":"HW06-Cart-Fixture","price":111000,"quantity":1}` | 400/404 | từ chối — sản phẩm không còn tồn tại | FR-07 (giỏ chỉ chứa sản phẩm đang bán) | AI-2 | VALID | **FAIL** (1/1 đỏ) |
+| TC-CART-107 | Schema | **bất biến trạng thái giỏ** sau toàn bộ input sai ở trên | `GET /api/cart` | user thường | – | 200 | không dòng nào có `quantity ≤ 0`, `name` rỗng/thiếu, hoặc `price` thiếu — **bất kể** SUT chọn cách từ chối hay cách lấy dữ liệu từ catalog | FR-07 — trạng thái giỏ phải luôn hợp lệ, kể cả sau khi bị bơm input sai | AI-2 | VALID | **FAIL** (3/4 đỏ) |
 
-## Vì sao AI bỏ sót (§6.3)
+## Vì sao lượt một bỏ sót (§6.3)
 
 | TC ID | AI bỏ sót gì | Nhóm lý do | Giải thích |
 |---|---|---|---|

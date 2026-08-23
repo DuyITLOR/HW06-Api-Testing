@@ -54,7 +54,7 @@ needglob "postman/collections/${MSSV}_*.json" 4 "Postman collection (3 API + reg
 needglob "postman/environments/*.json" 1        "Postman environment"
 needglob "reports/newman/*.html" 4              "Newman HTML report (3 bug-hunting + regression)"
 needglob "reports/newman/*.json" 3              "Newman raw JSON (nguồn của test summary)"
-needglob "generator/diagram/*.png" 1            "Sơ đồ generator TỰ VẼ (§11)"
+needglob "generator/diagram/generator-flow-selfdrawn.png" 1 "Sơ đồ generator TỰ VẼ (§11) — bản AI KHÔNG được nộp"
 needglob "bug-report/screenshots/*.png" 6       "Ảnh: X-Student-Id · assertion đỏ · 2 lượt CI · issue · report"
 need "bug-report/screenshots/x-student-id-request-header.png" "Bằng chứng §11: header trên request thật"
 need "bug-report/screenshots/ci-xanh.png"    "Lượt CI tất cả pass (§6)"
@@ -105,6 +105,8 @@ done
 mkdir -p "$NAME/docs"
 cp docs/api-selection.md "$NAME/docs/" 2>/dev/null   # bằng chứng §5, báo cáo trỏ link sang
 find "$NAME" -name '.DS_Store' -delete 2>/dev/null
+# §11 cấm sơ đồ do AI sinh → loại khỏi bộ nộp, chỉ giữ trong repo làm bản tham chiếu.
+rm -f "$NAME"/generator/diagram/reference-layout-AI-KHONG-NOP.* 2>/dev/null
 rm -rf "$NAME/reports/newman/tmp" 2>/dev/null
 
 zip -9qr "$NAME.zip" "$NAME"

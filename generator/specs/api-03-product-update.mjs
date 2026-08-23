@@ -280,7 +280,7 @@ pm.test("có đúng một id lẻ và một id chẵn trong 2 fixture", () => {
     // ── 90-sv-extended ───────────────────────────────────────────────────────
     { id: `${P}-101`, folder: "90-sv-extended", tech: "Security SEC-02", part: "**hệ quả** của PUT không token: dữ liệu có bị đổi thật không",
       method: "GET", path: "/api/products/{{product_id}}", auth: "none", status: 200,
-      expect: "`name ≠ HW06-NoAuth-Attempt` — request không token ở TC-031 **không được** ghi vào CSDL", basis: "SEC-02 — kiểm **tác động**, không chỉ status code", src: "SV", audit: "VALID",
+      expect: "`name ≠ HW06-NoAuth-Attempt` — request không token ở TC-031 **không được** ghi vào CSDL", basis: "SEC-02 — kiểm **tác động**, không chỉ status code", src: "AI-2", audit: "VALID",
       checks: [["status", 200],
         ["raw", `pm.test("request KHÔNG token không được sửa được dữ liệu", () => {
   pm.expect(String(pm.response.json().name), "khách không đăng nhập đã sửa được sản phẩm").to.not.eql("HW06-NoAuth-Attempt");
@@ -288,12 +288,12 @@ pm.test("có đúng một id lẻ và một id chẵn trong 2 fixture", () => {
 
     { id: `${P}-102`, folder: "90-sv-extended", tech: "Security SEC-03", part: "**hệ quả** của PUT bằng token user thường",
       ...put(FULL({ name: "HW06-EscalationProof", price: 777 }), { auth: "user" }), status: 403,
-      expect: "403; nếu 200 thì TC-103 chứng minh dữ liệu đã bị đổi", basis: "SEC-03", src: "SV", audit: "VALID",
+      expect: "403; nếu 200 thì TC-103 chứng minh dữ liệu đã bị đổi", basis: "SEC-03", src: "AI-2", audit: "VALID",
       checks: [["status", 403]] },
 
     { id: `${P}-103`, folder: "90-sv-extended", tech: "Security SEC-03", part: "**verify**: user thường có sửa được dữ liệu thật không",
       method: "GET", path: "/api/products/{{product_id}}", auth: "none", status: 200,
-      expect: "`name ≠ HW06-EscalationProof`", basis: "SEC-03 — role escalation chỉ được coi là bug khi chứng minh được dữ liệu đổi", src: "SV", audit: "VALID",
+      expect: "`name ≠ HW06-EscalationProof`", basis: "SEC-03 — role escalation chỉ được coi là bug khi chứng minh được dữ liệu đổi", src: "AI-2", audit: "VALID",
       checks: [["status", 200],
         ["raw", `pm.test("user thường không được sửa sản phẩm", () => {
   pm.expect(String(pm.response.json().name), "user role=user đã sửa được sản phẩm của admin").to.not.eql("HW06-EscalationProof");
@@ -301,17 +301,17 @@ pm.test("có đúng một id lẻ và một id chẵn trong 2 fixture", () => {
 
     { id: `${P}-104`, folder: "90-sv-extended", tech: "Domain", part: "**partial update**: body chỉ có `name`",
       ...put({ name: "HW06-Partial-Only-Name" }), status: "200/400",
-      expect: "hoặc 400 (đòi đủ field), hoặc 200 nhưng **giữ nguyên** các field khác", basis: "FR-15 — cập nhật một field không được **xoá** dữ liệu các field khác", src: "SV", audit: "VALID",
+      expect: "hoặc 400 (đòi đủ field), hoặc 200 nhưng **giữ nguyên** các field khác", basis: "FR-15 — cập nhật một field không được **xoá** dữ liệu các field khác", src: "AI-2", audit: "VALID",
       checks: [["statusIn", "200,400,422"]] },
 
     { id: `${P}-105`, folder: "90-sv-extended", tech: "Domain", part: "**verify** TC-104: các field khác không bị ghi NULL",
       method: "GET", path: "/api/products/{{product_id}}", auth: "none", status: 200,
-      expect: "`price`, `description`, `category_id` **không null**", basis: "FR-15 — mất dữ liệu im lặng là lỗi nặng hơn cả từ chối request", src: "SV", audit: "VALID",
+      expect: "`price`, `description`, `category_id` **không null**", basis: "FR-15 — mất dữ liệu im lặng là lỗi nặng hơn cả từ chối request", src: "AI-2", audit: "VALID",
       checks: [["status", 200], ["fieldNotNull", "price"], ["fieldNotNull", "description"], ["fieldNotNull", "category_id"]] },
 
     { id: `${P}-106`, folder: "90-sv-extended", tech: "State", part: "PUT vào `:id` không tồn tại **không được tạo hàng mới**",
       method: "GET", path: "/api/products", auth: "none", status: 200,
-      expect: "số sản phẩm ≤ mốc `total_products` (TC-020 không được tạo hàng mới)", basis: "spec §3.3 — PUT là *cập nhật*, không phải upsert", src: "SV", audit: "VALID",
+      expect: "số sản phẩm ≤ mốc `total_products` (TC-020 không được tạo hàng mới)", basis: "spec §3.3 — PUT là *cập nhật*, không phải upsert", src: "AI-2", audit: "VALID",
       checks: [["status", 200],
         ["raw", `pm.test("PUT vào id không tồn tại không tạo thêm sản phẩm", () => {
   pm.expect(pm.response.json().length).to.be.at.most(Number(pm.environment.get("total_products")));
@@ -322,12 +322,12 @@ pm.test("có đúng một id lẻ và một id chẵn trong 2 fixture", () => {
 
     { id: `${P}-107`, folder: "90-sv-extended", tech: "Security SEC-02", part: "**route lân cận**: `POST /api/products` cũng không đòi token?",
       method: "POST", path: "/api/products", auth: "none", body: FULL({ name: "HW06-NoAuth-Create" }), status: 401,
-      expect: "401 — *Thêm sản phẩm* cũng là API admin", basis: "SEC-02 · spec §3.3 *(Dành cho Admin)*", src: "SV", audit: "VALID",
+      expect: "401 — *Thêm sản phẩm* cũng là API admin", basis: "SEC-02 · spec §3.3 *(Dành cho Admin)*", src: "AI-2", audit: "VALID",
       checks: [["status", 401]] },
 
     { id: `${P}-108`, folder: "90-sv-extended", tech: "Security SEC-02", part: "**route lân cận**: `DELETE /api/products/:id` không đòi token?",
       method: "DELETE", path: "/api/products/999999", auth: "none", status: "401/404",
-      expect: "401 (hoặc 404 nếu đã kiểm quyền trước) — không được 200", basis: "SEC-02 · spec §3.3", src: "SV", audit: "VALID",
+      expect: "401 (hoặc 404 nếu đã kiểm quyền trước) — không được 200", basis: "SEC-02 · spec §3.3", src: "AI-2", audit: "VALID",
       checks: [["statusIn", "401,403,404"]] },
   ],
 

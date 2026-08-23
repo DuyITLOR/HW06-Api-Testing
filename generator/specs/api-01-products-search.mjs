@@ -252,37 +252,37 @@ export default {
     // ── 90-sv: case sinh viên tự thêm (§6.3) ─────────────────────────────────
     { id: `${P}-101`, folder: "90-sv-extended", tech: "Domain", part: "tiếng Việt **chữ thường có dấu** — `áo` (cách người Việt gõ thật)",
       method: "GET", path: "/api/products", query: { search: "áo" }, auth: "none", status: 200,
-      expect: "1 dòng — **bằng** kết quả của `Áo` ở TC-006", basis: "FR-05 *tìm kiếm theo tên*; TC-006 đã chứng minh SUT tự nhận là không phân biệt hoa/thường với ASCII", src: "SV", audit: "VALID",
+      expect: "1 dòng — **bằng** kết quả của `Áo` ở TC-006", basis: "FR-05 *tìm kiếm theo tên*; TC-006 đã chứng minh SUT tự nhận là không phân biệt hoa/thường với ASCII", src: "AI-2", audit: "VALID",
       checks: [["status", 200], ["isArray"], ["countEq", 1]] },
 
     { id: `${P}-102`, folder: "90-sv-extended", tech: "Domain", part: "`%` nằm trong **dữ liệu hợp lệ** — `100%`",
       method: "GET", path: "/api/products", query: { search: "100%" }, auth: "none", status: 200,
-      expect: "đúng **1** dòng (`Bàn phím 100% cơ`) — `%` phải được hiểu là ký tự, không phải wildcard", basis: "FR-05; `%` là ký tự hợp pháp trong tên sản phẩm", src: "SV", audit: "VALID",
+      expect: "đúng **1** dòng (`Bàn phím 100% cơ`) — `%` phải được hiểu là ký tự, không phải wildcard", basis: "FR-05; `%` là ký tự hợp pháp trong tên sản phẩm", src: "AI-2", audit: "VALID",
       checks: [["status", 200], ["isArray"], ["countEq", 1]] },
 
     { id: `${P}-103`, folder: "90-sv-extended", tech: "Domain", part: "chỉ **một ký tự `%`** — không phải payload tấn công",
       method: "GET", path: "/api/products", query: { search: "%" }, auth: "none", status: 200,
-      expect: "0 dòng (không sản phẩm nào **tên** là `%`); **không** được trả toàn bộ bảng", basis: "FR-05", src: "SV", audit: "VALID",
+      expect: "0 dòng (không sản phẩm nào **tên** là `%`); **không** được trả toàn bộ bảng", basis: "FR-05", src: "AI-2", audit: "VALID",
       checks: [["status", 200], ["isArray"], ["countEq", 0], ["countLtVar", "total_products"]] },
 
     { id: `${P}-104`, folder: "90-sv-extended", tech: "Domain", part: "**dấu nháy đơn trong dữ liệu hợp lệ** — `O'Brien`",
       method: "GET", path: "/api/products", query: { search: "O'Brien" }, auth: "none", status: 200,
-      expect: "1 dòng — đây là **tên riêng bình thường**, không phải tấn công", basis: "FR-05; SEC-05 (parameterized query xử lý được `'`)", src: "SV", audit: "VALID",
+      expect: "1 dòng — đây là **tên riêng bình thường**, không phải tấn công", basis: "FR-05; SEC-05 (parameterized query xử lý được `'`)", src: "AI-2", audit: "VALID",
       checks: [["status", 200], ["ctJson"], ["isArray"], ["countEq", 1]] },
 
     { id: `${P}-105`, folder: "90-sv-extended", tech: "Schema", part: "**response lỗi** phải là JSON và không lộ chi tiết engine",
       method: "GET", path: "/api/products", query: { search: "'" }, auth: "none", status: 200,
-      expect: "`Content-Type: application/json`; body **không** chứa `SQLITE_ERROR` / `<h1>`", basis: "spec §3.1 (API trả JSON) · SEC-05 · nguyên tắc không rò rỉ thông tin nội bộ", src: "SV", audit: "VALID",
+      expect: "`Content-Type: application/json`; body **không** chứa `SQLITE_ERROR` / `<h1>`", basis: "spec §3.1 (API trả JSON) · SEC-05 · nguyên tắc không rò rỉ thông tin nội bộ", src: "AI-2", audit: "VALID",
       checks: [["ctJson"], ["bodyNotContains", "SQLITE_ERROR"], ["bodyNotContains", "<h1>"]] },
 
     { id: `${P}-106`, folder: "90-sv-extended", tech: "Security SEC-05", part: "**hệ quả** của stacked query: bảng `products` phải còn nguyên",
       method: "GET", path: "/api/products", auth: "none", status: 200,
-      expect: "số dòng = `total_products` (bảng không bị DROP sau TC-027)", basis: "SEC-05 — kiểm **tác động**, không chỉ status code", src: "SV", audit: "VALID",
+      expect: "số dòng = `total_products` (bảng không bị DROP sau TC-027)", basis: "SEC-05 — kiểm **tác động**, không chỉ status code", src: "AI-2", audit: "VALID",
       checks: [["status", 200], ["isArray"], ["countEqVar", "total_products"]] },
 
     { id: `${P}-107`, folder: "90-sv-extended", tech: "Schema", part: "chi tiết **id chẵn** (id=2): `price` vẫn phải là number",
       method: "GET", path: "/api/products/2", auth: "none", status: 200,
-      expect: "`price` là **number** — kiểu dữ liệu không được phụ thuộc tính chẵn/lẻ của `id`", basis: "spec §3.2 + §3.3 (`price: 100000` là số)", src: "SV", audit: "VALID",
+      expect: "`price` là **number** — kiểu dữ liệu không được phụ thuộc tính chẵn/lẻ của `id`", basis: "spec §3.2 + §3.3 (`price: 100000` là số)", src: "AI-2", audit: "VALID",
       checks: [["status", 200], ["isObject"], ["fieldType", "price", "number"], ["schemaProduct"]] },
   ],
 

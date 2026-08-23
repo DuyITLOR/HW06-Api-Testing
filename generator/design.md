@@ -4,9 +4,9 @@
 - **Bản hiện thực chạy được:** [`tools/gen-artifacts.mjs`](../tools/gen-artifacts.mjs) +
   [`.claude/skills/api-test-design/SKILL.md`](../.claude/skills/api-test-design/SKILL.md)
 - **Đã dùng thật:** toàn bộ **136 test case / 329 assertion** của bài này do generator sinh ra.
-- **Sơ đồ:** [`diagram/generator-flow.png`](diagram/generator-flow.png) (nguồn:
-  [`generator-flow.svg`](diagram/generator-flow.svg)) — **dựng bằng AI theo bản đề đã sửa** cho phép; xem
-  ghi chú xuất xứ ở [`diagram/README.md`](diagram/README.md).
+- **Sơ đồ:** **chưa có bản nộp.** §11 đòi sơ đồ *self-drawn*; bản do AI dựng đã bị **loại khỏi bộ nộp** và
+  chỉ giữ trong repo làm bản tham chiếu (`diagram/reference-layout-AI-KHONG-NOP.png`). Hướng dẫn vẽ + 3 nhánh
+  bắt buộc: [`diagram/README.md`](diagram/README.md).
 
 ## 1. Bài toán
 
@@ -45,12 +45,12 @@ làm cho những chỗ đó trở thành đầu ra hiển thị, thay vì bị l
 
 ## 4. Sơ đồ
 
-![Luồng generator 6 giai đoạn](diagram/generator-flow.png)
+*(Sau khi vẽ, chèn dòng ảnh trỏ tới `diagram/generator-flow-selfdrawn.png` vào đây.)*
 
-**Xuất xứ hình:** SVG viết tay bằng mã (`tools`-style script) từ **thiết kế 6 giai đoạn ở §3**, render ra
-PNG bằng Chrome headless. Hình do **AI dựng**, theo bản đề đã sửa cho phép — bản PDF đề trong `docs/`
-(§11) là bản cũ còn ghi *"self-drawn"*. Ghi rõ ở đây và ở `diagram/README.md` để không khai sai xuất xứ.
-File nguồn `.svg` nộp kèm nên hình dựng lại được và kiểm được từng phần tử.
+**Trạng thái:** chưa có bản tự vẽ. §11 cấm sơ đồ do AI sinh, nên bản AI đã bị loại khỏi bộ nộp
+(`tools/package.sh` không copy nó) và đổi tên thành `reference-layout-AI-KHONG-NOP.png` để không ai nhầm.
+Nội dung cần vẽ — 6 giai đoạn ở §3 và ba nhánh dưới đây — là **thiết kế của bài**, không phải của AI;
+chỉ phần trình bày cần do sinh viên vẽ.
 
 **Ba nhánh trong hình là ba quyết định thiết kế, không phải trang trí:**
 

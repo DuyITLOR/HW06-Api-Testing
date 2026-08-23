@@ -273,13 +273,13 @@ export default {
     { id: `${P}-101`, folder: "90-sv-extended", tech: "Security (ngoài SEC-01…07)", part: "**price tampering**: gửi giá 1 đồng cho sản phẩm 111.000",
       ...add({ id: "{{product_id}}", name: "HW06-Cart-Fixture", price: 1, quantity: 1 }), status: "400/422",
       expect: "từ chối; nếu nhận thì TC-102 phải chứng minh giá bị ghi đè",
-      basis: "FR-07/FR-08 — client không được quyết định giá. **Không thuộc SEC-01…07**: danh sách SEC của SUT không có mục nào về toàn vẹn giá/tiền — đó là một lỗ hổng của chính danh sách yêu cầu, ghi lại ở traceability", src: "SV", audit: "VALID",
+      basis: "FR-07/FR-08 — client không được quyết định giá. **Không thuộc SEC-01…07**: danh sách SEC của SUT không có mục nào về toàn vẹn giá/tiền — đó là một lỗ hổng của chính danh sách yêu cầu, ghi lại ở traceability", src: "AI-2", audit: "VALID",
       checks: [["statusIn", "400,422"]] },
 
     { id: `${P}-102`, folder: "90-sv-extended", tech: "Security (ngoài SEC-01…07)", part: "**hệ quả** của price tampering: giỏ không được chứa giá 1 đồng",
       method: "GET", path: "/api/cart", auth: "user", status: 200,
       expect: `không dòng nào của \`product_id\` có \`price ≠ ${PRICE}\``,
-      basis: "FR-08 — kiểm **tác động**, không chỉ status code. Cùng lý do với TC-101: nằm ngoài SEC-01…07", src: "SV", audit: "VALID",
+      basis: "FR-08 — kiểm **tác động**, không chỉ status code. Cùng lý do với TC-101: nằm ngoài SEC-01…07", src: "AI-2", audit: "VALID",
       checks: [["status", 200],
         ["raw", `pm.test("không có dòng nào bị sửa giá", () => {
   const pid = Number(pm.environment.get("product_id"));
@@ -290,12 +290,12 @@ export default {
     { id: `${P}-103`, folder: "90-sv-extended", tech: "State", part: "**checkout lần hai** ngay sau lần một — không được tạo đơn trùng",
       method: "POST", path: "/api/checkout", auth: "user",
       body: { total_amount: PRICE, shipping_address: "123 Le Loi, Q1, TP.HCM" }, status: "400/409",
-      expect: "từ chối vì giỏ đã rỗng sau lần checkout đầu", basis: "FR-07 + FR-08 — giỏ rỗng thì không có gì để đặt", src: "SV", audit: "VALID",
+      expect: "từ chối vì giỏ đã rỗng sau lần checkout đầu", basis: "FR-07 + FR-08 — giỏ rỗng thì không có gì để đặt", src: "AI-2", audit: "VALID",
       checks: [["statusIn", "400,409,422"]] },
 
     { id: `${P}-104`, folder: "90-sv-extended", tech: "Security", part: "**hệ quả** của mass assignment: giỏ không được chứa field lạ",
       method: "GET", path: "/api/cart", auth: "user", status: 200,
-      expect: "không dòng nào có field `role` / `isAdmin`", basis: "SEC-06 — field ngoài đặc tả không được đi vào state phía server", src: "SV", audit: "VALID",
+      expect: "không dòng nào có field `role` / `isAdmin`", basis: "SEC-06 — field ngoài đặc tả không được đi vào state phía server", src: "AI-2", audit: "VALID",
       checks: [["status", 200],
         ["raw", `pm.test("không dòng nào có field lạ role/isAdmin", () => {
   const bad = pm.response.json().filter(r => "role" in r || "isAdmin" in r);
@@ -304,17 +304,17 @@ export default {
 
     { id: `${P}-105`, folder: "90-sv-extended", tech: "Domain", part: "thêm sản phẩm **đã bị xoá khỏi catalog** (bước 1: xoá)",
       method: "DELETE", path: "/api/products/{{product_id}}", auth: "admin", status: 200,
-      expect: "200 — sản phẩm biến mất khỏi catalog", basis: "spec §3.3", src: "SV", audit: "VALID",
+      expect: "200 — sản phẩm biến mất khỏi catalog", basis: "spec §3.3", src: "AI-2", audit: "VALID",
       checks: [["status", 200]] },
 
     { id: `${P}-106`, folder: "90-sv-extended", tech: "Domain", part: "bước 2: thêm sản phẩm **vừa bị xoá** vào giỏ",
       ...add({ id: "{{product_id}}", name: "HW06-Cart-Fixture", price: PRICE, quantity: 1 }), status: "400/404",
-      expect: "từ chối — sản phẩm không còn tồn tại", basis: "FR-07 (giỏ chỉ chứa sản phẩm đang bán)", src: "SV", audit: "VALID",
+      expect: "từ chối — sản phẩm không còn tồn tại", basis: "FR-07 (giỏ chỉ chứa sản phẩm đang bán)", src: "AI-2", audit: "VALID",
       checks: [["statusIn", "400,404"]] },
 
     { id: `${P}-107`, folder: "90-sv-extended", tech: "Schema", part: "**bất biến trạng thái giỏ** sau toàn bộ input sai ở trên",
       method: "GET", path: "/api/cart", auth: "user", status: 200,
-      expect: "không dòng nào có `quantity ≤ 0`, `name` rỗng/thiếu, hoặc `price` thiếu — **bất kể** SUT chọn cách từ chối hay cách lấy dữ liệu từ catalog", basis: "FR-07 — trạng thái giỏ phải luôn hợp lệ, kể cả sau khi bị bơm input sai", src: "SV", audit: "VALID",
+      expect: "không dòng nào có `quantity ≤ 0`, `name` rỗng/thiếu, hoặc `price` thiếu — **bất kể** SUT chọn cách từ chối hay cách lấy dữ liệu từ catalog", basis: "FR-07 — trạng thái giỏ phải luôn hợp lệ, kể cả sau khi bị bơm input sai", src: "AI-2", audit: "VALID",
       checks: [["status", 200],
         ["raw", `pm.test("không dòng nào có quantity <= 0", () => {
   const bad = pm.response.json().filter(r => !(Number(r.quantity) > 0));
